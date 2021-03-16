@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import { SafeAreaView } from 'react-native'
 
 //Redux
 import { connect } from 'react-redux'
@@ -19,12 +18,20 @@ const Routes = ({ isLogged }) => {
     })
     return (
         (!isLogged ?
-            <authStack.Navigator>
-                <authStack.Screen name="Login" component={LoginScreen} />
+            <authStack.Navigator
+                screenOptions={{ headerShown: false }}
+            >
+                <authStack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                />
             </authStack.Navigator>
             :
-            <mainStack.Navigator>
-                <mainStack.Screen name="Home" component={HomeScreen} />
+            <mainStack.Navigator
+                screenOptions={{ headerShown: false }}>
+                <mainStack.Screen
+                    name="Home"
+                    component={HomeScreen} />
             </mainStack.Navigator>
         )
 

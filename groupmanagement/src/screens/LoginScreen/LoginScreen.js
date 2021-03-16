@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
+import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
+
+//  Redux
 import { connect } from 'react-redux'
+import colors from '../../../assets/colors/colors'
 import { onLogin } from '../../redux/slices/authSlices'
-import { Container, Content, Form, Item, Button, Text, Input } from 'native-base'
 
 
 const LoginScreen = ({ onLogin }) => {
@@ -14,23 +17,84 @@ const LoginScreen = ({ onLogin }) => {
     }
 
     return (
-        <Container>
-            <Content>
-                <Form>
-                    <Item>
-                        <Input onChangeText={val => setUsername(val)} value={username} placeholder="Username" />
-                    </Item>
-                    <Item last>
-                        <Input onChangeText={val => setPassword(val)} value={password} placeholder="Password" />
-                    </Item>
-                </Form>
-                <Button onPress={() => { Login() }}>
+        <View style={styles.container}>
+            <Text style={styles.title}> Soon's Group Management</Text>
+            <View style={styles.card}>
+                <Text style={styles.subtitle}>Login</Text>
+                <TextInput
+                    style={styles.textinput}
+                    placeholder="Username"
+                    onChangeText={text => setUsername(text)} />
+                <TextInput
+                    style={styles.textinput}
+                    placeholder="Password"
+                    onChangeText={text => setPassword(text)}
+                />
+                <TouchableOpacity
+                    style={username && password != null ? styles.loginButton : styles.loginButtonBlocked}
+                    onPress={() => Login()}
+                    disabled={username && password != null ? false : true}
+                >
                     <Text>Login</Text>
-                </Button>
-            </Content>
-        </Container>
+                </TouchableOpacity>
+            </View>
+        </View>
     )
 }
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: colors.orange,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    card: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.white,
+        width: 350,
+        paddingTop: 100,
+        paddingBottom: 100,
+        borderRadius: 10,
+        elevation: 10
+    },
+    title: {
+        fontSize: 30,
+        fontFamily: "Roboto-Bold",
+        paddingBottom: 50,
+        color: colors.white,
+    },
+    subtitle: {
+        fontFamily: "Roboto-Bold",
+        fontSize: 30,
+        paddingBottom: 10,
+        color: colors.darkYellow,
+    },
+    textinput: {
+        borderRadius: 5,
+        borderWidth: 1,
+        width: 300,
+        margin: 5,
+        fontFamily: "Roboto-Regular",
+        fontSize: 20
+    },
+    loginButton: {
+        alignItems: 'center',
+        padding: 10,
+        width: 200,
+        margin: 15,
+        borderRadius: 5,
+        backgroundColor: colors.lightYellow
+    },
+    loginButtonBlocked: {
+        alignItems: 'center',
+        padding: 10,
+        width: 200,
+        margin: 15,
+        borderRadius: 5,
+        backgroundColor: colors.textLight
+    }
+})
 
 const mapDispatchToProps = ({
     onLogin
