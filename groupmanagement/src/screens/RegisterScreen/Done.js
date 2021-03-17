@@ -12,12 +12,15 @@ const Done = () => {
         <View style={styles.container}>
             <Text style={styles.title}> REGISTER SUCCESSFULL</Text>
             <View style={styles.card}>
+                <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 20, color: colors.teal, margin: 20 }}>
+                    Your register is succesfull, please try to login with your account.
+                </Text>
                 <TouchableOpacity
-                    style={styles.loginButtonBlocked}
+                    style={styles.loginButton}
                     onPress={() => navigation.navigate("Login")}
                 >
                     <Text>Back to login</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -78,7 +81,6 @@ const styles = StyleSheet.create({
 })
 
 
-  
-  
-  export default Done
-  
+
+
+export default Done

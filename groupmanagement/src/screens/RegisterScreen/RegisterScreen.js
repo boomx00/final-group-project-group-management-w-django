@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 
 const RegisterScreen = () => {
     const navigation = useNavigation();
-    const [name, setName] = useState()
+    const [studentID, setStudentID] = useState()
     const [email, setEmail] = useState()
     const [password, setPassword] = useState()
 
@@ -20,8 +20,8 @@ const RegisterScreen = () => {
                 <Text style={styles.subtitle}>Fill this form</Text>
                 <TextInput
                     style={styles.textinput}
-                    placeholder="Your Name"
-                    onChangeText={text => setName(text)} />
+                    placeholder="Your Student ID"
+                    onChangeText={text => setStudentID(text)} />
                 <TextInput
                     style={styles.textinput}
                     placeholder="e-mail address"
@@ -33,11 +33,17 @@ const RegisterScreen = () => {
                     onChangeText={text => setPassword(text)}
                 />
                 <TouchableOpacity
-                    style={name &&email && password != null ? styles.loginButton : styles.loginButtonBlocked}
+                    style={studentID && email && password != null ? styles.loginButton : styles.loginButtonBlocked}
                     onPress={() => navigation.navigate("Done")}
                 >
                     <Text>Register</Text>
-                </TouchableOpacity> 
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.loginButton}
+                    onPress={() => navigation.navigate("Login")}
+                >
+                    <Text>Go Back to Login</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )

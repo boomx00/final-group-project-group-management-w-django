@@ -4,10 +4,12 @@ import { SafeAreaView, Text } from 'react-native'
 //  Redux
 import { connect } from 'react-redux'
 
+import GroupList from '../../components/Group/GroupList'
+
 const HomeScreen = () => {
     return (
-        <SafeAreaView>
-            <Text>Home Page</Text>
+        <SafeAreaView style={{ flex: 1 }}>
+            <GroupList />
         </SafeAreaView>
     )
 }
