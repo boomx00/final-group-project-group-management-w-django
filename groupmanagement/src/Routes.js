@@ -12,6 +12,7 @@ import LoginScreen from './screens/LoginScreen/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen/RegisterScreen'
 import MainScreen from './screens/MainScreen/MainScreen';
 
+import Done from './screens/RegisterScreen/Done'
 const authStack = createStackNavigator();
 const mainStack = createStackNavigator();
 
@@ -30,7 +31,12 @@ const Routes = ({ isLogged }) => {
                 />
                 <authStack.Screen
                     name="Register"
-                    component={RegisterScreen} />
+                    component={RegisterScreen}
+                />
+                <authStack.Screen
+                    name="Done"
+                    component={Done}
+                />
             </authStack.Navigator>
             :
             <mainStack.Navigator

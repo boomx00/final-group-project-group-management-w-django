@@ -1,42 +1,22 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
-import normalize from 'react-native-normalize';
 import colors from '../../../assets/colors/colors'
 //  React Navigation
 import { useNavigation } from '@react-navigation/native';
 
 
-const RegisterScreen = () => {
+const Done = () => {
     const navigation = useNavigation();
-    const [name, setName] = useState()
-    const [email, setEmail] = useState()
-    const [password, setPassword] = useState()
-
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}> REGISTER</Text>
+            <Text style={styles.title}> REGISTER SUCCESSFULL</Text>
             <View style={styles.card}>
-                <Text style={styles.subtitle}>Fill this form</Text>
-                <TextInput
-                    style={styles.textinput}
-                    placeholder="Your Name"
-                    onChangeText={text => setName(text)} />
-                <TextInput
-                    style={styles.textinput}
-                    placeholder="e-mail address"
-                    onChangeText={text => setPassword(text)}
-                />
-                <TextInput
-                    style={styles.textinput}
-                    placeholder="Password"
-                    onChangeText={text => setPassword(text)}
-                />
                 <TouchableOpacity
-                    style={name &&email && password != null ? styles.loginButton : styles.loginButtonBlocked}
-                    onPress={() => navigation.navigate("Done")}
+                    style={styles.loginButtonBlocked}
+                    onPress={() => navigation.navigate("Login")}
                 >
-                    <Text>Register</Text>
+                    <Text>Back to login</Text>
                 </TouchableOpacity> 
             </View>
         </View>
@@ -98,4 +78,7 @@ const styles = StyleSheet.create({
 })
 
 
-export default RegisterScreen
+  
+  
+  export default Done
+  
