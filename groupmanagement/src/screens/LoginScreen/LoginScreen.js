@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
+import normalize from 'react-native-normalize';
 
 //  Redux
 import { connect } from 'react-redux'
 import colors from '../../../assets/colors/colors'
 import { onLogin } from '../../redux/slices/authSlices'
 
+//  React Navigation
+import { useNavigation } from '@react-navigation/native';
+
 
 const LoginScreen = ({ onLogin }) => {
+    const navigation = useNavigation();
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
 
@@ -36,6 +41,13 @@ const LoginScreen = ({ onLogin }) => {
                     disabled={username && password != null ? false : true}
                 >
                     <Text>Login</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={username && password != null ? styles.loginButton : styles.loginButtonBlocked}
+                    onPress={() => navigation.navigate("Register")}
+                >
+                    <Text>Go To Register</Text>
                 </TouchableOpacity>
             </View>
         </View>

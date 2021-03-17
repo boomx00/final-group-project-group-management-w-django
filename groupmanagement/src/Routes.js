@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 //Screens
 import HomeScreen from './screens/HomeScreen/HomeScreen'
 import LoginScreen from './screens/LoginScreen/LoginScreen'
+import RegisterScreen from './screens/RegisterScreen/RegisterScreen'
 const authStack = createStackNavigator();
 const mainStack = createStackNavigator();
 
@@ -25,6 +26,9 @@ const Routes = ({ isLogged }) => {
                     name="Login"
                     component={LoginScreen}
                 />
+                <authStack.Screen
+                    name="Register"
+                    component={RegisterScreen} />
             </authStack.Navigator>
             :
             <mainStack.Navigator
