@@ -17,7 +17,7 @@ const LoginScreen = ({ onLogin }) => {
     const [password, setPassword] = useState()
 
     const Login = () => {
-        console.log(username, password)
+        console.log(username, 'xx')
         onLogin({ username: username, password: password })
     }
 
