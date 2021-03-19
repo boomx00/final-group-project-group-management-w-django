@@ -2,21 +2,18 @@ import React from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import normalize from 'react-native-normalize'
 
-//  Redux
-import { connect, groupList } from 'react-redux'
-
 import Group from './Group'
 
-const GroupList = ({ groupList }) => {
+const GroupList = ({ groupData }) => {
     return (
         <View style={styles.groupList}>
-            {groupList.map((group) => (
+            {groupData != null ? groupData.map((group) => (
                 <Group
                     style={styles.groupCard}
                     key={group.id}
                     name={group.name}
                     description={group.description} />
-            ))}
+            )) : null}
         </View>
     )
 }
@@ -30,10 +27,4 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapStateToProps = (state) => {
-    return {
-        groupList: state.group.list
-    }
-}
-
-export default connect(mapStateToProps, null)(GroupList)
+export default GroupList

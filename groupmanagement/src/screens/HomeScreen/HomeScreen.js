@@ -6,12 +6,16 @@ import { connect } from 'react-redux'
 
 import GroupList from '../../components/Group/GroupList'
 
-const HomeScreen = () => {
+const HomeScreen = ({ groupList }) => {
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <GroupList />
+            <GroupList groupData={groupList} />
         </SafeAreaView>
     )
 }
 
-export default HomeScreen
+const mapStateToProps = (state) => ({
+    groupList: state.group.list
+})
+
+export default connect(mapStateToProps, null)(HomeScreen)

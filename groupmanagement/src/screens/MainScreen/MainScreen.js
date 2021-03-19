@@ -5,9 +5,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
-//  Auntenticated Screens
+//  Authenticated Screens
 import HomeScreen from '../HomeScreen/HomeScreen'
-import SettingsScreen from '../SettingsScreen/SettingsScreen';
+import SearchScreen from '../SearchScreen/SearchScreen';
 import colors from '../../../assets/colors/colors';
 
 const MainScreen = () => {
@@ -22,8 +22,8 @@ const MainScreen = () => {
                         if (route.name === 'Home') {
                             iconName = focused ? 'home' : 'home-outline'
                             iconSize = focused ? 25 : 20
-                        } else if (route.name === "Settings") {
-                            iconName = focused ? 'settings' : 'settings-outline'
+                        } else if (route.name === "Search") {
+                            iconName = focused ? 'search' : 'search-outline'
                             iconSize = focused ? 25 : 20
                         }
 
@@ -32,11 +32,12 @@ const MainScreen = () => {
                 })}
                 tabBarOptions={{
                     activeTintColor: colors.red,
-                    inactiveTintColor: colors.orange
+                    inactiveTintColor: colors.orange,
+                    keyboardHidesTabBar: true
                 }}
             >
                 <Tab.Screen name="Home" component={HomeScreen} />
-                <Tab.Screen name="Settings" component={SettingsScreen} />
+                <Tab.Screen name="Search" component={SearchScreen} />
             </Tab.Navigator>
         </SafeAreaView>
 
