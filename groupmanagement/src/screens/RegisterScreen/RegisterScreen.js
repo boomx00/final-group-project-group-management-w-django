@@ -25,7 +25,7 @@ const RegisterScreen = () => {
                 <TextInput
                     style={styles.textinput}
                     placeholder="e-mail address"
-                    onChangeText={text => setPassword(text)}
+                    onChangeText={text => setEmail(text)}
                 />
                 <TextInput
                     style={styles.textinput}
