@@ -11,8 +11,10 @@ import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from './screens/LoginScreen/LoginScreen'
 import RegisterScreen from './screens/RegisterScreen/RegisterScreen'
 import MainScreen from './screens/MainScreen/MainScreen';
-
 import Done from './screens/RegisterScreen/Done'
+import AddScreen from './screens/AddScreen/AddScreen';
+import EditScreen from './screens/ProfileScreen/EditProfileScreen';
+
 const authStack = createStackNavigator();
 const mainStack = createStackNavigator();
 
@@ -37,6 +39,7 @@ const Routes = ({ isLogged }) => {
                     name="Done"
                     component={Done}
                 />
+  
             </authStack.Navigator>
             :
             <mainStack.Navigator
@@ -44,6 +47,14 @@ const Routes = ({ isLogged }) => {
                 <mainStack.Screen
                     name="Main"
                     component={MainScreen} />
+             <mainStack.Screen
+                    name="Add"
+                    component={AddScreen}
+             />
+             <mainStack.Screen
+                    name="Edit"
+                    component={EditScreen}
+             />             
             </mainStack.Navigator>
         )
 

@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import {Alert,StyleSheet,SafeAreaView,Text, View,TouchableOpacity, TextInput} from 'react-native'
 import colors from '../../../assets/colors/colors'
 import { connect } from 'react-redux'
-import GroupList from '../../components/Group/GroupList'
+import { useNavigation } from '@react-navigation/native';
 
-
+// ini diganti fab
 const AddScreen = () => {
     const [Group, setGroup] = useState()
     const [Description, setDesc] = useState()
@@ -51,6 +51,7 @@ const AddScreen = () => {
                 <TouchableOpacity
                     style={Group && Description != null ? styles.loginButton : styles.loginButtonBlocked}
                     onPress={() => Alert.alert("Uploaded!")}
+                    disabled={Group && Description != null ?  false : true}
                 >
                     <Text>Upload</Text>
                 </TouchableOpacity> 
@@ -117,15 +118,4 @@ const styles = StyleSheet.create({
         backgroundColor: colors.lightYellow
     },
 })
-const mapStateToProps = (state) => ({
-    groupList: state.group.list
-})
-const mapStateToProps = (dispatch) => {
-    return{
-        add: ()=> dispatch({type:'add_data'}),
-        delete: ()=> dispatch({type:'delete_data'}),
-
-    }
-}
-const mapDispatchToProps =()=>({})
-export default connect(mapStateToProps,  mapDispatchToProps )(AddScreen)
+export default AddScreen

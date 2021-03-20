@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView, Text } from 'react-native'
+import { SafeAreaView} from 'react-native'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
@@ -8,6 +8,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //  Authenticated Screens
 import HomeScreen from '../HomeScreen/HomeScreen'
 import SearchScreen from '../SearchScreen/SearchScreen';
+import GroupScreen from '../GroupScreen/GroupScreen';
+import ProfileScreen from '../ProfileScreen/ProfileScreeen';
+
 import colors from '../../../assets/colors/colors';
 
 const MainScreen = () => {
@@ -25,6 +28,12 @@ const MainScreen = () => {
                         } else if (route.name === "Search") {
                             iconName = focused ? 'search' : 'search-outline'
                             iconSize = focused ? 25 : 20
+                        }else if (route.name === "Group") {
+                            iconName = focused ? 'group' : 'people-outline'
+                            iconSize = focused ? 25 : 20
+                        }else if (route.name === "Profile") {
+                            iconName = focused ? 'person' : 'person-outline'
+                            iconSize = focused ? 25 : 20
                         }
 
                         return <Ionicons name={iconName} size={iconSize} color={color} />
@@ -38,10 +47,15 @@ const MainScreen = () => {
             >
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Search" component={SearchScreen} />
+                <Tab.Screen name="Group" component={GroupScreen} />
+                <Tab.Screen name="Profile" component={ProfileScreen} />
+
+
             </Tab.Navigator>
         </SafeAreaView>
 
     )
 }
+
 
 export default MainScreen
