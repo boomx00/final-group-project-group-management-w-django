@@ -11,8 +11,12 @@ const GroupList = ({ groupData }) => {
                 <Group
                     style={styles.groupCard}
                     key={group.id}
+                    topic={group.topic}
                     name={group.name}
-                    description={group.description} />
+                    description={group.description}
+                    memberNumber={group.membersID.length}
+                    likesID={group.likesID}
+                />
             )) : null}
         </View>
     )
@@ -20,11 +24,8 @@ const GroupList = ({ groupData }) => {
 
 const styles = StyleSheet.create({
     groupList: {
-        flex: 1,
-    },
-    groupCard: {
 
-    }
+    },
 })
 
 export default GroupList

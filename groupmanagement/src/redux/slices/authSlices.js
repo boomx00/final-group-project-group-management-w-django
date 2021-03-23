@@ -4,7 +4,14 @@ export const authSlice = createSlice({
     name: 'auth',
     initialState: {
         user: {
-
+            id: 1,
+            firstName: 'John',
+            lastName: 'Doe',
+            studentID: '12858390',
+            email: 'john_doe@gmail.com',
+            phoneNumber: '081-123-123-123',
+            major: 'Information System and Computing Science',
+            interestedIn: 'I am interseted in ....'
         },
         isLogged: true
     },

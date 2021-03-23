@@ -1,5 +1,5 @@
 import React from 'react'
-import { SafeAreaView} from 'react-native'
+import { SafeAreaView } from 'react-native'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 const Tab = createBottomTabNavigator();
@@ -28,10 +28,10 @@ const MainScreen = () => {
                         } else if (route.name === "Search") {
                             iconName = focused ? 'search' : 'search-outline'
                             iconSize = focused ? 25 : 20
-                        }else if (route.name === "Group") {
-                            iconName = focused ? 'group' : 'people-outline'
+                        } else if (route.name === "Group") {
+                            iconName = focused ? 'people' : 'people-outline'
                             iconSize = focused ? 25 : 20
-                        }else if (route.name === "Profile") {
+                        } else if (route.name === "Profile") {
                             iconName = focused ? 'person' : 'person-outline'
                             iconSize = focused ? 25 : 20
                         }

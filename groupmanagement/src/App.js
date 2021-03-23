@@ -11,18 +11,19 @@ import { NavigationContainer } from '@react-navigation/native';
 //Routes
 import Routes from './Routes'
 
+import { Provider as PaperProvider } from 'react-native-paper'
+
 
 const App = () => {
   return (
     <Provider store={store}>
-      <NavigationContainer>
-        <Routes />
-      </NavigationContainer>
+      <PaperProvider>
+        <NavigationContainer>
+          <Routes />
+        </NavigationContainer>
+      </PaperProvider>
     </Provider>
   )
 }
 
-const mapStateToProps = (state) => {
-
-}
 export default App
