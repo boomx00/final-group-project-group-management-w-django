@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import {KeyboardAvoidingView, ScrollView,StyleSheet,SafeAreaView,Text, View,TouchableOpacity, TextInput} from 'react-native'
 import colors from '../../../assets/colors/colors'
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
-// ini diganti fab
+
 const GroupScreen = () => {
+    const navigation = useNavigation();
     const [Description, setDesc] = useState()
     const [Tags, setTags] = useState()
     const [Role, setRole] = useState()
@@ -16,14 +19,17 @@ const GroupScreen = () => {
         <ScrollView>
 
             <View style ={styles.pagetitle} >
-        <Text style={styles.Text}>My Group</Text>
+        <Text style={styles.Text}>My Group (No.18)</Text>
+        <Text style={styles.Textsml}>Members:...</Text>
         </View>
         <View style = {styles.content}>
         <Text style={styles.label}>Description:</Text>
         <TextInput
-                    style={{height:100,
+                    style={{
+                        borderColor:'orange',
+                        height:100,
                         borderRadius: 8,
-                        borderWidth: 1,
+                        borderWidth: 2,
                         alignSelf:'center',
                         width: "90%",
                         marginBottom:15,
@@ -43,8 +49,9 @@ const GroupScreen = () => {
    
                 <TextInput
                     style={{
+                        borderColor:'orange',             
                         borderRadius: 8,
-                        borderWidth: 1,
+                        borderWidth: 2,
                         alignSelf:'center',
                         width: "90%",
                         marginTop: 5,
@@ -62,8 +69,9 @@ const GroupScreen = () => {
                 <Text style={styles.label}>Role:</Text>                        
                 <TextInput
                     style={{height:100,
+                        borderColor:'orange',
                         borderRadius: 8,
-                        borderWidth: 1,
+                        borderWidth: 2,
                         width: "90%",
                         alignSelf:'center',
                         marginBottom:15,
@@ -79,8 +87,36 @@ const GroupScreen = () => {
                     returnKeyType='next'
                     onChangeText={text => setRole(text)}
                 /> 
-         
+            <Text style={styles.label}>Sprints:</Text>
+            <View style={styles.sprints}>
+            <Ionicons name="folder"
+              size={30} style={styles.fab }
+              color='black'
+              onPress={() =>navigation.navigate('sprint1')}>
+             </Ionicons>
+             <Ionicons name="folder"
+              size={30} style={styles.fab } 
+              color='black'             
+              onPress={() =>navigation.navigate('sprint2')}>
+             </Ionicons>
+             <Ionicons name="folder"
+              size={30} style={styles.fab }
+              color='black'
+              onPress={() =>navigation.navigate('sprint3')}>
+             </Ionicons>
+             <Ionicons name="folder"
+              size={30} style={styles.fab }
+              color='black'
+              onPress={() =>navigation.navigate('sprint4')}>
+             </Ionicons>
+             <Ionicons name="folder"
+              size={30} style={styles.fab }
+              color='black'
+              onPress={() =>navigation.navigate('sprint5')}>
+             </Ionicons>
+                 </View>
              </View>
+
     
         </ScrollView>
 
@@ -90,35 +126,50 @@ const GroupScreen = () => {
     )
 }
 const styles = StyleSheet.create({
+    fab: {
+        marginTop:10,
+        marginRight:15,
+        marginLeft:25,
+        
+    },
+    sprints:{
+        flexDirection:'row',
+        
+    },
     pagetitle:{
-        marginTop:15,
+        marginTop:20,
+        marginBottom:10,
         backgroundColor:"white",
+        textAlign:'center',
         alignSelf:'center',
-        borderColor:'black',
-        borderWidth:3,
-        width:'95%',
-        height: 100,
+        borderBottomColor:'orange',
+        borderBottomWidth:3,
+        width:'90%',
+        height: 80,
         borderRadius:8,
 
     },
     Text: {
+        marginTop: 5,
         fontSize: 20,
+        textAlign:'center',
         color:'black',
-        borderRadius:8,
-        backgroundColor:'white',
-        padding: 5,
-        width: '85%',
+
+    },
+    Textsml: {
+        marginTop:1,
+        fontSize: 16,
+        textAlign:'center',
+        color:'grey',
 
     },
     content:{
-        marginTop: 10,
-        padding: 10,
+        marginTop: 5,
         },
     label:{
         marginLeft:20,
         fontSize:18,
-       color:'white',
-       fontWeight:'bold'
+        color:'black',
     },
     view1:{
         flex:1,
