@@ -27,7 +27,23 @@ export const groupSlice = createSlice({
                 topic: 'YX application to make life easier',
                 membersID: [5, 20, 56],
                 likesID: [1, 2, 3, 4, 5, 6, 7, 8, 10]
-            }
+            },
+            {
+                id: 4,
+                name: "Hello Group",
+                description: "We're open for every students in XJTLU",
+                topic: 'QR Code Scanner',
+                membersID: [11, 15, 24],
+                likesID: [2, 3, 4, 5, 6, 10, 20]
+            },
+            {
+                id: 5,
+                name: "Another World Group",
+                description: "We're open for every students in XJTLU",
+                topic: 'Blackhole Social Media Group',
+                membersID: [25, 22, 21],
+                likesID: [2, 3, 4, 5, 6, 10, 20]
+            },
         ],
         ownGroup: {
             groupID: 1,
