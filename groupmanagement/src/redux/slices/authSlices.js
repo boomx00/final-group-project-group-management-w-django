@@ -6,7 +6,7 @@ export const authSlice = createSlice({
     initialState: {
         user: {
             id: 1,
-            firstName: 'John',
+            firstName: 'Johnxxx',
             lastName: 'Doe',
             studentID: '12858390',
             email: 'john_doe@gmail.com',
@@ -15,11 +15,10 @@ export const authSlice = createSlice({
             interestedIn: 'I am interseted in ....'
         },
         isLogged: false,
-        acesstoken: "xx"
-
     },
     reducers: {
         onLogin: (state, action) => {
+            //get token is login credentials are ok
             fetch(`http://192.168.137.1:8000/api/token/`,{
             method: 'POST',
             headers:{
@@ -29,26 +28,26 @@ export const authSlice = createSlice({
         })
         .then(resp => resp.json())
         .then(data => {
-            localStorage.setItem('access_token', data.access);
-       
+
+            //get userdata from token
+            fetch(`http://192.168.137.1:8000/api/user/getuser`,{
+                        method: 'GET',
+                        // withCredentials: true,
+                        // credentials: 'include',
+                        headers:{
+                            'Content-Type': 'application/json',
+                            'Authorization': 'JWT ' + data.access,
+                        },
+                    })
+                    .then(resp => resp.json())
+                    .then(data => {
+                        console.log(data.username)
+                    })
         })
         .catch(error => console.log("error"))
 
-        var bearer = 'JWT ' + localStorage.access_token;
-        fetch(`http://192.168.137.1:8000/api/user/hello`,{
-            method: 'GET',
-            withCredentials: true,
-            credentials: 'include',
-            headers:{
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                'Authorization': bearer,
-            },
-        })
-        .then(resp => resp.json())
-        .then(data => {
-            console.log(data.username)
-        })
+        
+     
             // if (action.payload.username == "coba123" && action.payload.password == "123123") {
             //     state.isLogged = true
             //     console.log("After Change the state", state)
