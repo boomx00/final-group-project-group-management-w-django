@@ -32,6 +32,8 @@ const LoginScreen = ({ onLogin }) => {
                     onChangeText={text => setUsername(text)} />
                 <TextInput
                     style={styles.textinput}
+                    autoCompleteType={'password'}
+                    secureTextEntry={true}
                     placeholder="Password"
                     onChangeText={text => setPassword(text)}
                 />

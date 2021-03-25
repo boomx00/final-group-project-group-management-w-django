@@ -1,29 +1,18 @@
 // Stylings
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
-import { Modal, Portal } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 //Redux
 import { connect } from 'react-redux'
+import { color } from 'react-native-reanimated';
 
 const Group = ({ name, description, topic, tags, memberNumber, likesID, user }) => {
-    const [visible, setVisible] = React.useState(false);
-
-    const showModal = () => setVisible(true);
-    const hideModal = () => setVisible(false);
-
-    const containerStyle = { backgroundColor: 'white', padding: 0 };
     return (
         <View style={styles.groupCard}>
-            <Portal>
-                <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
-                    <Text>Example Modal.  Click outside this area to dismiss.</Text>
-                </Modal>
-            </Portal>
             <View style={styles.insideCard}>
                 <Text style={styles.textTitle}>
                     {topic}
@@ -44,7 +33,7 @@ const Group = ({ name, description, topic, tags, memberNumber, likesID, user }) 
                                 likesID.includes(user.id) ? "heart" : "heart-outline"
                             } size={30} />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{ alignSelf: 'flex-end' }} onPress={() => { showModal() }}>
+                    <TouchableOpacity style={{ alignSelf: 'flex-end' }}>
                         <Ionicons name="ellipsis-vertical-outline" size={30} />
                     </TouchableOpacity>
                 </View>
@@ -62,7 +51,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.white
     },
     insideCard: {
-        margin: normalize(10)
+        margin: normalize(10),
+        backgroundColor: colors.white
     },
     textTitle: {
         fontFamily: 'Roboto-Bold',

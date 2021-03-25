@@ -13,17 +13,17 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState()
 
     const insertData = () => {
-        fetch(`http://192.168.137.1:8000/api/users/`,{
+        fetch(`http://192.168.137.1:8000/api/users/`, {
             method: 'POST',
-            headers:{
-                'Content-Type':'application/json'
+            headers: {
+                'Content-Type': 'application/json'
             },
-            body:JSON.stringify({email:email,password:password})
+            body: JSON.stringify({ email: email, password: password })
         })
-        .then(resp => resp.json())
-        .then(data => {
-            navigation.navigate('Done')
-        })
+            .then(resp => resp.json())
+            .then(data => {
+                navigation.navigate('Done')
+            })
     }
 
 
@@ -44,10 +44,12 @@ const RegisterScreen = () => {
                 <TextInput
                     style={styles.textinput}
                     placeholder="Password"
+                    autoCompleteType={'password'}
+                    secureTextEntry={true}
                     onChangeText={text => setPassword(text)}
                 />
                 <TouchableOpacity
-                    style={ email && password != null ? styles.loginButton : styles.loginButtonBlocked}
+                    style={email && password != null ? styles.loginButton : styles.loginButtonBlocked}
                     onPress={() => insertData()}
                 >
                     <Text>Register</Text>
