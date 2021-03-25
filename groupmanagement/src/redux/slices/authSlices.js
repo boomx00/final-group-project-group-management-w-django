@@ -14,12 +14,13 @@ export const authSlice = createSlice({
             major: 'Information System and Computing Science',
             interestedIn: 'I am interseted in ....'
         },
-        isLogged: false,
+        isLogged: true,
     },
     reducers: {
         onLogin: (state, action) => {
             //get token is login credentials are ok
-            fetch(`http://192.168.137.1:8000/api/token/`,{
+            // if want to use localhost, the change the link with yourip:8000/api/token, ex. http://192.168.137.1:8000/api/token/.
+            fetch(`http://boomx00.pythonanywhere.com/api/token/`,{
             method: 'POST',
             headers:{
                 'Content-Type':'application/json'
@@ -28,9 +29,9 @@ export const authSlice = createSlice({
         })
         .then(resp => resp.json())
         .then(data => {
-
+            console.log(data)
             //get userdata from token
-            fetch(`http://192.168.137.1:8000/api/user/getuser`,{
+            fetch(`http://boomx00.pythonanywhere.com/api/user/getuser/`,{
                         method: 'GET',
                         // withCredentials: true,
                         // credentials: 'include',
@@ -41,6 +42,7 @@ export const authSlice = createSlice({
                     })
                     .then(resp => resp.json())
                     .then(data => {
+                        //for now data only returns ID and Username
                         console.log(data.username)
                     })
         })

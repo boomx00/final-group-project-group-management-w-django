@@ -13,12 +13,12 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState()
 
     const insertData = () => {
-        fetch(`http://192.168.137.1:8000/api/users/`,{
+        fetch(`http://boomx00.pythonanywhere.com/api/user/create/`,{
             method: 'POST',
             headers:{
                 'Content-Type':'application/json'
             },
-            body:JSON.stringify({email:email,password:password})
+            body:JSON.stringify({email:email,username:studentID,password:password})
         })
         .then(resp => resp.json())
         .then(data => {
