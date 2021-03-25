@@ -10,7 +10,7 @@ const SearchScreen = ({ groupList }) => {
 
     const filterData = (filter) => {
         const filtered = groupList.filter(group => {
-            return group.name.toLowerCase().includes(filter.toLowerCase())
+            return group.name.toLowerCase().includes(filter.toLowerCase()) || group.topic.toLowerCase().includes(filter.toLowerCase())
         })
         setFilteredData(filtered)
     }
@@ -18,7 +18,7 @@ const SearchScreen = ({ groupList }) => {
     return (
         <SafeAreaView style={styles.container}>
             <Searchbar
-                placeholder="Search by name, topics, tags or owner"
+                placeholder="Search by name, topics or tags"
                 onChangeText={(text) => filterData(text)}
             />
             <GroupList groupData={filteredData} />

@@ -1,24 +1,25 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View, Text, FlatList } from 'react-native'
 import normalize from 'react-native-normalize'
 
 import Group from './Group'
 
+const renderItem = ({ item }) => {
+    return <Group
+        key={item.id}
+        style={styles.groupCard}
+        key={item.id}
+        topic={item.topic}
+        name={item.name}
+        description={item.description}
+        memberNumber={item.membersID.length}
+        likesID={item.likesID}
+    />
+}
+
 const GroupList = ({ groupData }) => {
     return (
-        <View style={styles.groupList}>
-            {groupData != null ? groupData.map((group) => (
-                <Group
-                    style={styles.groupCard}
-                    key={group.id}
-                    topic={group.topic}
-                    name={group.name}
-                    description={group.description}
-                    memberNumber={group.membersID.length}
-                    likesID={group.likesID}
-                />
-            )) : null}
-        </View>
+        <FlatList data={groupData} keyExtractor={item => item.id} renderItem={renderItem} />
     )
 }
 
