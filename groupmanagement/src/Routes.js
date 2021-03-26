@@ -15,6 +15,9 @@ import Done from './screens/RegisterScreen/Done'
 import AddScreen from './screens/AddScreen/AddScreen';
 import EditScreen from './screens/ProfileScreen/EditProfileScreen';
 import ProfileScreen from './screens/MainScreen/MainScreen';
+import MsgScreen from './screens/MsgScreen/MsgScreen';
+import ChatScreen from './screens/ChatScreen/ChatScreen';
+
 import SprintScreen1 from './screens/SprintScreen/SprintScreen1';
 import SprintScreen2 from './screens/SprintScreen/SprintScreen2';
 import SprintScreen3 from './screens/SprintScreen/SprintScreen3';
@@ -85,7 +88,16 @@ const Routes = ({ isLogged }) => {
             <mainStack.Screen
                    name="sprint5"
                    component={SprintScreen5}
-             />                                                                          
+             />  
+            <mainStack.Screen
+                   name="Msg"
+                   component={MsgScreen}
+             />     
+            <mainStack.Screen
+                   name="Chat"
+                   component={ChatScreen}
+
+             />                                                                      
             </mainStack.Navigator>
             
         )
