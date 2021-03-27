@@ -1,30 +1,15 @@
-import React,{useState,useEffect,useCallback} from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import { GiftedChat } from 'react-native-gifted-chat'
 
 const ChatScreen =({route})=>{
     const navigation = useNavigation();
     const{data} = route.params
-    const [messages, setMessages] = useState([]);
-    useEffect(() => {
-        setMessages([
-          {
-            _id: 1,
-            text: 'Hello developer',
-            createdAt: new Date(),
-            user: {
-              _id: 2,
-              name: 'React Native',
-              avatar: 'https://placeimg.com/140/140/any',
-            },
-          },
-        ])
-      }, [])
 
 return (
+  <View>
     <View style={styles.header}>
          <Ionicons name="arrow-back-outline"
               size={30} style={styles.arrow }
@@ -33,20 +18,55 @@ return (
         <Text style={styles.nama}>
             {data}
         </Text>
-    
-        <GiftedChat
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: 1,
-        }}/>
+        </View>
+        <View style={{width:'100%',height:'90%'}}>
+          
+          <Chat/>
+        </View>
         </View>
 )
 }
-const onSend = useCallback((messages = []) => {
+const scrollToBottomComponent =()=>{
+  return(
+    <Ionicons name="arrow-down-outline"
+              size={20} style={styles.arrow }>
+             </Ionicons>   
+  )  
+}
+const Chat = () => {
+  const [messages, setMessages] = useState([]);
+  useEffect(() => {
+    setMessages([
+      {
+        _id: 1,
+        text: 'Hello!!!',
+        createdAt: new Date(),
+        user: {
+          _id: 2,
+          name: 'KKKK',
+          avatar: 'https://placeimg.com/140/140/any',
+        },
+      },
+    ])
+  }, [])
+
+  const onSend = useCallback((messages = []) => {
     setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
   }, [])
 
+  return (
+    <GiftedChat
+      messages={messages}
+      onSend={messages => onSend(messages)}
+      alwaysShowSend
+      scrollToBottom
+      scrollToBottomComponent={scrollToBottomComponent}
+      user={{
+        _id: 1,
+      }}
+    />
+  )
+}
 
 const styles = StyleSheet.create({
     nama:{
