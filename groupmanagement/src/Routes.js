@@ -19,10 +19,6 @@ import MsgScreen from './screens/MsgScreen/MsgScreen';
 import ChatScreen from './screens/ChatScreen/ChatScreen';
 
 import SprintScreen1 from './screens/SprintScreen/SprintScreen1';
-import SprintScreen2 from './screens/SprintScreen/SprintScreen2';
-import SprintScreen3 from './screens/SprintScreen/SprintScreen3';
-import SprintScreen4 from './screens/SprintScreen/SprintScreen4';
-import SprintScreen5 from './screens/SprintScreen/SprintScreen5';
 
 
 const authStack = createStackNavigator();
@@ -74,29 +70,12 @@ const Routes = ({ isLogged }) => {
                     component={SprintScreen1}
              /> 
             <mainStack.Screen
-                   name="sprint2"
-                   component={SprintScreen2}
-             /> 
-            <mainStack.Screen
-                   name="sprint3"
-                   component={SprintScreen3}
-             /> 
-            <mainStack.Screen
-                   name="sprint4"
-                   component={SprintScreen4}
-             /> 
-            <mainStack.Screen
-                   name="sprint5"
-                   component={SprintScreen5}
-             />  
-            <mainStack.Screen
                    name="Msg"
                    component={MsgScreen}
              />     
             <mainStack.Screen
                    name="Chat"
                    component={ChatScreen}
-
              />                                                                      
             </mainStack.Navigator>
             

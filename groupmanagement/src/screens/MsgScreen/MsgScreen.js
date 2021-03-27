@@ -20,6 +20,7 @@ const MsgScreen = ({msgList}) => {
              </Ionicons>
         </View>
         </View>
+        
         <MsgList mssg={msgList} style={{ zIndex: -1 }} />
         </SafeAreaView>
     )

@@ -92,28 +92,39 @@ const GroupScreen = () => {
             <Ionicons name="folder"
               size={30} style={styles.fab }
               color='black'
-              onPress={() =>navigation.navigate('sprint1')}>
-             </Ionicons>
-             <Ionicons name="folder"
-              size={30} style={styles.fab } 
-              color='black'             
-              onPress={() =>navigation.navigate('sprint2')}>
+              onPress={() =>navigation.navigate('sprint1',{
+                  title :"sprint 1"
+              })}>
              </Ionicons>
              <Ionicons name="folder"
               size={30} style={styles.fab }
               color='black'
-              onPress={() =>navigation.navigate('sprint3')}>
+              onPress={() =>navigation.navigate('sprint1',{
+                  title :"sprint 2"
+              })}>
              </Ionicons>
              <Ionicons name="folder"
               size={30} style={styles.fab }
               color='black'
-              onPress={() =>navigation.navigate('sprint4')}>
+              onPress={() =>navigation.navigate('sprint1',{
+                  title :"sprint 3"
+              })}>
              </Ionicons>
              <Ionicons name="folder"
               size={30} style={styles.fab }
               color='black'
-              onPress={() =>navigation.navigate('sprint5')}>
+              onPress={() =>navigation.navigate('sprint1',{
+                  title :"sprint 4"
+              })}>
              </Ionicons>
+             <Ionicons name="folder"
+              size={30} style={styles.fab }
+              color='black'
+              onPress={() =>navigation.navigate('sprint1',{
+                  title :"sprint 5"
+              })}>
+             </Ionicons>
+
                  </View>
              </View>
 

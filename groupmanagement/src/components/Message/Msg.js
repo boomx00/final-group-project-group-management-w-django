@@ -5,14 +5,19 @@ import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
 //import { Modal, Portal } from 'react-native-paper';
 //import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 //Redux
 import { connect } from 'react-redux'
 
 const Msg = ({ name, mssg, time }) => {
+    const navigation = useNavigation();
 
     return (
-
+        <TouchableOpacity style={{width:'100%'}}
+        onPress={() => navigation.navigate('Chat', {
+            data: name
+        })}> 
         <View style={styles.groupCard}>
             <View style={styles.insideCard}>
             <View style={styles.content}>
@@ -34,6 +39,7 @@ const Msg = ({ name, mssg, time }) => {
                 </View>
             </View>
             </View>
+            </TouchableOpacity>
 
     )
 }
