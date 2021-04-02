@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
-
+import axios from 'axios'
+import { AsyncStorage } from 'react-native'
 export const authSlice = createSlice({
     name: 'auth',
     initialState: {
@@ -13,16 +14,11 @@ export const authSlice = createSlice({
             major: 'Information System and Computing Science',
             interestedIn: 'I am interseted in ....'
         },
-        isLogged: true
+        isLogged: false
     },
     reducers: {
         onLogin: (state, action) => {
-            if (action.payload.username == "coba123" && action.payload.password == "123123") {
-                state.isLogged = true
-                console.log("After Change the state", state)
-            } else {
-                console.log("Failed to login")
-            }
+            state.user = { ...action.payload }
         }
     }
 })
@@ -30,3 +26,22 @@ export const authSlice = createSlice({
 export const { onLogin } = authSlice.actions
 
 export default authSlice.reducer
+
+export const loginAction = (userName, passWord) => {
+    return async dispatch => {
+        try {
+            const res = await axios.post('http://boomx00.pythonanywhere.com/api/token/', {
+                username: userName,
+                password: passWord
+            })
+            if (res.data.access != null) {
+                // Kalo udah dapet token simpen di asyncstorage / redux persist
+                //const userData = await axios.get() // kalo udah harusnya fetch userdata
+                //dispatch(onLogin({ username, password, first_name, last_name, .... })) //Panggil reducer diatas buat set userData
+            }
+        } catch (err) {
+            console.log(err.response.data)
+        }
+
+    }
+}

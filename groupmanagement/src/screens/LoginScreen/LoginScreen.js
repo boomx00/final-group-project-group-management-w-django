@@ -1,24 +1,25 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native'
 import normalize from 'react-native-normalize';
-
+import colors from '../../../assets/colors/colors'
+import axios from 'axios'
 //  Redux
 import { connect } from 'react-redux'
-import colors from '../../../assets/colors/colors'
-import { onLogin } from '../../redux/slices/authSlices'
+import { useDispatch } from 'react-redux'
+import { loginAction } from '../../redux/slices/authSlices'
 
 //  React Navigation
 import { useNavigation } from '@react-navigation/native';
 
 
-const LoginScreen = ({ onLogin }) => {
+const LoginScreen = () => {
+    const dispatch = useDispatch()
     const navigation = useNavigation();
     const [username, setUsername] = useState()
     const [password, setPassword] = useState()
 
     const Login = () => {
-        console.log(username, 'xx')
-        onLogin({ username: username, password: password })
+        dispatch(loginAction(username, password))
     }
 
     return (
@@ -110,7 +111,4 @@ const styles = StyleSheet.create({
     }
 })
 
-const mapDispatchToProps = ({
-    onLogin
-})
-export default connect(null, mapDispatchToProps)(LoginScreen)
+export default connect(null, null)(LoginScreen)
