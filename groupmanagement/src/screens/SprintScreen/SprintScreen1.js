@@ -6,8 +6,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import colors from '../../../assets/colors/colors';
 
-const Sprint1 = () => {
+const Sprint1 = ({route}) => {
      const navigation = useNavigation();
+     const{title} = route.params
 
         const [Summary, setSum] = useState()
         const [Development, setDev] = useState()
@@ -20,7 +21,7 @@ const Sprint1 = () => {
               onPress={() =>navigation.navigate('Profile')}>
              </Ionicons>
              
-            <Text style={styles.Text}>Sprint 1</Text>
+            <Text style={styles.Text}>{title}</Text>
             </View>
             <View style = {styles.content}>
             <Text style={styles.label}>Summary:</Text>
