@@ -4,6 +4,7 @@ import normalize from 'react-native-normalize';
 import colors from '../../../assets/colors/colors'
 //  React Navigation
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'
 
 
 const RegisterScreen = () => {
@@ -13,17 +14,16 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState()
 
     const insertData = () => {
-        fetch(`http://192.168.137.1:8000/api/users/`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: email, password: password })
-        })
-            .then(resp => resp.json())
-            .then(data => {
-                navigation.navigate('Done')
-            })
+        const data = {
+            email: email, 
+            password: password, 
+            username: studentID,
+          }
+        axios.post(`http://boomx00.pythonanywhere.com/api/user/create/`, data, {
+            // headers: {
+            //   'Authorization': `Basic ${token}`
+            // },
+          })
     }
 
 

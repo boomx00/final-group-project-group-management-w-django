@@ -3,10 +3,38 @@ import { KeyboardAvoidingView, ScrollView,StyleSheet,Text, View,TouchableOpacity
 import { Avatar} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { connect } from 'react-redux'
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { updateState } from '../../redux/slices/authSlices'
+
 //import normalize from 'react-native-normalize';
 
-const EditScreen = ({ user }) => {
+const EditScreen = ({ user,updateState }) => {
   const navigation = useNavigation();
+  const [major, setMajor] = useState()
+  const [bio, setBio] = useState()
+
+  const editData = async() => {
+
+    try{
+    let token = await AsyncStorage.getItem('token');  
+
+    const data = {
+        major: major, 
+        bio: bio, 
+      }
+    axios.put(`http://boomx00.pythonanywhere.com/api/user/edituser/`, data, {
+            headers:{
+              'Authorization': 'JWT ' + token,
+          }
+      })
+    updateState({major:major,bio:bio})
+
+    }catch(error){
+      console.log(error)
+    }
+}
   const [modal,setModal] = useState(false);
     return (
   
@@ -95,6 +123,7 @@ const EditScreen = ({ user }) => {
             autoCorrect= {false}
             returnKeyType='done'
             style ={{fontSize:15}}
+            onChangeText={text => setMajor(text)} 
             >    
             </TextInput>
         </View>
@@ -109,12 +138,13 @@ const EditScreen = ({ user }) => {
             editable={true}
             returnKeyType='next'
             style ={{fontSize:15}}
+            onChangeText={text => setBio(text)} 
             >    
             </TextInput>
         </View>
         <TouchableOpacity
         style={styles.submit}
-                    onPress={() => {}}>
+                    onPress={() => editData()}>
                     <Text style={styles.susbmittxt}>Submit</Text>
                 </TouchableOpacity>
      </View>
@@ -234,4 +264,12 @@ const styles = StyleSheet.create({
       
 })
 
-export default EditScreen
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user
+})
+
+const mapDispatchToProps = ({
+  updateState
+})
+export default connect(mapStateToProps, mapDispatchToProps)(EditScreen)
