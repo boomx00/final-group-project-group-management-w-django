@@ -24,6 +24,7 @@ const RegisterScreen = () => {
         .then(data => {
             navigation.navigate('Done')
         })
+        
     }
 
 

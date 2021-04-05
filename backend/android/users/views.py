@@ -12,6 +12,7 @@ from rest_framework import generics, permissions
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]
 
+# post, put, get, destroy
     def post(self, request, format='json'):
         serializer = CustomUserSerializer(data=request.data)
         if serializer.is_valid():
@@ -45,7 +46,7 @@ class BlacklistTokenUpdateView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     
-            # Get User API
+          #  Get User API
 class UserAPI(generics.RetrieveAPIView):
   permission_classes = [
     permissions.IsAuthenticated,

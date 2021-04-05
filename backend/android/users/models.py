@@ -44,6 +44,8 @@ class NewUser(AbstractBaseUser, PermissionsMixin):
         'about'), max_length=500, blank=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    phone = models.CharField(max_length=150, null=True)
+
 
     objects = CustomAccountManager()
 
