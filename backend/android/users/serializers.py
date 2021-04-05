@@ -3,19 +3,15 @@ from users.models import NewUser
 from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
-  class Meta:
-    model = NewUser
-    fields = ('id', 'username')
+    class Meta:
+        model = NewUser
+        fields = ('id', 'username')
 
 class CustomUserSerializer(serializers.ModelSerializer):
-    """
-    Currently unused in preference of the below.
-    """
     email = serializers.EmailField(required=True)
     username = serializers.CharField(required=True)
     password = serializers.CharField(min_length=8, write_only=True)
     phone = serializers.CharField(required=True)
-
 
     class Meta:
         model = NewUser
@@ -30,6 +26,3 @@ class CustomUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
-    
-
-
