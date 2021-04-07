@@ -32,8 +32,7 @@ export const authSlice = createSlice({
     }
 })
 
-export const { onLogin } = authSlice.actions
-export const { updateState } = authSlice.actions
+export const { onLogin, updateState } = authSlice.actions
 
 export default authSlice.reducer
 

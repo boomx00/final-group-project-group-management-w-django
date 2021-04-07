@@ -22,25 +22,7 @@ const EditScreen = ({ user,updateState }) => {
       setMajor(user.major)
     }, [user])
   );
-//   useEffect(() => {
-//     if(major) {
-//         console.log(user.major)
-//         console.log(major)
-//         if(major!=user.major){
-//           console.log('nono')
-//         }
 
-//     }
-// } , [])
-  // useEffect(()=>{
-  //   if(major){
-  //   console.log('xx')
-  //   }
-  //   // setMajor(user.major)
-  //   // setBio(user.interestedIn)  
-  // },[]);
-  
-  // const [popo,setPopo] = useState()
 
   const editData = async() => {
 
