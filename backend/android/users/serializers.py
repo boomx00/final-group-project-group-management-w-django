@@ -7,6 +7,13 @@ class UserSerializer(serializers.ModelSerializer):
     model = NewUser
     fields = ('id', 'username')
 
+
+class getUserSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=120)
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
 class CustomUserSerializer(serializers.ModelSerializer):
     """
     Currently unused in preference of the below.

@@ -3,12 +3,20 @@ from rest_framework import status
 from rest_framework import serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import CustomUserSerializer, UserSerializer, EditUserSerializer
+from .serializers import CustomUserSerializer, UserSerializer, EditUserSerializer, getUserSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework import generics, permissions
 from users.models import NewUser
 
+class getAll(APIView):
+        permission_classes = [AllowAny]
+
+        def get(self, request):
+            users = NewUser.objects.all()
+            # the many param informs the serializer that it will be serializing more than a single article.
+            serializer = getUserSerializer(users, many=True)
+            return Response({"users": serializer.data})
 
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]

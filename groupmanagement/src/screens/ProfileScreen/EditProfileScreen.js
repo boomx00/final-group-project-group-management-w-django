@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect} from 'react'
 import { KeyboardAvoidingView, ScrollView,StyleSheet,Text, View,TouchableOpacity, TextInput, Modal} from 'react-native'
 import { Avatar} from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { connect } from 'react-redux'
 import axios from 'axios'
@@ -13,11 +14,38 @@ import { updateState } from '../../redux/slices/authSlices'
 const EditScreen = ({ user,updateState }) => {
   const navigation = useNavigation();
   const [major, setMajor] = useState()
-  const [bio, setBio] = useState()
+  const [bio, setBio] = useState(user.interestedIn)
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // console.log(user.major)
+      setMajor(user.major)
+    }, [user])
+  );
+//   useEffect(() => {
+//     if(major) {
+//         console.log(user.major)
+//         console.log(major)
+//         if(major!=user.major){
+//           console.log('nono')
+//         }
+
+//     }
+// } , [])
+  // useEffect(()=>{
+  //   if(major){
+  //   console.log('xx')
+  //   }
+  //   // setMajor(user.major)
+  //   // setBio(user.interestedIn)  
+  // },[]);
+  
+  // const [popo,setPopo] = useState()
 
   const editData = async() => {
 
     try{
+      // console.log(user.major)
     let token = await AsyncStorage.getItem('token');  
 
     const data = {
@@ -29,7 +57,7 @@ const EditScreen = ({ user,updateState }) => {
               'Authorization': 'JWT ' + token,
           }
       })
-    updateState({major:major,bio:bio})
+    updateState({data})
 
     }catch(error){
       console.log(error)
@@ -123,7 +151,8 @@ const EditScreen = ({ user,updateState }) => {
             autoCorrect= {false}
             returnKeyType='done'
             style ={{fontSize:15}}
-            onChangeText={text => setMajor(text)} 
+            onChangeText={setMajor}
+            value={major}
             >    
             </TextInput>
         </View>
@@ -138,7 +167,8 @@ const EditScreen = ({ user,updateState }) => {
             editable={true}
             returnKeyType='next'
             style ={{fontSize:15}}
-            onChangeText={text => setBio(text)} 
+            defaultValue = {bio}
+            onChangeText={setBio} 
             >    
             </TextInput>
         </View>

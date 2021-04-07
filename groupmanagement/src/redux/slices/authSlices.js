@@ -25,8 +25,9 @@ export const authSlice = createSlice({
         },
 
         updateState: (state,action) => {
-            state.user.major = action.payload.major,
-            state.user.interestedIn = action.payload.bio
+            // console.log(action.payload.data.major)
+            state.user.major = action.payload.data.major,
+            state.user.interestedIn = action.payload.data.bio
         }
     }
 })
