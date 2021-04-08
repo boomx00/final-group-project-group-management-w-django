@@ -8,7 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //  Authenticated Screens
 import HomeScreen from '../HomeScreen/HomeScreen'
 import SearchScreen from '../SearchScreen/SearchScreen';
-import GroupScreen from '../GroupScreen/GroupScreen';
+import Group from '../GroupScreen/Group';
 import ProfileScreen from '../ProfileScreen/ProfileScreeen';
 
 import colors from '../../../assets/colors/colors';
@@ -40,14 +40,15 @@ const MainScreen = () => {
                     }
                 })}
                 tabBarOptions={{
-                    activeTintColor: colors.red,
-                    inactiveTintColor: colors.orange,
-                    keyboardHidesTabBar: true
+                    activeTintColor: colors.white,
+                    inactiveTintColor: 'black',
+                    keyboardHidesTabBar: true,
+                    style:{backgroundColor:'lightgrey'}
                 }}
             >
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Search" component={SearchScreen} />
-                <Tab.Screen name="Group" component={GroupScreen} />
+                <Tab.Screen name="Group" component={Group} />
                 <Tab.Screen name="Profile" component={ProfileScreen} />
 
 
