@@ -14,7 +14,7 @@ export const authSlice = createSlice({
             major: 'Information System and Computing Science',
             interestedIn: 'I am interseted in ....'
         },
-        isLogged: false
+        isLogged: true
     },
     reducers: {
         onLogin: (state, action) => {

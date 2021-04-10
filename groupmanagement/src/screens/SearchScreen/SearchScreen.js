@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, SafeAreaView, Text } from 'react-native'
+import { StyleSheet, SafeAreaView,View, Text } from 'react-native'
 import { Searchbar } from 'react-native-paper';
 import GroupList from '../../components/Group/GroupList'
 
@@ -17,6 +17,9 @@ const SearchScreen = ({ groupList }) => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+            <Text style={styles.text}>SEARCH</Text>
+             </View>
             <Searchbar
                 placeholder="Search by name, topics or tags"
                 onChangeText={(text) => filterData(text)}
@@ -34,6 +37,24 @@ const mapStateToProps = (state) => ({
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    }
+    },
+    header:{
+        backgroundColor:'white',
+        width:'100%',
+        height: 50,
+        marginBottom:5,
+        flexDirection:'row',
+        justifyContent:'center',
+        marginBottom:10
+
+        
+         }, 
+    text:{
+        fontSize:20,
+        fontWeight:'bold',
+        color:'black',
+        alignSelf:'center'
+  
+    },
 })
 export default connect(mapStateToProps, null)(SearchScreen)

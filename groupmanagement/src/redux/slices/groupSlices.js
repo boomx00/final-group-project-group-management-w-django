@@ -8,7 +8,7 @@ export const groupSlice = createSlice({
                 id: 1,
                 name: "Z Group",
                 description: "Open Recruit For International Students Only",
-                topic: 'ASDX application to make life easier',
+                topic: 'ASDX application',
                 membersID: [1, 5, 4, 6, 7, 3],
                 likesID: [1, 4, 5, 6, 7, 8, 9, 10]
             },

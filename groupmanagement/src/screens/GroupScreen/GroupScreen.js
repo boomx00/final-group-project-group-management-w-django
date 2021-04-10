@@ -20,7 +20,7 @@ const GroupScreen = () => {
 
             <View style ={styles.pagetitle} >
         <Text style={styles.Text}>My Group (No.18)</Text>
-        <Text style={styles.Textsml}>Members:...</Text>
+        <Text style={styles.Textsml}>dj</Text>
         </View>
         <View style = {styles.content}>
         <Text style={styles.label}>Description:</Text>
