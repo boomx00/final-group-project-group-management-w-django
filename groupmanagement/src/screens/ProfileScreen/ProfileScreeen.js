@@ -1,14 +1,17 @@
 import React, { useState } from 'react'
-import { StyleSheet, SafeAreaView, Text, View, } from 'react-native'
+import { StyleSheet, SafeAreaView, Text, View, TouchableOpacity, } from 'react-native'
 import { Avatar, Title, Caption } from 'react-native-paper';
-import colors from '../../../assets/colors/colors'
+//import colors from '../../../assets/colors/colors'
 import { connect } from 'react-redux'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch } from 'react-redux'
+import { logoutAction } from '../../redux/slices/authSlices'
+
 const ProfileScreen = ({ user }) => {
   const navigation = useNavigation();
-
+  const dispatch = useDispatch()
 
   return (
 
@@ -55,6 +58,9 @@ const ProfileScreen = ({ user }) => {
           <Text>{user.interestedIn}</Text>
         </View>
       </View>
+      <TouchableOpacity style={{ borderWidth: 5 }} onPress={() => { dispatch(logoutAction()) }}>
+        <Text>Log out</Text>
+      </TouchableOpacity>
       </View>
     </SafeAreaView>
 

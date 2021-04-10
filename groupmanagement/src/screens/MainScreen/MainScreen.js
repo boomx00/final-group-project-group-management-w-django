@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { SafeAreaView } from 'react-native'
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -8,12 +8,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //  Authenticated Screens
 import HomeScreen from '../HomeScreen/HomeScreen'
 import SearchScreen from '../SearchScreen/SearchScreen';
-import Group from '../GroupScreen/Group';
+import Group from '../GroupScreen/GroupScreen';
 import ProfileScreen from '../ProfileScreen/ProfileScreeen';
+
+// Redux-Action
+import { useDispatch } from 'react-redux'
+import { getUserAction } from '../../redux/slices/authSlices'
 
 import colors from '../../../assets/colors/colors';
 
 const MainScreen = () => {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getUserAction())
+    }, [])
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Tab.Navigator
@@ -40,10 +48,8 @@ const MainScreen = () => {
                     }
                 })}
                 tabBarOptions={{
-                    activeTintColor: colors.white,
                     inactiveTintColor: 'black',
                     keyboardHidesTabBar: true,
-                    style:{backgroundColor:'lightgrey'}
                 }}
             >
                 <Tab.Screen name="Home" component={HomeScreen} />
