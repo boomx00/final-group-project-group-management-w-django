@@ -15,7 +15,7 @@ return (
     <View style={styles.header}>
     <Ionicons name="arrow-back-outline"
               size={30} style={styles.arrow }
-              onPress={() =>navigation.navigate('Home')}>
+              onPress={() =>navigation.navigate('Main')}>
              </Ionicons> 
      <Text style={styles.text}>DETAILS</Text>
      </View>

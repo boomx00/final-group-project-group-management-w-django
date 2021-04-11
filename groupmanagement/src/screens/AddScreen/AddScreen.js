@@ -19,7 +19,7 @@ const AddScreen = () => {
             <Text style={styles.text2}>NEW POST</Text>
              <Ionicons name="arrow-back-outline"
               size={30} style={styles.arrow }
-              onPress={() =>navigation.navigate('Home')}>
+              onPress={() =>navigation.navigate('Main','Home')}>
              </Ionicons> 
             </View>  
         
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
         
     },
     arrow:{
-        top:1,
+        top:10,
         left:10,
         position:'absolute',
         color:'black'

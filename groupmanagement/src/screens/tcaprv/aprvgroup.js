@@ -6,60 +6,29 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { connect } from 'react-redux'
 import colors from '../../../assets/colors/colors';
-import ReqList from '../../components/Request/reqList';
 
-const MsgScreen = ({msgList}) => {
+
+const aprvgroup = () => {
     const navigation = useNavigation()
-    const [pressIn, setPressIn] = useState(true)
-    const [Focuson, setFocuson] = useState("CHAT")
-
-    const tf =()=>{
-        if (pressIn==false )
-        return true 
-        else if ( pressIn==true)
-         return false
-    }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.textlight }}>
             <View style={styles.header}>
-            <Text style={styles.text}>Message</Text>
+            <Text style={styles.text}>APPROVAL REQUEST</Text>
         <View style={styles.backk}>
         <Ionicons name="arrow-back-outline"
               size={25} style={styles.back }
-              onPress={() =>navigation.navigate('Profile')}>
+              onPress={() =>navigation.navigate('Main:Group')}>
              </Ionicons>
         </View>
         </View>
-        <View style={styles.choice}>
-            <View style={styles.container}>
-        <TouchableOpacity onPress ={()=>{
-        setPressIn( tf ) 
-        setFocuson("CHAT")}}
-        >
-            <View style={pressIn? styles.box : styles.boxx}
-        >
-            <Text style={styles.text2}>CHATS</Text>
-            </View>
-        </TouchableOpacity>
-        </View>
-        <View style={styles.container}>
-
-        <TouchableOpacity onPress ={()=>{
-            setPressIn( tf )
-            setFocuson("REQUEST")}}>
-            <View  style={pressIn? styles.boxx : styles.box}>
-            <Text style={styles.text2}>REQUEST</Text>
-            </View>
-        </TouchableOpacity>
-            </View>
-            </View>
      
-           {Focuson=="CHAT" ? <MsgList mssg={msgList} style={{ zIndex: -1 }} /> :<ReqList/>}
+            
        
         </SafeAreaView>
     )
 }
+//<MsgList mssg={msgList} style={{ zIndex: -1 }} />
 
 const styles = StyleSheet.create({
     choice:{
@@ -123,4 +92,4 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
     msgList: state.msg.list
 })
-export default connect(mapStateToProps, null)(MsgScreen)
+export default connect(mapStateToProps, null)(aprvgroup)

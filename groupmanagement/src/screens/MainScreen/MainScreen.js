@@ -8,7 +8,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 //  Authenticated Screens
 import HomeScreen from '../HomeScreen/HomeScreen'
 import SearchScreen from '../SearchScreen/SearchScreen';
-import Group from '../GroupScreen/GroupScreen';
+import Group from '../GroupScreen/Group';
 import ProfileScreen from '../ProfileScreen/ProfileScreeen';
 
 // Redux-Action

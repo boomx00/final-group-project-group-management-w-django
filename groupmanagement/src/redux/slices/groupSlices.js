@@ -49,8 +49,14 @@ export const groupSlice = createSlice({
             groupID: 1,
             createdBy: 1,
             membersID: [1, 5, 4, 6, 7, 3],
-            topic: 'X application to make life easier',
-            description: "Open Recruit For International Students Only"
+            groupName:'XYZ',
+            topic: 'X application ',
+            description: "This Project is about......",
+            joinReq: [{id:1,name:"james"}],
+            AzureD:'AD.com',
+            GitHub: 'github11.com',
+            roles:'members role in here'
+
         },
     },
     reducers: {

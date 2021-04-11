@@ -25,7 +25,7 @@ const HomeScreen = ({ groupList }) => {
              </Ionicons>
              </View>
             </View>
-            <Draggable  x={normalize(300)} y={normalize(550)} z={10} >
+            <Draggable  x={normalize(300)} y={normalize(490)} z={10} >
                 <FAB
                     style={styles.fab}
                     small
@@ -36,6 +36,7 @@ const HomeScreen = ({ groupList }) => {
                 <View style={{marginBottom:70}}>
             <GroupList groupData={groupList} style={{ zIndex: -1}} />
             </View>
+            
         </SafeAreaView>
     )
 }

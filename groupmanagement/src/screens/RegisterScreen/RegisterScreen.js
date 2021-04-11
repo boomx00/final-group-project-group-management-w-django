@@ -30,8 +30,7 @@ const RegisterScreen = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}> REGISTER</Text>
-            <View style={styles.card}>
-                <Text style={styles.subtitle}>Fill this form</Text>
+                <Text style={styles.subtitle}> Please Fill This Form</Text>
                 <TextInput
                     style={styles.textinput}
                     placeholder="Your Student ID"
@@ -52,24 +51,29 @@ const RegisterScreen = () => {
                     style={email && password != null ? styles.loginButton : styles.loginButtonBlocked}
                     onPress={() => insertData()}
                 >
-                    <Text>Register</Text>
+                    <Text style={styles.txt}>Register</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.loginButton}
                     onPress={() => navigation.navigate("Login")}
                 >
-                    <Text>Go Back to Login</Text>
+                    <Text style={styles.txt}>Go Back to Login</Text>
                 </TouchableOpacity>
-            </View>
         </View>
     )
 }
 const styles = StyleSheet.create({
+    txt:{
+        color: colors.white,
+         fontFamily: 'Roboto-Regular',
+          fontSize: normalize(18)
+    },
     container: {
         flex: 1,
-        backgroundColor: colors.orange,
+        backgroundColor: colors.white,
         justifyContent: 'center',
         alignItems: 'center',
+        alignContent: 'center',
     },
     card: {
         justifyContent: 'center',
@@ -82,40 +86,46 @@ const styles = StyleSheet.create({
         elevation: 10
     },
     title: {
-        fontSize: 30,
+        fontSize: normalize(40),
         fontFamily: "Roboto-Bold",
-        paddingBottom: 50,
-        color: colors.white,
+        color: colors.textDark,
+        textAlign: 'center'
     },
     subtitle: {
         fontFamily: "Roboto-Bold",
-        fontSize: 30,
-        paddingBottom: 10,
-        color: colors.darkYellow,
+        fontSize: normalize(18),
+        color: colors.textDark,
+        marginBottom: 10
     },
     textinput: {
-        borderRadius: 5,
-        borderWidth: 1,
-        width: 300,
-        margin: 5,
+        borderRadius: normalize(10),
+        width: normalize(300),
+        height: normalize(50),
+        margin: normalize(10),
         fontFamily: "Roboto-Regular",
-        fontSize: 20
+        fontSize: normalize(20),
+        backgroundColor: '#f2f2f2',
+        color: colors.textDark
     },
     loginButton: {
         alignItems: 'center',
-        padding: 10,
-        width: 200,
-        margin: 15,
-        borderRadius: 5,
-        backgroundColor: colors.lightYellow
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: normalize(300),
+        height: normalize(40),
+        margin: normalize(10),
+        borderRadius: normalize(10),
+        backgroundColor: '#0000CC',
     },
     loginButtonBlocked: {
         alignItems: 'center',
-        padding: 10,
-        width: 200,
-        margin: 15,
-        borderRadius: 5,
-        backgroundColor: colors.textLight
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: normalize(300),
+        height: normalize(40),
+        margin: normalize(10),
+        borderRadius: normalize(10),
+        backgroundColor: 'grey',
     }
 })
 

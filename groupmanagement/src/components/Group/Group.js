@@ -15,15 +15,16 @@ const Group = ({ name, description, topic, tags, memberNumber, likesID, user }) 
     const navigation = useNavigation();
 
     return (
-        <TouchableOpacity style={{width:'100%'}}
+        <View style={styles.groupCard}>
+            <TouchableOpacity style={{width:'100%'}}
         onPress={() => navigation.navigate('Details', {
             group: name,
             project: topic,
             people:memberNumber,
             desc: description
         })}> 
-        <View style={styles.groupCard}>
             <View style={styles.insideCard}>
+            
                 <Text style={styles.textTitle}>
                     {topic}
                 </Text>
@@ -36,7 +37,9 @@ const Group = ({ name, description, topic, tags, memberNumber, likesID, user }) 
                 <Text style={styles.textSubtitle}>
                     Members: {memberNumber} / 7
                     </Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingTop: normalize(10) }}>
+                    </View>
+                    </TouchableOpacity>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingTop: normalize(0) }}>
                     <TouchableOpacity>
                         <Ionicons
                             style={
@@ -51,9 +54,7 @@ const Group = ({ name, description, topic, tags, memberNumber, likesID, user }) 
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
-        </TouchableOpacity>
-    )
+            )
 }
 
 const styles = StyleSheet.create({
