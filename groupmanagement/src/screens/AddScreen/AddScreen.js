@@ -3,12 +3,39 @@ import {Alert,StyleSheet,SafeAreaView,Text, View,TouchableOpacity, TextInput} fr
 import colors from '../../../assets/colors/colors'
 import { connect } from 'react-redux'
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // ini diganti fab
-const AddScreen = () => {
+const AddScreen = (user) => {
+    const navigation = useNavigation();
+
+    const status = ""
     const [Group, setGroup] = useState()
     const [Description, setDesc] = useState()
 
+    const addGroup = async() => {
+        try{
+        let token = await AsyncStorage.getItem('token');  
+        const data = {
+            name: Group, 
+            description: Description, 
+            owner: user.user.studentID
+          }
+        const submit = await axios.post(`http://192.168.100.246:8000/api/group/create/`, data, {
+            headers:{
+              'Authorization': 'JWT ' + token,
+          }
+      })
+    //   .then(resp=>{
+    //     // status = resp.status
+    // })
+      console.log(submit.data)
+    //   navigation.navigate('Main')
+    }catch{
+
+    }
+    }
     return (
         <SafeAreaView style={styles.view1}>
             <View style>
@@ -50,7 +77,7 @@ const AddScreen = () => {
                 />       
                 <TouchableOpacity
                     style={Group && Description != null ? styles.loginButton : styles.loginButtonBlocked}
-                    onPress={() => Alert.alert("Uploaded!")}
+                    onPress={() => addGroup()}
                     disabled={Group && Description != null ?  false : true}
                 >
                     <Text>Upload</Text>
@@ -118,4 +145,8 @@ const styles = StyleSheet.create({
         backgroundColor: colors.lightYellow
     },
 })
-export default AddScreen
+
+const mapStateToProps = (state) => ({
+    user: state.auth.user
+  })
+export default connect(mapStateToProps, null)(AddScreen)

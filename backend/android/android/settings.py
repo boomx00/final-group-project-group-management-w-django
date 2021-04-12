@@ -29,7 +29,7 @@ SECRET_KEY = '3+rlh1!%fd(3jqb6=sy7qz+1h5*b_9x(c&ak7w=hiy@0jg^413'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.137.1', 'localhost','boomx00.pythonanywhere.com']
+ALLOWED_HOSTS = ['192.168.137.1','192.168.100.246', 'localhost','boomx00.pythonanywhere.com']
 
 
 # Application definition
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'rest_auth.registration',
     'api.apps.ApiConfig',
     'users',
+    'group',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
 
