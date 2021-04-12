@@ -17,31 +17,40 @@ const HomeScreen = ({ groupList }) => {
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.textlight }}>
             <View style={styles.header}>
-            <Text style={styles.text}>Home</Text>
+            <Text style={styles.text}>HOME</Text>
             <View style={styles.viewmsg}>
-            <Ionicons name="mail-outline"
+            <Ionicons name="chatbubble-ellipses-outline"
               size={25} style={styles.msg }
               onPress={() =>navigation.navigate('Msg')}>
              </Ionicons>
              </View>
             </View>
-            <Draggable x={normalize(320)} y={normalize(600)} z={10} style={{}}>
+            <Draggable  x={normalize(300)} y={normalize(490)} z={10} >
                 <FAB
-                    icon="plus"
+                    style={styles.fab}
+                    small
+                    color= 'black'
+                    icon="plus"                    
                     onPress={() => navigation.navigate("Add")}
                 /></Draggable>
-            <GroupList groupData={groupList} style={{ zIndex: -1 }} />
+                <View style={{marginBottom:70}}>
+            <GroupList groupData={groupList} style={{ zIndex: -1}} />
+            </View>
+            
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+    fab:{
+        backgroundColor:'white',
+         borderWidth:2,
+          borderColor:'black'
+    },
     header:{
-        backgroundColor:'orange',
-        borderBottomWidth:1,
-        borderBottomColor:'black',
+        backgroundColor:'white',
         width:'100%',
-        height: 40,
+        height: 50,
         marginBottom:5,
         flexDirection:'row',
         justifyContent:'center',
@@ -56,7 +65,8 @@ const styles = StyleSheet.create({
   
     },
     msg:{
-        color:'white'
+        color:'black',
+        marginTop:5
         
 
     },

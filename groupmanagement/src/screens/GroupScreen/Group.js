@@ -1,42 +1,22 @@
-import React, { useState } from 'react'
-import {Alert,TouchableOpacity,KeyboardAvoidingView, ScrollView,StyleSheet,Text, View, TextInput} from 'react-native'
-import colors from '../../../assets/colors/colors'
+import React from 'react'
+import { KeyboardAvoidingView, ScrollView,StyleSheet,Text, View,TouchableOpacity,TextInput} from 'react-native'
+//import colors from '../../../assets/colors/colors'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { green100, yellow100 } from 'react-native-paper/lib/typescript/styles/colors';
+//import { Title } from 'react-native-paper';
+import {connect} from 'react-redux'
+import colors from '../../../assets/colors/colors'
 import normalize from 'react-native-normalize';
-// Approved or not blm dibenerin
 
-const yes = () =>{
-    <View style={styles.n}>
-    <Text style={styles.aprval}> NOT APPROVED</Text>
-    </View>
-}
-const no = () =>{
-    <View style={styles.n}>
-    <Text style={styles.aprval}>APPROVED</Text>
-    </View>
-}
-// up
-const GroupScreen = () => {
+
+const Group = ({ownGroup}) => {
     const navigation = useNavigation();
-    const [Description, setDesc] = useState()
-    const [Dev, setDev] = useState()
-    const [Git, setGit] = useState()
-    const [Role, setRole] = useState()
-    const [Ingroup, setIngroup] = useState()
 
-
-
-    return (       
+    const inGroup =()=>(
         <View style={{ flex: 1, backgroundColor: colors.textlight }}>
         <KeyboardAvoidingView style={{flex:1}} behavior='height'>
         <ScrollView>
             <View style={styles.header}>
-            <Ionicons name="arrow-back-outline"
-              size={30} style={styles.arrow }
-              onPress={() =>navigation.navigate('Main','Group')}>
-             </Ionicons> 
             <Text style={styles.text}>MY GROUP</Text>
             </View>
         <View style={styles.top}>
@@ -45,107 +25,36 @@ const GroupScreen = () => {
              >
              </Ionicons>
              <View style={styles.topin}>
-                 <Text style={styles.project}>PROJECT NAME</Text>
-                 <Text style={styles.group}>GROUP NAME</Text>
-                 <Text style={styles.group}>MEMBERS/7</Text>
+                 <Text style={styles.project}>{ownGroup.topic}</Text>
+                 <Text style={styles.group}>{ownGroup.groupName}</Text>
+                 <Text style={styles.group}>../7</Text>
                  </View>
-     <View style={styles.n}>
-    <Text style={styles.aprval}> NOT APPROVED</Text>
+     <View style={styles.y}>
+    <Text style={styles.aprval}> APPROVED</Text>
     </View>
 
             </View>
         <View style = {styles.content}>
         <Text style={styles.labell}>Project Description:</Text>
-        <TextInput
-                    style={{
-                        marginBottom:5,
-                        borderBottomWidth:1,
-                        borderBottomColor:'black',
-                        fontSize: 14}}
-                    placeholder="Type Here..."
-                    placeholderTextColor='grey'
-                    multiline={true}
-                    scrollEnabled ={true}
-                    editable={true}
-                    returnKeyType='next'
-                    onChangeText={text => setDesc(text)}
-                /> 
-
-        <Text style={{marginTop:5, color:'black'}}>Roles:</Text>
-   
-        <TextInput
-                    style={{
-                        marginBottom:5,
-                        borderBottomWidth:1,
-                        borderBottomColor:'black',
-                        fontSize: 14}}
-                    placeholder="Type Here..."
-                    placeholderTextColor='grey'
-                    multiline={true}
-                    scrollEnabled ={true}
-                    editable={true}
-                    returnKeyType='next'
-                    onChangeText={text => setRole(text)}
-                />    
-                            <Ionicons name="folder"
-              size={30} style={styles.fab }
-              color='black'
-              onPress={() =>navigation.navigate('Aprv')}>
-             </Ionicons>
-
-        <TouchableOpacity
-            style={styles.button}
-            onPress={() => Alert.alert("Request sent!")}
-                >
-            <Text style={styles.txt}>Request for Approval</Text>
-         </TouchableOpacity>
-             </View>
-
-             </ScrollView>
-
-        </KeyboardAvoidingView>
-
+        <View style={{marginLeft:10}}>
+        <Text style={styles.desc}>{ownGroup.description}</Text>
         </View>
 
-    )
-}
-//kalo approved  ini br ada
+        <Text style={styles.labell}>Roles:</Text>
+        <View style={{marginLeft:10}}>
+        <Text style={styles.desc}>{ownGroup.roles}</Text>
 
-/* 
-                <Text style={styles.labell}>Azure DevOps Link:</Text>
-        <TextInput
-                    style={{
-                        marginBottom:5,
-                        borderBottomWidth:1,
-                        borderBottomColor:'black',
-                        fontSize: 14}}
-                    placeholder="Type Here..."
-                    placeholderTextColor='grey'
-                    multiline={true}
-                    scrollEnabled ={true}
-                    editable={true}
-                    returnKeyType='done'
-                    onChangeText={text => setDev(text)}
-                /> 
+        </View>
+        <Text style={styles.labell}>Azure DevOps Link:</Text>
+        <View style={{marginLeft:10}}>
+        <Text style={styles.desc}>{ownGroup.AzureD}</Text>
+        </View>
+
         <Text style={styles.labell}>GitHub Link:</Text>
-        <TextInput
-                    style={{
-                        marginBottom:5,
-                        borderBottomWidth:1,
-                        borderBottomColor:'black',
-                        fontSize: 14}}
-                    placeholder="Type Here..."
-                    placeholderTextColor='grey'
-                    multiline={true}
-                    scrollEnabled ={true}
-                    editable={true}
-                    returnKeyType='done'
-                    onChangeText={text => setGit(text)}
-                />       
-                
-*/
-/*
- <Text style={styles.labell}>Sprints:</Text>
+        <View style={{marginLeft:10}}>
+        <Text style={styles.desc}>{ownGroup.GitHub}</Text>
+        </View>
+        <Text style={styles.labell}>Sprints:</Text>
             <View style={styles.sprints}>
             <Ionicons name="folder"
               size={30} style={styles.fab }
@@ -185,9 +94,59 @@ const GroupScreen = () => {
 
                  </View>
 
-*/ 
+            
+             </View>
 
+             </ScrollView>
+
+        </KeyboardAvoidingView>
+
+        </View>
+    )
+    const notInGroup =()=>(
+        <View style={styles.view1}>
+        <View style={styles.header}>
+        <Text style={styles.text}>MY GROUP</Text>
+    </View>
+    <View style={styles.items}>
+    <Ionicons name="people-outline"
+          size={70} 
+         >
+         </Ionicons>
+         <Text style={styles.title}>YOU ARE NOT </Text>
+         <Text style={styles.title}>REGISTERED IN </Text>
+         <Text style={styles.title}>ANY GROUP</Text>
+         <TouchableOpacity
+                style={styles.button1}
+                onPress={() => navigation.navigate("Home")}
+        >
+                <Text>FIND A GROUP</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.button2}
+                onPress={() => navigation.navigate("Groupn")}
+        >
+             
+                <Text>CREATE A GROUP</Text>
+            </TouchableOpacity>
+         </View>
+    </View>
+    )
+
+    return (       
+        <View style={{flex:1}}>
+        {ownGroup != null? inGroup() :notInGroup() }
+        </View>
+  
+    )
+}
 const styles = StyleSheet.create({
+    desc:{
+        fontSize:14,
+        color:'black',
+        marginTop:5,
+        marginBottom:5
+    },
     txt:{
         fontSize:14,
         fontWeight:'bold',
@@ -236,6 +195,7 @@ const styles = StyleSheet.create({
     },
     group:{
         fontSize:12,
+        marginTop:5,
         color:'grey'
 
     },
@@ -244,7 +204,9 @@ const styles = StyleSheet.create({
     },
     top:{
         flexDirection:'row',
-        margin:20
+        marginRight:20,
+        marginLeft:20,
+        marginTop:10
     },
     arrow:{
         top:10,
@@ -259,6 +221,7 @@ const styles = StyleSheet.create({
         marginBottom:5,
         flexDirection:'row',
         justifyContent:'center',
+        
 
         
          }, 
@@ -307,18 +270,56 @@ const styles = StyleSheet.create({
     },
     content:{
         marginLeft:20,
-        marginRight:20
+        marginRight:20,
+        marginTop:10
+
         },
     labell:{
         marginTop:5,
-        fontSize:13,
+        fontSize:14,
+        fontWeight:'bold',
         color:'black',
 
     },
     view1:{
         flex:1,
         backgroundColor: 'orange',        
+    },
+    button1:{
+        marginTop:40,
+        width:292,
+        height:50,
+        backgroundColor: 'orange',
+        borderRadius:10,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+
+    button2:{
+        marginTop:20,
+        width:292,
+        height:50,
+        backgroundColor: 'orange',
+        borderRadius:10,
+        justifyContent:'center',
+        alignItems:'center'
+    },
+
+    items:{
+        justifyContent:'center',
+        alignItems:'center',
+        marginTop:70
+        
+    },
+    title:{
+        fontSize:20
+    },
+    view1:{
+        flex:1,
     }
 
 })
-export default GroupScreen
+const mapStateToProps = (state) => ({
+    ownGroup: state.group.ownGroup
+})
+export default connect(mapStateToProps, null)(Group)

@@ -10,41 +10,58 @@ import { useNavigation } from '@react-navigation/native';
 //Redux
 import { connect } from 'react-redux'
 
-const Msg = ({ name, mssg, time }) => {
+const Req = ({key, name}) => {
     const navigation = useNavigation();
 
     return (
-        <TouchableOpacity style={{width:'100%'}}
-        onPress={() => navigation.navigate('Chat', {
-            data: name
-        })}> 
         <View style={styles.groupCard}>
             <View style={styles.insideCard}>
             <View style={styles.content}>
                 <Text style={styles.name}>
-                    {name}
+                    {name}{key}
                 </Text>
-                <View style={styles.time}>
-                <Text>
-                    {time}
-                    </Text>
+                <View style={styles.boxx}>
+        <TouchableOpacity onPress ={()=>{}}>
+                    <View style={styles.box}>
+                    <Text style={styles.txt}>Accept</Text>
                     </View>
-                </View>
-                <View style={styles.content}>
-                <View>
-                <Text style={styles.msg}>
-                    {mssg}
-                </Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress ={()=>{}}>
+                    <View style={styles.box2}>
+                    <Text style={styles.txt}>Decline</Text>
+                    </View>
+        </TouchableOpacity>
                 </View>
                 </View>
             </View>
             </View>
-            </TouchableOpacity>
+
+
 
     )
 }
 
 const styles = StyleSheet.create({
+    boxx:{
+    },
+    box:{
+        width:70,
+        height:20,
+        marginBottom:10,
+        borderRadius:12,
+        backgroundColor:'green',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    box2:{
+        width:70,
+        height:20,
+        marginBottom:10,
+        borderRadius:12,
+        backgroundColor:'grey',
+        justifyContent:'center',
+        alignItems:'center'
+    },
     groupCard: {
         margin: normalize(8),
         width:'90%',
@@ -78,11 +95,15 @@ const styles = StyleSheet.create({
     time:{
         fontSize:12,
         color:'#666'
-    }
+    },
+    txt:{
+        fontSize:12,
+        color:'white'
+    },
 })
 
 const mapStateToProps = (state) => ({
     user: state.auth.user
 })
 
-export default connect(mapStateToProps, null)(Msg)
+export default connect(mapStateToProps, null)(Req)

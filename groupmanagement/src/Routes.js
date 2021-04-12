@@ -15,8 +15,12 @@ import Done from './screens/RegisterScreen/Done'
 import AddScreen from './screens/AddScreen/AddScreen';
 import EditScreen from './screens/ProfileScreen/EditProfileScreen';
 import ProfileScreen from './screens/MainScreen/MainScreen';
+import Details from './screens/HomeScreen/Details';
 import MsgScreen from './screens/MsgScreen/MsgScreen';
 import ChatScreen from './screens/ChatScreen/ChatScreen';
+import HomeScreen from './screens/HomeScreen/HomeScreen';
+import GroupScreen from './screens/GroupScreen/GroupScreen';
+import AprvScreen from './screens/tcaprv/aprvgroup';
 
 import SprintScreen1 from './screens/SprintScreen/SprintScreen1';
 
@@ -57,6 +61,7 @@ const Routes = ({ isLogged }) => {
                     name="Add"
                     component={AddScreen}
              />
+
              <mainStack.Screen
                     name="Edit"
                     component={EditScreen}
@@ -72,7 +77,23 @@ const Routes = ({ isLogged }) => {
             <mainStack.Screen
                    name="Msg"
                    component={MsgScreen}
-             />     
+             />
+            <mainStack.Screen
+                   name="Home"
+                   component={HomeScreen}
+             />    
+            <mainStack.Screen
+                   name="Aprv"
+                   component={AprvScreen}
+             />      
+            <mainStack.Screen
+                   name="Groupn"
+                   component={GroupScreen}
+             />
+            <mainStack.Screen
+                   name="Details"
+                   component={Details}
+             />            
             <mainStack.Screen
                    name="Chat"
                    component={ChatScreen}

@@ -51,7 +51,7 @@ const EditScreen = ({ user,updateState }) => {
         <View style={{flex:1}}>
              <Ionicons name="arrow-back-outline"
               size={30} style={styles.arrow }
-              onPress={() =>navigation.navigate('Profile')}>
+              onPress={() =>navigation.navigate('Main','Profile')}>
              </Ionicons>
 
               <Modal visible={modal}

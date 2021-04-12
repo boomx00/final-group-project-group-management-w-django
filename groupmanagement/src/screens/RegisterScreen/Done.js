@@ -3,6 +3,7 @@ import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-nativ
 import colors from '../../../assets/colors/colors'
 //  React Navigation
 import { useNavigation } from '@react-navigation/native';
+import normalize from 'react-native-normalize';
 
 
 const Done = () => {
@@ -11,7 +12,6 @@ const Done = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}> REGISTER SUCCESSFULL</Text>
-            <View style={styles.card}>
                 <Text style={{ fontFamily: 'Roboto-Regular', fontSize: 20, color: colors.teal, margin: 20 }}>
                     Your register is succesfull, please try to login with your account.
                 </Text>
@@ -21,16 +21,16 @@ const Done = () => {
                 >
                     <Text>Back to login</Text>
                 </TouchableOpacity>
-            </View>
         </View>
     )
 }
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.orange,
+        backgroundColor: colors.white,
         justifyContent: 'center',
         alignItems: 'center',
+        alignContent: 'center',
     },
     card: {
         justifyContent: 'center',
@@ -43,16 +43,16 @@ const styles = StyleSheet.create({
         elevation: 10
     },
     title: {
-        fontSize: 30,
+        fontSize: normalize(40),
         fontFamily: "Roboto-Bold",
-        paddingBottom: 50,
-        color: colors.white,
+        color: colors.textDark,
+        textAlign: 'center'
     },
     subtitle: {
         fontFamily: "Roboto-Bold",
-        fontSize: 30,
-        paddingBottom: 10,
-        color: colors.darkYellow,
+        fontSize: normalize(18),
+        color: colors.textDark,
+        marginBottom: 10
     },
     textinput: {
         borderRadius: 5,

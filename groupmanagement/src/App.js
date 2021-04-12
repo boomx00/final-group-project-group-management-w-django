@@ -4,15 +4,42 @@ import React from 'react'
 // Redux
 import { Provider } from 'react-redux'
 import store from './redux/store'
+const { dispatch } = store
+
+// Redux-Actions
+import { logoutAction } from './redux/slices/authSlices'
 
 // React Navigation
 import { NavigationContainer } from '@react-navigation/native';
 
-//Routes
+// Routes
 import Routes from './Routes'
-
 import { Provider as PaperProvider } from 'react-native-paper'
+import * as RootNavigation from './middleware/RootNavigation'
 
+// Axios
+import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+axios.interceptors.request.use(async (request) => {
+  const token = await AsyncStorage.getItem('token')
+  request.headers = {
+    ...request.headers,
+    'x-access-token': token
+  }
+  return request
+}, (error) => {
+  return Promise.reject(error)
+})
+
+axios.interceptors.response.use(async (response) => {
+  if (response.data.status == 401 && response.data.STATUS == "AUTH_UNAUTORIZED_TOKEN") {
+    dispatch(logoutAction())
+  }
+  return response
+}, (error) => {
+  return Promise.reject(error)
+})
 
 const App = () => {
   return (
