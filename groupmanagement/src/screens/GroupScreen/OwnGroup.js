@@ -19,6 +19,7 @@ import Sprint from '../../components/Sprint/Sprint'
 import GroupDesc from './GroupDesc'
 
 const OwnGroup = ({ ownGroup, userId }) => {
+    const navigation = useNavigation();
     const dispatch = useDispatch()
     const refContainer = useRef();
     const [onSprintClicked, setSprintClicked] = useState(false);
@@ -53,6 +54,7 @@ const OwnGroup = ({ ownGroup, userId }) => {
     const deleteTag = (indexToRemove) => {
         setTags(tags.filter((_, index) => index !== indexToRemove));
     }
+    useEffect(() => { }, [ownGroup, ownGroup.sprints])
 
     return (
         <View style={styles.container}>
@@ -63,7 +65,7 @@ const OwnGroup = ({ ownGroup, userId }) => {
                         <Text style={styles.textMember}>{ownGroup.members.length} MEMBERS</Text>
                     </View>
                     <View style={styles.inHeader}>
-                        <View>
+                        <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity
                                 onPress={() => {
                                     showDialog()
@@ -71,7 +73,7 @@ const OwnGroup = ({ ownGroup, userId }) => {
                                 }
                                 }
                                 style={styles.btn1}>
-                                <Text style={styles.textBtn}>SETTINGS</Text>
+                                <Text style={styles.textBtn}>EDIT</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={styles.btn1}

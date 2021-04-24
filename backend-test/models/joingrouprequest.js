@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
   JoinGroupRequest.init({
     userId: DataTypes.INTEGER,
     groupId: DataTypes.INTEGER,
-    approved: DataTypes.BOOLEAN
+    approved: DataTypes.BOOLEAN,
+    confirm: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'JoinGroupRequest',

@@ -15,6 +15,7 @@ const renderItemR = ({ item }) => {
         lastName={item.applicant.profile.lastName}
         studentId={item.applicant.studentId}
         approved={item.approved}
+        confirm={item.confirm}
     />
 }
 //passing

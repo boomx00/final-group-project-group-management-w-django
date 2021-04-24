@@ -21,12 +21,16 @@ import * as RootNavigation from './middleware/RootNavigation'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+axios.defaults.baseURL = "http://10.10.10.124:3002/api/v1/"
+
 axios.interceptors.request.use(async (request) => {
+
   const token = await AsyncStorage.getItem('token')
   request.headers = {
     ...request.headers,
     'x-access-token': token
   }
+
   return request
 }, (error) => {
   return Promise.reject(error)

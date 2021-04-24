@@ -18,6 +18,8 @@ export const authSlice = createSlice({
                 studentId: action.payload.studentId,
                 firstName: action.payload.profile.firstName,
                 lastName: action.payload.profile.lastName,
+                biograph: action.payload.profile.biograph,
+                major: action.payload.profile.major,
                 phoneNumber: action.payload.profile.phoneNumber,
                 isTeacher: action.payload.isTeacher,
                 groupId: action.payload.groupId
@@ -26,8 +28,8 @@ export const authSlice = createSlice({
         },
 
         editProfile: (state, action) => {
-            state.user.major = action.payload.data.major
-            state.user.interestedIn = action.payload.data.bio
+            state.user.major = action.payload.major
+            state.user.biograph = action.payload.biograph
         },
 
         onLogout: (state, action) => {
@@ -44,12 +46,11 @@ export default authSlice.reducer
 export const userRegisterAction = (studentId, email, password, navigation) => {
     return async dispatch => {
         try {
-            const res = await axios.post("http://10.10.10.124:3002/api/v1/auth/register", {
+            const res = await axios.post("/auth/register", {
                 studentId,
                 email,
                 password
             })
-            console.log(res.data)
             if (res.data.STATUS == "REGISTER_SUCCESS") {
                 console.log("Triggered")
                 navigation.navigate("Done")
@@ -64,7 +65,7 @@ export const userRegisterAction = (studentId, email, password, navigation) => {
 export const getUserAction = () => {
     return async dispatch => {
         try {
-            const user = await axios.get("http://10.10.10.124:3002/api/v1/auth/getUser")
+            const user = await axios.get("/auth/getUser")
             if (user.data != null) {
                 dispatch(getUser(user.data.userData))
                 dispatch(getOwnGroupAction())
@@ -78,11 +79,10 @@ export const getUserAction = () => {
 export const loginAction = (userName, passWord) => {
     return async dispatch => {
         try {
-            const res = await axios.post("http://10.10.10.124:3002/api/v1/auth/login", {
+            const res = await axios.post("/auth/login", {
                 email: userName,
                 password: passWord
             })
-            console.log(res.data)
             if (res.data.token != null) {
                 await AsyncStorage.setItem("token", res.data.token)
                 dispatch(getUserAction())
@@ -99,9 +99,27 @@ export const loginAction = (userName, passWord) => {
 
 export const editProfileAction = (editedData) => {
     return async dispatch => {
-
+        try {
+            const res = await axios.patch("/profile/edit-profile", editedData)
+            if (res.data.STATUS == "PROFILE_EDIT_SUCCESS") {
+                dispatch(editProfile(editedData))
+            }
+        } catch (err) {
+            alert(err)
+        }
     }
 }
+
+export const editUserPassword = (editedData) => {
+    return async dispatch => {
+        try {
+
+        } catch (err) {
+
+        }
+    }
+}
+
 
 export const logoutAction = () => {
     return async dispatch => {

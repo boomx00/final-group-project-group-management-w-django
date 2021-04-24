@@ -3,6 +3,7 @@ const { User, UserProfile, Group, Sprint, Tag, JoinGroupRequest, ProjectGroupReq
 
 const tokenVerifier = require('../middleware/tokenVerifier');
 const { Op } = require("sequelize");
+const e = require('express');
 
 app.get("/get-all-group", tokenVerifier, async (req, res) => {
     try {
@@ -145,22 +146,48 @@ app.post("/create-group", tokenVerifier, async (req, res) => {
 
 app.patch("/edit-group", tokenVerifier, async (req, res) => {
     try {
-        const group = await Group.findOne({ where: { id: req.body.id, ownerId: res.locals.id } })
-        if (group && group.ownerId == res.locals.id) {
-            group.set(req.body)
-            await group.save()
+        const result = await sequelize.transaction(async (t) => {
+            const group = await Group.findOne({ where: { id: req.body.id, ownerId: res.locals.id } }, { transaction: t })
+            if (group && group.ownerId == res.locals.id) {
+                const willRemovedTags = await group.getTags();
+                console.log(willRemovedTags)
+                await group.removeTags(willRemovedTags, { transaction: t })
+
+                await Promise.all(req.body.tags.map(async reqTag => {
+                    let [tag, createdTag] = await Tag.findOrCreate({
+                        where: { name: reqTag },
+                        defaults: {
+                            name: reqTag
+                        }, transaction: t
+                    });
+                    if (tag != null) {
+                        await group.addTag(tag, { transaction: t })
+                    } else if (createdTag != null) {
+                        await group.addTag(createdTag, { transaction: t })
+                    }
+
+                }))
+
+                group.set({ name: req.body.name, topic: req.body.topic, description: req.body.description, transaction: t })
+                await group.save({ transaction: t })
+                return group
+            } else {
+                return null
+            }
+        })
+        if (result != null) {
             res.status(200).send({
                 "STATUS": "GROUP_EDIT_SUCCESS",
                 "MESSAGE": "Successfully edit the group",
-                "GROUP": group
+                "GROUP": result
             })
         } else {
-            res.status(500).send({
+            res.status(409).send({
                 "STATUS": "GROUP_EDIT_FAILED",
-                "MESSAGE": "Failed edit the group",
-                "ERROR": "Group not found"
+                "MESSAGE": "Failed to edit the group",
             })
         }
+
     } catch (err) {
         console.log(err)
         res.status(500).send({
@@ -192,24 +219,35 @@ app.get("/get-group-sprints", tokenVerifier, async (req, res) => {
 
 app.patch("/edit-sprint", tokenVerifier, async (req, res) => {
     try {
-        const user = await User.findOne({ where: { id: res.locals.id }, attributes: ['id', 'groupId'] })
-        if (user.groupId == req.body.groupId) {
-            const sprint = await Sprint.findOne({ where: { id: req.body.sprintId, groupId: req.body.groupId } })
-            sprint.summary = req.body.summary
-            sprint.imageURL = req.body.imageURL
-            await sprint.save()
-            res.status(200).send({
-                'STATUS': 'SPRINT_EDIT_SUCCESS',
-                'MESSAGE': "Successfully edit the sprint",
-                "EDITED_SPRINT": sprint
-            })
-        } else {
-            res.status(500).send({
+        console.log(req.body)
+        const result = await sequelize.transaction(async (t) => {
+            const user = await User.findOne({ where: { id: res.locals.id }, attributes: ['id', 'groupId'] }, { transaction: t })
+            const group = await user.getGroup({ attributes: ['id', 'ownerId'], transaction: t })
+            if (user.groupId == group.id && user.id == group.ownerId) {
+                const sprint = await Sprint.findOne({ where: { id: req.body.sprintId, groupId: group.id } }, { transaction: t })
+                sprint.summary = req.body.newData.summary
+                sprint.progress = req.body.newData.progress
+                sprint.imageURL = req.body.imageURL
+                await sprint.save({ transaction: t })
+                return sprint
+            } else {
+                return null
+            }
+        })
+        if (result == null) {
+            res.status(401).send({
                 'STATUS': 'SPRINT_EDIT_NOT_GROUP',
                 'MESSAGE': 'Sprint that you edit is not your sprint group, please try again',
             })
+        } else {
+            res.status(200).send({
+                'STATUS': 'SPRINT_EDIT_SUCCESS',
+                'MESSAGE': "Successfully edit the sprint",
+                "EDITED_SPRINT": result
+            })
         }
     } catch (err) {
+        console.log(err)
         res.status(500).send({
             'STATUS': 'SPRINT_EDIT_FAILED',
             'MESSAGE': 'Failed to edit the sprint, please try again',
@@ -325,18 +363,25 @@ app.post("/join-group", tokenVerifier, async (req, res) => {
     }
 })
 
-app.post("/cancel-join-grop", tokenVerifier, async (req, res) => {
+app.patch("/cancel-join-group", tokenVerifier, async (req, res) => {
     try {
-        const deletedJoinRequest = await JoinGroupRequest.destroy({ where: { userId: res.locals.id } })
+        const result = await sequelize.transaction(async (t) => {
+            const joinRequest = await JoinGroupRequest.findOne({ where: { id: req.body.joinId } })
+
+            joinRequest.confirm = false
+            await joinRequest.save({ transaction: t })
+
+            return joinRequest
+        })
 
         res.status(200).send({
-            'STATUS': 'CANCEL_JOIN_GROUP_SUCCESS',
+            'STATUS': 'CANCEL_JOIN_SUCCESS',
             'MESSAGE': 'Succesfully cancel to join a group',
-            'RESULT': deletedJoinRequest
+            'RESULT': result
         })
     } catch (err) {
         res.status(500).send({
-            'STATUS': 'CANCEL_JOIN_GROUP_FAILED',
+            'STATUS': 'CANCEL_JOIN_FAILED',
             'MESSAGE': 'Failed to cancel to join a group',
             'ERROR': err
         })
@@ -356,8 +401,11 @@ app.patch("/confirm-join-group", tokenVerifier, async (req, res) => {
                 user.groupId = joinRequest.groupId
                 await user.save({ transaction: t })
 
+                joinRequest.confirm = true
+                await joinRequest.save({ transaction: t })
+
                 await JoinGroupRequest.update({ approved: false },
-                    { where: { id: res.locals.id, approved: null } })
+                    { where: { id: res.locals.id, approved: null }, transaction: t })
 
                 return user
             } else {
@@ -376,6 +424,7 @@ app.patch("/confirm-join-group", tokenVerifier, async (req, res) => {
             })
         }
     } catch (err) {
+        console.log(err)
         res.status(500).send({
             'STATUS': 'CONFIRM_JOIN_ERROR',
             'MESSAGE': 'Confirm to join erorr, due system error'

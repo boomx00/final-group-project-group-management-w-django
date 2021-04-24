@@ -102,11 +102,9 @@ app.post("/register", async (req, res) => {
                 })
             }
         } else {
-            var hashedPassword = "";
             var salt = bcrypt.genSaltSync(10);
             var hash = bcrypt.hashSync(req.body.password, salt);
 
-            console.log(hashedPassword)
             const result = await sequelize.transaction(async (t) => {
 
                 const user = await User.create({
@@ -137,6 +135,27 @@ app.post("/register", async (req, res) => {
         res.status(406).send({
             'STATUS': 'REGISTER_FAILED_CATCH',
             'MESSAGE': err,
+        })
+    }
+})
+
+app.patch("/change-password", tokenVerifier, async (req, res) => {
+    try {
+        const result = await sequelize.transaction(async (t) => {
+            const user = await User.findOne({ where: { id: res.locals.id } })
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(req.body.password, salt);
+            user.password = hash
+            await user.save()
+            return user
+        })
+        res.status(200).send({
+            'STATUS': 'CHANGE_PASSWORD_SUCCESS',
+            'MESSAGE': 'Successfully change password.'
+        })
+    } catch (err) {
+        res.status(500).send({
+            'STATUS': 'CHANGE_PASSWORD_FAILED'
         })
     }
 })

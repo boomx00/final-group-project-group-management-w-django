@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createSlice } from '@reduxjs/toolkit'
-import axios from 'axios';
+import axios from 'axios'
 
 export const groupSlice = createSlice({
     name: 'group',
@@ -37,7 +37,6 @@ export const groupSlice = createSlice({
     reducers: {
         onGetGroup: (state, action) => {
             state.list = action.payload.groups
-            console.log("Groups: ", state.list.length)
         },
         onGetOwnGroup: (state, action) => {
             if (action.payload == null) {
@@ -96,12 +95,27 @@ export const groupSlice = createSlice({
         setConfirmJoin: (state, action) => {
             state.ownRequestJoin.map(req => {
                 if (req.approved == null) {
-                    res.approved == false
+                    req.approved == false
+                }
+            })
+        },
+        setCancelJoin: (state, action) => {
+            state.ownRequestJoin.map(req => {
+                if (req.id == action.payload.id) {
+                    req.confirm = false
                 }
             })
         },
         editGroup: (state, action) => {
             state.ownGroup = { ...state.ownGroup, ...action.payload }
+        },
+        editSprint: (state, action) => {
+            state.ownGroup.sprints.map(sprint => {
+                if (sprint.id == action.payload.id) {
+                    sprint.progress = action.payload.progress
+                    sprint.summary = action.payload.summary
+                }
+            })
         }
     }
 })
@@ -115,15 +129,16 @@ export const {
     setAcceptJoinGroupReq,
     setDeclineJoinGroupReq,
     setConfirmJoin,
-    editGroup } = groupSlice.actions
+    setCancelJoin,
+    editGroup,
+    editSprint } = groupSlice.actions
 
 export default groupSlice.reducer
 
 export const getAllGroupAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://10.10.10.124:3002/api/v1/group/get-all-group")
-            console.log(res.data.groups)
+            const res = await axios.get("/group/get-all-group")
             dispatch(onGetGroup({ groups: res.data.groups }))
         } catch (err) {
             alert(err)
@@ -134,8 +149,7 @@ export const getAllGroupAction = () => {
 export const createGroupAction = (name, topic, description, tags, requirements, navigation) => {
     return async dispatch => {
         try {
-            console.log(name, topic, description, tags, requirements)
-            const res = await axios.post("http://10.10.10.124:3002/api/v1/group/create-group", {
+            const res = await axios.post("/group/create-group", {
                 name,
                 topic,
                 description,
@@ -146,7 +160,7 @@ export const createGroupAction = (name, topic, description, tags, requirements, 
                 dispatch(getOwnGroupAction())
                 navigation.navigate("Group")
             } else {
-                console.log("OWNING A GROUP")
+                alert("You already own a group!")
             }
         } catch (err) {
             alert(err)
@@ -156,7 +170,7 @@ export const createGroupAction = (name, topic, description, tags, requirements, 
 export const getOwnGroupAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://10.10.10.124:3002/api/v1/group/get-own-group")
+            const res = await axios.get("/group/get-own-group")
             if (res.data.STATUS == "GET_OWN_GROUP_SUCCESS") {
                 dispatch(onGetOwnGroup(res.data.GROUP))
             } else if (res.data.STATUS == "GET_OWN_GROUP_NOT_EXISTS") {
@@ -171,9 +185,9 @@ export const getOwnGroupAction = () => {
 export const editGroupAction = (newGroupDetails) => {
     return async dispatch => {
         try {
-            const res = await axios.patch("http://10.10.10.124:3002/api/v1/group/edit-group", newGroupDetails)
+            const res = await axios.patch("/group/edit-group", newGroupDetails)
             if (res.data.STATUS == "GROUP_EDIT_SUCCESS") {
-                dispatch(editGroup(newGroupDetails))
+                dispatch(getOwnGroupAction())
             } else {
                 throw res.data
             }
@@ -187,7 +201,7 @@ export const editGroupAction = (newGroupDetails) => {
 export const getOwnJoinRequestAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://10.10.10.124:3002/api/v1/group/get-own-request")
+            const res = await axios.get("/group/get-own-request")
             dispatch(setOwnRequest(res.data.REQUESTS))
         } catch (err) {
             alert(err.response)
@@ -198,7 +212,7 @@ export const getOwnJoinRequestAction = () => {
 export const getJoinGroupReqAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://10.10.10.124:3002/api/v1/group/get-request-join-group")
+            const res = await axios.get("/group/get-request-join-group")
             console.log(res.data.Requests)
             dispatch(setJoinGroupReq(res.data.Requests))
         } catch (err) {
@@ -212,7 +226,7 @@ export const joinGroupAction = (groupId) => {
     return async (dispatch, getState) => {
         try {
             if (getState().auth.groupId == null) {
-                const res = await axios.post("http://10.10.10.124:3002/api/v1/group/join-group", { groupId: groupId })
+                const res = await axios.post("/group/join-group", { groupId: groupId })
                 console.log(res.data.result)
                 if (res.data.STATUS == "JOIN_GROUP_REQUEST_SUCCESS") {
                     alert("Successfully request to join a group, check the progress at messages screen!")
@@ -231,7 +245,7 @@ export const joinGroupAction = (groupId) => {
 export const leaveGroupAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.patch("http://10.10.10.124:3002/api/v1/group/leave-group")
+            const res = await axios.patch("/group/leave-group")
             if (res.data.STATUS == "LEAVE_GROUP_SUCCESS") {
                 dispatch(onGetGroup(null))
             } else {
@@ -247,7 +261,7 @@ export const acceptJoinGroupAction = (id) => {
     return async dispatch => {
         try {
             console.log(id)
-            const res = await axios.patch("http://10.10.10.124:3002/api/v1/group/accept-join-group", { joinId: id })
+            const res = await axios.patch("/group/accept-join-group", { joinId: id })
             console.log(res.data)
             dispatch(setAcceptJoinGroupReq(id))
         } catch (err) {
@@ -259,7 +273,7 @@ export const acceptJoinGroupAction = (id) => {
 export const declineJoinGroupAction = (id) => {
     return async dispatch => {
         try {
-            const res = await axios.post("http://10.10.10.124:3002/api/v1/group/decline-join-group", { joinId: id })
+            const res = await axios.post("/group/decline-join-group", { joinId: id })
             dispatch(setDeclineJoinGroupReq(id))
         } catch (err) {
             alert(err.response)
@@ -270,14 +284,26 @@ export const declineJoinGroupAction = (id) => {
 export const confirmJoinAction = (id) => {
     return async dispatch => {
         try {
-            console.log("triggered")
-            const res = await axios.patch("http://10.10.10.124:3002/api/v1/group/confirm-join-group", { joinId: id })
+            const res = await axios.patch("/group/confirm-join-group", { joinId: id })
             if (res.data.STATUS == "CONFIRM_JOIN_SUCCESS") {
                 dispatch(setConfirmJoin())
                 dispatch(getOwnGroupAction())
             }
         } catch (err) {
-            console.log(err)
+            alert(err.repsonse)
+        }
+    }
+}
+
+export const cancelJoinAction = (id) => {
+    return async dispatch => {
+        try {
+            const res = await axios.patch("/group/cancel-join-group", { joinId: id })
+            if (res.data.STATUS == "CANCEL_JOIN_SUCCESS") {
+                dispatch(setCancelJoin())
+
+            }
+        } catch (err) {
             alert(err.repsonse)
         }
     }
@@ -321,6 +347,22 @@ export const declineGroupProposalAction = () => {
 
         } catch (err) {
 
+        }
+    }
+}
+
+//  Group Sprints System
+export const editSprintAction = (newData, sprintId) => {
+    return async dispatch => {
+        try {
+            console.log(newData)
+            const res = await axios.patch("/group/edit-sprint", { newData, sprintId })
+            if (res.data.STATUS == "SPRINT_EDIT_SUCCESS") {
+                dispatch(editSprint(res.data.EDITED_SPRINT))
+            }
+        } catch (err) {
+            console.log(err)
+            alert(err)
         }
     }
 }

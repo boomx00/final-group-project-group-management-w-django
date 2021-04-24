@@ -5,13 +5,13 @@ import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
 //import { Modal, Portal } from 'react-native-paper';
 //import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
 
 //Redux
 import { connect, useDispatch } from 'react-redux'
 import { acceptJoinGroupAction, declineJoinGroupAction } from '../../redux/slices/groupSlices'
+import { color } from 'react-native-reanimated'
 
-const Req = ({ id, firstName, lastName, approved, studentId }) => {
+const Req = ({ id, firstName, lastName, approved, confirm, studentId }) => {
     const dispatch = useDispatch()
 
     return (
@@ -34,7 +34,9 @@ const Req = ({ id, firstName, lastName, approved, studentId }) => {
                         </TouchableOpacity>
                     </View>
                     :
-                    <View style={styles.statusBox}>
+                    <View style={confirm == null ?
+                        styles.statusBox : confirm == true ?
+                            styles.statusBoxAcc : styles.statusBoxDec}>
                         <Text style={styles.textStatus}>{approved == true ? "Accepted" : "Declined"}</Text>
                     </View>
                 }
@@ -101,7 +103,20 @@ const styles = StyleSheet.create({
     statusBox: {
         borderWidth: 0.5,
         borderRadius: normalize(10),
-        padding: normalize(10)
+        padding: normalize(10),
+        backgroundColor: colors.lightYellow
+    },
+    statusBoxAcc: {
+        borderWidth: 0.5,
+        borderRadius: normalize(10),
+        padding: normalize(10),
+        backgroundColor: '#B7FFBF'
+    },
+    statusBoxDec: {
+        borderWidth: 0.5,
+        borderRadius: normalize(10),
+        padding: normalize(10),
+        backgroundColor: '#FFCCCB'
     },
     textStatus: {
         fontFamily: 'Roboto-bold',

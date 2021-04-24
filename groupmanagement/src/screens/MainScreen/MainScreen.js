@@ -39,7 +39,7 @@ const MainScreen = () => {
                         "GroupDetail",
                         "Messages",
                         "Bookmark",
-                        "ChangePassword"
+                        "ChangePassword",
                     ].includes(route.name)
                         ? () => {
                             return null;
