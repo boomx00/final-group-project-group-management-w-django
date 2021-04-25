@@ -9,7 +9,7 @@
 
 ## Tech
 
-Dillinger uses a number of open source projects to work properly:
+CPT202 Group Management uses a number of open source projects to work properly:
 
 - [NodeJS] - JavaScript Framework to create backend server.
 - [ExpressJS] - NodeJS Frameowrk to create REST API.
@@ -22,6 +22,9 @@ Install the dependencies and devDependencies and start the server.
 ```sh
 cd group-management/backend-test
 npm i
+# Make sure you do the migration for the database
+npx sequelize db:create
+npx sequelize db:migrate
 npm start
 ```
 
