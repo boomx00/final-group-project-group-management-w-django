@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class projectGroupRequest extends Model {
+  class ProjectGroupRequest extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,16 +11,16 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      projectGroupRequest.belongsTo(models.Group, { foreignKey: 'groupId', as: 'GroupProposing', onDelete: 'cascade' })
+      ProjectGroupRequest.belongsTo(models.Group, { foreignKey: 'groupId', as: 'Group', onDelete: 'cascade' })
     }
   };
-  projectGroupRequest.init({
+  ProjectGroupRequest.init({
     groupId: DataTypes.INTEGER,
     progress: DataTypes.STRING,
     feedback: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'projectGroupRequest',
+    modelName: 'ProjectGroupRequest',
   });
-  return projectGroupRequest;
+  return ProjectGroupRequest;
 };

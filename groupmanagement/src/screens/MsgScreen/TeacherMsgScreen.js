@@ -1,13 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
 
 import ProposalList from '../../components/TeacherGroupProposal/ProposalList'
 
+//  Redux
+import { connect, useDispatch } from 'react-redux'
+import { getGroupProposalAction } from '../../redux/slices/groupSlices'
 
 const TeacherMsgScreen = ({ proposalList }) => {
-    console.log("TeacherScreen", proposalList)
+    useEffect(() => {
+        dispatch(getGroupProposalAction())
+    }, [])
+    const dispatch = useDispatch()
     return (
         <View>
             <View style={styles.header}>
@@ -32,4 +38,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TeacherMsgScreen
+const mapStateToProps = (state) => ({
+    proposalList: state.group.groupProposalList
+})
+
+export default connect(mapStateToProps, null)(TeacherMsgScreen)

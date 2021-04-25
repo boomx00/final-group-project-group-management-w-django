@@ -24,7 +24,7 @@ const Sprint = ({ clickedSprintData, goBack, sprints }) => {
                 setSprintData(sprint)
             }
         })
-    }, [sprints])
+    }, [sprints, clickedSprintData])
     return (
         <View style={styles.container}>
             <View>
@@ -83,7 +83,7 @@ const Sprint = ({ clickedSprintData, goBack, sprints }) => {
                                 onChangeText={(text) => setSummary(text)}
                             />
                             <Text style={styles.textDescription}>Progress of the sprint:</Text>
-                            <RadioButton.Group onValueChange={value => setProgress(value)} value={progress}>
+                            <RadioButton.Group onValueChange={value => setProgress(value)} value={sprintData.progress}>
                                 <RadioButton.Item label="Not Started" value="NOT_STARTED" />
                                 <RadioButton.Item label="Progress" value="ON_PROGRESS" />
                                 <RadioButton.Item label="Finished" value="FINISHED" />

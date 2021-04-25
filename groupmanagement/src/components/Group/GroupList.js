@@ -102,7 +102,7 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
     }
 
     return (
-        <View>
+        <View style={{ height: '100%' }}>
             <FlatList
                 refreshControl={
                     <RefreshControl

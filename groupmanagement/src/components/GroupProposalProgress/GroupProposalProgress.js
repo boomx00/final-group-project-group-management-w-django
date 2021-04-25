@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Image } from 'react-native'
 import colors from '../../../assets/colors/colors'
 import normalize from 'react-native-normalize'
 
@@ -71,7 +71,7 @@ const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
                                     fontFamily: 'Roboto-Bold',
                                     fontSize: normalize(17),
                                     color: colors.white
-                                }}> ON REVIEW</Text>
+                                }}> {groupProposal.progress == "ON_REVIEW" ? "ON REVIEW BY THE TEACHER" : groupProposal.progress == "ACCEPTED" ? "GROUP PROPOSAL ACCEPTED" : "GROUP PROPOSAL DECLINED"}</Text>
                             </View>
                             <View style={{
                                 justifyContent: 'space-between'

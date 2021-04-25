@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 // Stylings
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native'
@@ -6,11 +6,20 @@ import normalize from 'react-native-normalize';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../../../assets/colors/colors';
 
-// Navigation
+//  Navigation
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
+//  Redux
+import { useDispatch } from 'react-redux'
+import { changePasswordAction } from '../../redux/slices/authSlices'
+
 const ChangePasswordScreen = () => {
+    const dispatch = useDispatch()
     const navigation = useNavigation()
+    const [oldPassword, setOldPassword] = useState()
+    const [password, setPassword] = useState()
+    const [confirm, setConfirm] = useState()
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -18,10 +27,30 @@ const ChangePasswordScreen = () => {
             </View>
             <View style={styles.centerBox}>
                 <Text style={styles.textSub}>Change Your Password Here!</Text>
-                <TextInput style={styles.inputPass} placeholder="Old password" />
-                <TextInput style={styles.inputPass} placeholder="New password" />
-                <TextInput style={styles.inputPass} placeholder="Confim new password" />
-                <TouchableOpacity style={styles.confirmBtn}>
+                <TextInput
+                    style={styles.inputPass}
+                    placeholder="Old password"
+                    secureTextEntry={true}
+                    onChangeText={(text) => setOldPassword(text)} />
+                <TextInput
+                    style={styles.inputPass}
+                    placeholder="New password"
+                    secureTextEntry={true}
+                    onChangeText={(text) => setPassword(text)} />
+                <TextInput
+                    style={styles.inputPass}
+                    placeholder="Confim new password"
+                    secureTextEntry={true}
+                    onChangeText={(text) => setConfirm(text)} />
+                <TouchableOpacity
+                    onPress={() => {
+                        if (confirm == password) {
+                            dispatch(changePasswordAction({ oldPassword, password }, navigation))
+                        } else {
+                            alert('Please re enter the password and the confirm password!')
+                        }
+                    }}
+                    style={styles.confirmBtn}>
                     <Text style={{
                         fontFamily: 'Roboto-Regular',
                         fontSize: normalize(25),

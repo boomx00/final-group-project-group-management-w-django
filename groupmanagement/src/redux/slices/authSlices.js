@@ -56,7 +56,7 @@ export const userRegisterAction = (studentId, email, password, navigation) => {
                 navigation.navigate("Done")
             }
         } catch (err) {
-            alert(err.response.data)
+            alert(err.response.data.MESSAGE)
         }
 
     }
@@ -71,7 +71,7 @@ export const getUserAction = () => {
                 dispatch(getOwnGroupAction())
             }
         } catch (err) {
-            alert(err.response.data)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -86,12 +86,9 @@ export const loginAction = (userName, passWord) => {
             if (res.data.token != null) {
                 await AsyncStorage.setItem("token", res.data.token)
                 dispatch(getUserAction())
-                dispatch({
-                    type: "RESET_APP"
-                })
             }
         } catch (err) {
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
 
     }
@@ -103,19 +100,25 @@ export const editProfileAction = (editedData) => {
             const res = await axios.patch("/profile/edit-profile", editedData)
             if (res.data.STATUS == "PROFILE_EDIT_SUCCESS") {
                 dispatch(editProfile(editedData))
+                alert('Successfully edit profile data!')
             }
         } catch (err) {
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
 
-export const editUserPassword = (editedData) => {
+export const changePasswordAction = (editedData, navigation) => {
     return async dispatch => {
         try {
-
+            const res = await axios.patch("/auth/change-password", editedData)
+            if (res.data.STATUS == "CHANGE_PASSWORD_SUCCESS") {
+                alert('Change password successfully!')
+                navigation.navigate("Profile")
+            }
         } catch (err) {
-
+            console.log(err)
+            alert(err.repsonse.data.MESSAGE)
         }
     }
 }
@@ -127,10 +130,12 @@ export const logoutAction = () => {
             await AsyncStorage.removeItem("token")
             RootNavigation.navigate("Login")
             dispatch(onLogout())
+            dispatch({
+                type: "RESET_APP"
+            })
             alert('You are unauthorized to load this screen, please try to login')
         } catch (err) {
-            console.log("Trigger")
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }

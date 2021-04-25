@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       Group.hasMany(models.User, { foreignKey: 'groupId', as: 'Members' })
       Group.hasMany(models.Sprint, { onDelete: 'cascade' })
       Group.hasMany(models.JoinGroupRequest, { foreignKey: 'groupId', as: 'joinRequest' })
-      Group.hasOne(models.projectGroupRequest, { onDelete: 'cascade' })
+      Group.hasOne(models.ProjectGroupRequest, { foreignKey: 'groupId', as: 'GroupProposal', onDelete: 'cascade' })
       Group.belongsToMany(models.Tag, { through: 'TagGroups', onDelete: 'cascade' })
     }
   };

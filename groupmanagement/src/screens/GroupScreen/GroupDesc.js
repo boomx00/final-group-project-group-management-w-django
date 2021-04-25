@@ -1,9 +1,15 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
 
+//  Redux
+import { useDispatch } from 'react-redux'
+import { sendGroupProposalAction } from '../../redux/slices/groupSlices'
+
 const GroupDesc = ({ ownGroup }) => {
+    useEffect(() => { }, [ownGroup])
+    const dispatch = useDispatch()
     return (
         <View style={styles.infoBox}>
             <View>
@@ -15,9 +21,16 @@ const GroupDesc = ({ ownGroup }) => {
                 </View>
             </View>
             <View>
-                <TouchableOpacity style={styles.btn1}>
-                    <Text style={styles.textBtn}>SEND PROPOSAL</Text>
-                </TouchableOpacity>
+                {ownGroup.projectApproved == "ON_REVIEW" ?
+                    <Text>Your group already send the proposal, please check on another screen to check the progress</Text>
+                    :
+                    ownGroup.projectApproved == "ACCEPTED" ? null :
+                        <TouchableOpacity
+                            onPress={() => dispatch(sendGroupProposalAction())}
+                            style={styles.btn1}>
+                            <Text style={styles.textBtn}>SEND PROPOSAL</Text>
+                        </TouchableOpacity>
+                }
             </View>
             <View style={styles.memberBox}>
                 <Text style={styles.textDetail}>Members:</Text>

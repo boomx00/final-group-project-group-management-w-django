@@ -41,7 +41,7 @@ const MsgScreen = ({ user, groupProposalList }) => {
                 </View>
             </View>
             {user.isTeacher ?
-                <TeacherMsgScreen proposalList={groupProposalList} />
+                <TeacherMsgScreen />
                 :
                 <StudentMsgScreen />}
         </View>
@@ -73,6 +73,5 @@ const mapStateToProps = (state) => ({
     user: state.auth.user,
     ownGroup: state.group.ownGroup,
     groupProposal: state.group.groupProposal,
-    groupProposalList: state.group.groupProposalList
 })
 export default connect(mapStateToProps, null)(MsgScreen)

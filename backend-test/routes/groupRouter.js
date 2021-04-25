@@ -37,7 +37,29 @@ app.get("/get-own-group", tokenVerifier, async (req, res) => {
     try {
         const result = await sequelize.transaction(async (t) => {
             const user = await User.findOne({ where: { id: res.locals.id }, attributes: ['groupId'] }, { transaction: t })
-            const group = await user.getGroup({ include: ['Tags', { model: User, as: 'Members', attributes: ['id'], include: { model: UserProfile, as: 'profile', attributes: ['firstName', 'lastName'] } }, { model: Sprint, attributes: ['id', 'summary', 'progress', 'type'] }], transaction: t })
+            const group = await user.getGroup({
+                include:
+                    ['Tags',
+                        {
+                            model: User,
+                            as: 'Members',
+                            attributes: ['id'],
+                            include: {
+                                model: UserProfile, as: 'profile',
+                                attributes: ['firstName', 'lastName']
+                            }
+                        },
+                        {
+                            model: Sprint,
+                            attributes: ['id', 'summary', 'progress', 'type']
+                        },
+                        {
+                            model: ProjectGroupRequest,
+                            as: 'GroupProposal',
+                            attributes: ['progress', 'feedback']
+                        }
+                    ], transaction: t
+            })
             return group
         })
         if (result) {
@@ -55,6 +77,7 @@ app.get("/get-own-group", tokenVerifier, async (req, res) => {
         }
 
     } catch (err) {
+        console.log(err)
         res.status(500).send({
             'STATUS': 'GET_OWN_GROUP_FAILED',
             'MESSAGE': 'You failed to get your own group data, please try again.',
@@ -122,7 +145,7 @@ app.post("/create-group", tokenVerifier, async (req, res) => {
                     }
 
                 }))
-
+                await ProjectGroupRequest.create({ groupId: groupCreated.id, progress: "NOT_SENDED" }, { transaction: t })
                 await groupCreated.addSprints(sprints, { transaction: t })
                 await User.update({ groupId: groupCreated.id }, { where: { id: res.locals.id }, transaction: t })
 
@@ -136,6 +159,7 @@ app.post("/create-group", tokenVerifier, async (req, res) => {
             })
         }
     } catch (err) {
+        console.log(err)
         res.status(500).send({
             'STATUS': 'CREATE_GROUP_FAILED',
             "MESSAGE": "Failed to create group, please try again.",
@@ -542,23 +566,63 @@ app.patch("/leave-group", tokenVerifier, async (req, res) => {
 
 // Group Proposal ENDPOINTS
 
-app.post("/send-group-proposal", tokenVerifier, async (req, res) => {
+app.get("/get-group-proposals", tokenVerifier, async (req, res) => {
     try {
-        const group = await Group.findOne({ where: { ownerId: res.locals.id } })
-        if (group.projectApproved == "PENDING" || group.ProjectApproved == "APPROVED") {
+        const result = await sequelize.transaction(async (t) => {
+            const user = await User.findOne({ where: { id: res.locals.id }, attributes: ['isTeacher'] }, { transaction: t })
+            if (user.isTeacher) {
+                const proposals = ProjectGroupRequest.findAll({
+                    order: [
+                        ['progress', 'DESC']
+                    ]
+                }, { transaction: t })
+                return proposals
+            } else {
+                return null
+            }
+        })
+        if (result == null) {
+            res.status(401).send({
+                'STATUS': 'GET_GROUP_PROPOSALS_FAILED',
+                'MESSAGE': 'Failed to get all of the group propsals'
+            })
+        } else {
+            res.status(200).send({
+                'STATUS': 'GET_GROUP_PROPOSALS_SUCCESS',
+                'MESSAGE': 'Successfully to get all of the group propsals',
+                'Result': result
+            })
+        }
+
+    } catch (err) {
+        res.status(500).send({
+            'STATUS': 'GET_GROUP_PROPOSALS_FAILED',
+            'MESSAGE': 'Failed to get all of the group propsals'
+        })
+    }
+})
+
+app.patch("/send-group-proposal", tokenVerifier, async (req, res) => {
+    try {
+        const result = await sequelize.transaction(async (t) => {
+            const group = await Group.findOne({ where: { ownerId: res.locals.id } }, { transaction: t })
+            if (group.projectApproved == "ON_REVIEW" || group.ProjectApproved == "APPROVED") {
+                return null
+            } else {
+                const proposal = await ProjectGroupRequest.findOne({ where: { groupId: group.id } })
+                console.log(proposal)
+                proposal.progress = "ON_REVIEW"
+                await proposal.save({ transaction: t })
+                await Group.update({ projectApproved: "ON_REVIEW" }, { where: { id: group.id } }, { transaction: t })
+                return proposal
+            }
+        })
+        if (result == null) {
             res.status(409).send({
                 'STATUS': 'SEND_GROUP_PROPOSAL_ALREADY',
                 'MESSAGE': 'Your group have send the proposal but not in progress, or it is already accepted.'
             })
         } else {
-            const result = await sequelize.transaction(async (t) => {
-                const proposalRequest = await ProjectGroupRequest.create({
-                    groupId: group.id,
-                    status: "PENDING"
-                }, { transaction: t })
-                await Group.update({ projectApproved: "PENDING" }, { where: { id: group.id } }, { transaction: t })
-                return proposalRequest
-            })
             res.status(200).send({
                 'STATUS': 'SEND_GROUP_PROPOSAL_SUCCESS',
                 'MESSAGE': 'Your group successly send the group proposal to the teacher.',
@@ -566,6 +630,7 @@ app.post("/send-group-proposal", tokenVerifier, async (req, res) => {
             })
         }
     } catch (err) {
+        console.log(err)
         res.status(500).send({
             'STATUS': 'SEND_GROUP_PROPOSAL_FAIL_SYSTEM',
             "MESSAGE": "Failed to send the group project proposal, due to system error.",
@@ -574,14 +639,14 @@ app.post("/send-group-proposal", tokenVerifier, async (req, res) => {
     }
 })
 
-app.post("/approve-group-proposal", tokenVerifier, async (req, res) => {
+app.patch("/approve-group-proposal", tokenVerifier, async (req, res) => {
     try {
         const user = await User.findOne({ where: { id: res.locals.id }, attributes: ['isTeacher'] })
         if (user.isTeacher == true) {
             if (req.body.approval == "ACCEPT") {
                 const result = await sequelize.transaction(async (t) => {
-                    const groupProposal = await ProjectGroupRequest.update({ status: "ACCEPTED" }, { where: { groupId: req.body.groupId } }, { transaction: t })
-                    await Group.update({ projectApproved: "ACCEPTED" }, { where: { id: req.body.groupId } })
+                    const groupProposal = await ProjectGroupRequest.update({ progress: "ACCEPTED" }, { where: { groupId: req.body.groupId } }, { transaction: t })
+                    await Group.update({ projectApproved: "ACCEPTED", feedback: req.body.feedback }, { where: { id: req.body.groupId } }, { transaction: t })
                     return groupProposal
                 })
                 res.status(200).send({
@@ -591,8 +656,8 @@ app.post("/approve-group-proposal", tokenVerifier, async (req, res) => {
                 })
             } else if (req.body.approval == "DECLINE") {
                 const result = await sequelize.transaction(async (t) => {
-                    const groupProposal = await ProjectGroupRequest.update({ status: "DECLINED" }, { where: { groupId: req.body.groupId } }, { transaction: t })
-                    await Group.update({ projectApproved: "DECLINED" }, { where: { id: req.body.groupId } })
+                    const groupProposal = await ProjectGroupRequest.update({ progress: "DECLINED", feedback: req.body.feedback }, { where: { groupId: req.body.groupId } }, { transaction: t })
+                    await Group.update({ projectApproved: "DECLINED" }, { where: { id: req.body.groupId } }, { transaction: t })
                     return groupProposal
                 })
                 res.status(200).send({

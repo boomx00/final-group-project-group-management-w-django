@@ -10,14 +10,16 @@ import { Dialog, Portal } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
 // Redux
-
-import { connect } from 'react-redux'
+import { acceptGroupProposalAction, declineGroupProposalAction } from '../../redux/slices/groupSlices'
+import { connect, useDispatch } from 'react-redux'
 
 const ProposalList = ({ groupProposalList, groupList }) => {
+    const dispatch = useDispatch()
     const navigation = useNavigation()
+    const [feedback, setFeedback] = useState("")
     const [proposalClicked, setProposalClicked] = useState(false);
     const [clickedProposal, setClickedProposal] = useState({
-        member: []
+        Members: []
     });
 
     const renderItem = ({ item }) => {
@@ -25,6 +27,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
         return (
             <TouchableOpacity onPress={() => {
                 setProposalClicked(true)
+                console.log(group)
                 setClickedProposal(group)
             }}
                 style={{
@@ -56,14 +59,14 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                     </View>
                     <View>
                         <View>
-                            {item.approved == "APPROVED" ?
+                            {item.progress == "ACCEPTED" ?
                                 <Text style={{
                                     backgroundColor: '#5CCDFE',
                                     padding: normalize(7),
                                     elevation: normalize(5),
                                     borderRadius: normalize(5)
                                 }}>ACCEPTED</Text>
-                                : item.approved == "PENDING"
+                                : item.progress == "ON_REVIEW"
                                     ? <Text style={{
                                         backgroundColor: colors.darkYellow,
                                         padding: normalize(7),
@@ -132,7 +135,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                                     textAlign: 'center'
                                 }}
                             >
-                                MEMBER: {clickedProposal.member.length}/7
+                                MEMBER: {clickedProposal.Members.length}/7
                         </Text>
 
                             <Text
@@ -166,28 +169,40 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                             <TextInput
                                 placeholder="Write your feedback here..."
                                 multiline={true}
+                                value={clickedProposal.feedback}
+                                onChangeText={(text) => setFeedback(text)}
                                 style={{
                                     height: normalize(100)
                                 }}
                             />
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <TouchableOpacity style={{
-                                    backgroundColor: colors.white,
-                                    borderRadius: normalize(10),
-                                    elevation: normalize(10),
-                                    padding: normalize(15)
-                                }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        dispatch(declineGroupProposalAction(clickedProposal.id))
+                                        setProposalClicked(false)
+                                    }}
+                                    style={{
+                                        backgroundColor: colors.white,
+                                        borderRadius: normalize(10),
+                                        elevation: normalize(10),
+                                        padding: normalize(15)
+                                    }}>
                                     <Text style={{
                                         fontFamily: 'Roboto-Bold',
                                         fontSize: normalize(18)
                                     }}>Decline</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{
-                                    backgroundColor: '#008BFF',
-                                    borderRadius: normalize(10),
-                                    elevation: normalize(10),
-                                    padding: normalize(15)
-                                }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        dispatch(acceptGroupProposalAction(clickedProposal.id))
+                                        setProposalClicked(false)
+                                    }}
+                                    style={{
+                                        backgroundColor: '#008BFF',
+                                        borderRadius: normalize(10),
+                                        elevation: normalize(10),
+                                        padding: normalize(15)
+                                    }}>
                                     <Text style={{
                                         fontFamily: 'Roboto-Bold',
                                         fontSize: normalize(18),

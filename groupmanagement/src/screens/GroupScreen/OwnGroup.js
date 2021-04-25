@@ -9,7 +9,12 @@ import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 
 // Redux
 import { connect, useDispatch } from 'react-redux'
-import { getOwnGroupAction, leaveGroupAction, editGroupAction } from '../../redux/slices/groupSlices'
+import {
+    getOwnGroupAction,
+    leaveGroupAction,
+    editGroupAction,
+    sendGroupProposalAction
+} from '../../redux/slices/groupSlices'
 
 // Navigation
 import { useNavigation } from '@react-navigation/native';
@@ -64,29 +69,37 @@ const OwnGroup = ({ ownGroup, userId }) => {
                         <Text style={styles.textName}>{ownGroup.name}</Text>
                         <Text style={styles.textMember}>{ownGroup.members.length} MEMBERS</Text>
                     </View>
+                    {ownGroup.projectApproved == "ACCEPTED" ?
+                        <Ionicons
+                            style={{ marginRight: normalize(50) }}
+                            name="checkmark-done-circle-outline"
+                            size={normalize(50)} />
+                        : null}
                     <View style={styles.inHeader}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    showDialog()
-                                    setStep(1)
-                                }
-                                }
-                                style={styles.btn1}>
-                                <Text style={styles.textBtn}>EDIT</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                style={styles.btn1}
-                                onPress={() => {
-                                    dispatch(leaveGroupAction())
-                                    navigation.navigate("Home")
-                                }}
-                            >
-                                {ownGroup.ownerId == userId ?
-                                    <Text style={styles.textBtn}>DELETE</Text> :
-                                    <Text style={styles.textBtn}>LEAVE</Text>}
-                            </TouchableOpacity>
-                        </View>
+                        {ownGroup.projectApproved == "ACCEPTED" || ownGroup.projectApproved == "ON_REVIEW" ? null :
+                            <View style={{ flexDirection: 'row' }}>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        showDialog()
+                                        setStep(1)
+                                    }
+                                    }
+                                    style={styles.btn1}>
+                                    <Text style={styles.textBtn}>EDIT</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.btn1}
+                                    onPress={() => {
+                                        dispatch(leaveGroupAction())
+                                        navigation.navigate("Home")
+                                    }}
+                                >
+                                    {ownGroup.ownerId == userId ?
+                                        <Text style={styles.textBtn}>DELETE</Text> :
+                                        <Text style={styles.textBtn}>LEAVE</Text>}
+                                </TouchableOpacity>
+                            </View>
+                        }
                     </View>
                 </View>
                 <View style={styles.tagBox}>

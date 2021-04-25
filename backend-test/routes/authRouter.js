@@ -29,7 +29,6 @@ app.post("/login", async (req, res) => {
         const user = await User.findOne({ where: { email: req.body.email } })
         if (user) {
             bcrypt.compare(req.body.password, user.password, (err, auth) => {
-                console.log(auth)
                 if (err) {
                     res.status(401).send({
                         'STATUS': 'LOGIN_FAILED_COMPARE_PASSWORD',
@@ -142,20 +141,37 @@ app.post("/register", async (req, res) => {
 app.patch("/change-password", tokenVerifier, async (req, res) => {
     try {
         const result = await sequelize.transaction(async (t) => {
-            const user = await User.findOne({ where: { id: res.locals.id } })
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(req.body.password, salt);
-            user.password = hash
-            await user.save()
-            return user
+            const user = await User.findOne({ where: { id: res.locals.id } }, { transaction: t })
+            const same = bcrypt.compareSync(req.body.oldPassword, user.password);
+            if (same) {
+                var salt = bcrypt.genSaltSync(10);
+                var hash = bcrypt.hashSync(req.body.password, salt);
+                user.password = hash
+                await user.save({ transaction: t })
+                return user
+            } else {
+                return null
+            }
+
         })
-        res.status(200).send({
-            'STATUS': 'CHANGE_PASSWORD_SUCCESS',
-            'MESSAGE': 'Successfully change password.'
-        })
+
+        if (result == null) {
+            res.status(401).send({
+                'STATUS': 'CHANGE_PASSWORD_FAILED',
+                'MESSAGE': 'Failed change password, old password is not correct'
+            })
+        } else {
+            res.status(200).send({
+                'STATUS': 'CHANGE_PASSWORD_SUCCESS',
+                'MESSAGE': 'Successfully change password.'
+            })
+        }
+
     } catch (err) {
+        console.log(err)
         res.status(500).send({
-            'STATUS': 'CHANGE_PASSWORD_FAILED'
+            'STATUS': 'CHANGE_PASSWORD_FAILED',
+            'MESSAGE': 'Failed to change password due some error.'
         })
     }
 })

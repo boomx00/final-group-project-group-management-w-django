@@ -15,21 +15,14 @@ export const groupSlice = createSlice({
             ownerId: '',
             members: [],
             sprints: [],
-            tags: []
+            tags: [],
+            projectApproved: ''
         },
         bookmarkedGroup: [],
         joinGroupRequest: [],
         groupProposal: {
-            progress: "ON_REVIEW",
-            feedback: "",
         },
-        groupProposalList: [
-            {
-                id: 1,
-                groupId: 2,
-                approved: "PENDING",
-            }
-        ],
+        groupProposalList: [],
         ownRequestJoin: [
 
         ]
@@ -49,8 +42,11 @@ export const groupSlice = createSlice({
                     ownerId: '',
                     members: [],
                     sprints: [],
-                    tags: []
+                    tags: [],
+                    projectApproved: ''
+
                 }
+                state.GroupProposal = {}
             } else {
                 state.ownGroup = {
                     id: action.payload.id,
@@ -61,8 +57,10 @@ export const groupSlice = createSlice({
                     requirements: action.payload.requirements,
                     members: action.payload.Members,
                     ownerId: action.payload.ownerId,
-                    sprints: action.payload.Sprints
+                    sprints: action.payload.Sprints,
+                    projectApproved: action.payload.projectApproved
                 }
+                state.groupProposal = action.payload.GroupProposal
             }
 
         },
@@ -116,6 +114,20 @@ export const groupSlice = createSlice({
                     sprint.summary = action.payload.summary
                 }
             })
+        },
+        getGroupProposals: (state, action) => {
+            state.groupProposalList = action.payload
+        },
+        acceptProposal: (state, action) => {
+            state.groupProposalList.map(proposal => {
+                if (proposal.id == action.payload.id) {
+                    proposal.progress == "ACCEPTED"
+                    proposal.feedback = action.payload.feedback
+                }
+            })
+        },
+        declineProposal: (state, action) => {
+
         }
     }
 })
@@ -131,7 +143,10 @@ export const {
     setConfirmJoin,
     setCancelJoin,
     editGroup,
-    editSprint } = groupSlice.actions
+    editSprint,
+    getGroupProposals,
+    acceptProposal,
+    declineProposal } = groupSlice.actions
 
 export default groupSlice.reducer
 
@@ -141,7 +156,7 @@ export const getAllGroupAction = () => {
             const res = await axios.get("/group/get-all-group")
             dispatch(onGetGroup({ groups: res.data.groups }))
         } catch (err) {
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -158,6 +173,7 @@ export const createGroupAction = (name, topic, description, tags, requirements, 
             })
             if (res.data.STATUS == "CREATE_GROUP_SUCCESS") {
                 dispatch(getOwnGroupAction())
+                alert('Successfully create the group!')
                 navigation.navigate("Group")
             } else {
                 alert("You already own a group!")
@@ -177,7 +193,7 @@ export const getOwnGroupAction = () => {
                 dispatch(onGetOwnGroup(null))
             }
         } catch (err) {
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -188,11 +204,12 @@ export const editGroupAction = (newGroupDetails) => {
             const res = await axios.patch("/group/edit-group", newGroupDetails)
             if (res.data.STATUS == "GROUP_EDIT_SUCCESS") {
                 dispatch(getOwnGroupAction())
+                alert('Successfully edit the group!')
             } else {
                 throw res.data
             }
         } catch (err) {
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -204,7 +221,7 @@ export const getOwnJoinRequestAction = () => {
             const res = await axios.get("/group/get-own-request")
             dispatch(setOwnRequest(res.data.REQUESTS))
         } catch (err) {
-            alert(err.response)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -217,7 +234,7 @@ export const getJoinGroupReqAction = () => {
             dispatch(setJoinGroupReq(res.data.Requests))
         } catch (err) {
             console.log(err)
-            alert(err.response)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -247,12 +264,13 @@ export const leaveGroupAction = () => {
         try {
             const res = await axios.patch("/group/leave-group")
             if (res.data.STATUS == "LEAVE_GROUP_SUCCESS") {
-                dispatch(onGetGroup(null))
+                dispatch(onGetOwnGroup(null))
+                alert('Successfully leave the group!')
             } else {
                 throw err
             }
         } catch (err) {
-            alert(err.response)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -260,12 +278,11 @@ export const leaveGroupAction = () => {
 export const acceptJoinGroupAction = (id) => {
     return async dispatch => {
         try {
-            console.log(id)
             const res = await axios.patch("/group/accept-join-group", { joinId: id })
-            console.log(res.data)
             dispatch(setAcceptJoinGroupReq(id))
+            alert('Successfully accept student to join the group!')
         } catch (err) {
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -275,8 +292,9 @@ export const declineJoinGroupAction = (id) => {
         try {
             const res = await axios.post("/group/decline-join-group", { joinId: id })
             dispatch(setDeclineJoinGroupReq(id))
+            alert('Successfully decline join group!')
         } catch (err) {
-            alert(err.response)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -288,9 +306,10 @@ export const confirmJoinAction = (id) => {
             if (res.data.STATUS == "CONFIRM_JOIN_SUCCESS") {
                 dispatch(setConfirmJoin())
                 dispatch(getOwnGroupAction())
+                alert('Confirm join group success!')
             }
         } catch (err) {
-            alert(err.repsonse)
+            alert(err.repsonse.data.MESSAGE)
         }
     }
 }
@@ -301,10 +320,10 @@ export const cancelJoinAction = (id) => {
             const res = await axios.patch("/group/cancel-join-group", { joinId: id })
             if (res.data.STATUS == "CANCEL_JOIN_SUCCESS") {
                 dispatch(setCancelJoin())
-
+                alert('Cancel to join group success!')
             }
         } catch (err) {
-            alert(err.repsonse)
+            alert(err.repsonse.data.MESSAGE)
         }
     }
 }
@@ -314,9 +333,12 @@ export const cancelJoinAction = (id) => {
 export const sendGroupProposalAction = () => {
     return async dispatch => {
         try {
-
+            const res = await axios.patch("/group/send-group-proposal")
+            if (res.data.STATUS == "SEND_GROUP_DATA SUCCESS") {
+                alert("You're successfully send the group proposal to the teacher.")
+            }
         } catch (err) {
-
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -324,29 +346,41 @@ export const sendGroupProposalAction = () => {
 export const getGroupProposalAction = () => {
     return async dispatch => {
         try {
-
+            const res = await axios.get("/group/get-group-proposals")
+            if (res.data.STATUS == "GET_GROUP_PROPOSALS_SUCCESS") {
+                dispatch(getGroupProposals(res.data.Result))
+            }
         } catch (err) {
-
+            alert(err.response.data.MESSAGE)
         }
     }
 }
 
-export const acceptGroupProposalAction = () => {
+export const acceptGroupProposalAction = (groupId, feedback) => {
     return async dispatch => {
         try {
-
+            const res = await axios.patch("/group/approve-group-proposal", { groupId, approval: "ACCEPT", feedback })
+            if (res.data.STATUS == "APPROVAL_GROUP_PROPOSAL_SUCCESS") {
+                dispatch(acceptProposal({ id: groupId, feedback }))
+                alert(res.data.MESSAGE)
+            }
         } catch (err) {
-
+            alert(err.response.data.MESSAGE)
         }
     }
 }
 
-export const declineGroupProposalAction = () => {
+export const declineGroupProposalAction = (groupId, feedback) => {
     return async dispatch => {
         try {
-
+            const res = await axios.patch("/group/approve-group-proposal", { groupId, approval: "DECLINE", feedback })
+            if (res.data.STATUS == "APPROVAL_GROUP_PROPOSAL_SUCCESS") {
+                console.log("DECLINED SUCCESS")
+                dispatch(declineProposal({ id: groupId, feedback }))
+                alert(res.data.MESSAGE)
+            }
         } catch (err) {
-
+            alert(err.response.data.MESSAGE)
         }
     }
 }
@@ -361,8 +395,7 @@ export const editSprintAction = (newData, sprintId) => {
                 dispatch(editSprint(res.data.EDITED_SPRINT))
             }
         } catch (err) {
-            console.log(err)
-            alert(err)
+            alert(err.response.data.MESSAGE)
         }
     }
 }
