@@ -30,9 +30,6 @@ const Details = ({ route, user, bookmarkedGroup }) => {
     const joinGroup = () => {
         dispatch(joinGroupAction(id))
     }
-    useEffect(() => {
-        dispatch(getUserBookmarkAction())
-    }, [bookmarkedGroup])
 
     return (
         <View style={styles.container}>
@@ -130,12 +127,13 @@ const styles = StyleSheet.create({
         left: normalize(30)
     },
     card: {
+        flex: 1,
         marginTop: normalize(20),
+        marginBottom: normalize(20),
         alignSelf: 'center',
         elevation: normalize(20),
         borderRadius: normalize(15),
         width: normalize(350),
-        height: normalize(575),
         backgroundColor: colors.white
     },
     insideCard: {

@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 
 // Redux
 import { connect, useDispatch } from 'react-redux'
-import { getOwnGroupAction, leaveGroupAction } from '../../redux/slices/groupSlices'
+import { getOwnGroupAction } from '../../redux/slices/groupSlices'
 
 // Navigation
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 //  Styling
 import normalize from 'react-native-normalize';
-import { TouchableOpacity, RefreshControl, ScrollView, StyleSheet, Text, View, TextInput } from 'react-native'
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
 import colors from '../../../assets/colors/colors'
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
 // Components
 import OwnGroup from './OwnGroup'
@@ -25,20 +24,24 @@ const GroupScreen = ({ ownGroup, userId }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    useEffect(() => {
+    useFocusEffect(useCallback(() => {
         dispatch(getOwnGroupAction())
-    }, [])
-    const [refreshing, setRefreshing] = useState(false);
+    }, []))
 
-    const onRefresh = React.useCallback(() => {
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
         setRefreshing(true);
-        setSprintClicked(false)
         dispatch(getOwnGroupAction())
         wait(500).then(() => setRefreshing(false));
     }, []);
 
     return (
-        <View style={styles.container}>
+        <ScrollView refreshControl={
+            <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+            />}
+            contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.textHeader}>MY GROUP</Text>
             </View >
@@ -47,7 +50,7 @@ const GroupScreen = ({ ownGroup, userId }) => {
                 :
                 <NoGroup />
             }
-        </View >
+        </ScrollView >
     )
 }
 

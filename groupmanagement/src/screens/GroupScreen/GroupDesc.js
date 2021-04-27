@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
 
@@ -8,16 +8,17 @@ import { useDispatch } from 'react-redux'
 import { sendGroupProposalAction } from '../../redux/slices/groupSlices'
 
 const GroupDesc = ({ ownGroup }) => {
-    useEffect(() => { }, [ownGroup])
     const dispatch = useDispatch()
     return (
         <View style={styles.infoBox}>
             <View>
                 <View style={styles.projectDescBox}>
                     <Text style={styles.textDetail}>Project Description:</Text>
-                    <Text style={styles.textParagraph}>
-                        {ownGroup.description}
-                    </Text>
+                    <ScrollView contentContainerStyle={{ height: normalize(120) }}>
+                        <Text style={styles.textParagraph}>
+                            {ownGroup.description}
+                        </Text>
+                    </ScrollView>
                 </View>
             </View>
             <View>
@@ -34,12 +35,15 @@ const GroupDesc = ({ ownGroup }) => {
             </View>
             <View style={styles.memberBox}>
                 <Text style={styles.textDetail}>Members:</Text>
-                {ownGroup.members.map((member, index) =>
-                (
-                    <Text style={styles.textParagraph}
-                        key={index} >{index + 1}.{member.profile.firstName} {member.profile.lastName}</Text>
-                )
-                )}
+                <ScrollView contentContainerStyle={{ height: normalize(100) }}>
+                    {ownGroup.members.map((member, index) =>
+                    (
+                        <Text style={styles.textParagraph}
+                            key={index} >{index + 1}.{member.profile.firstName} {member.profile.lastName}</Text>
+                    )
+                    )}
+                </ScrollView>
+
             </View>
         </View>
     )

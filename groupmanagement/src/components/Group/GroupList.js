@@ -33,10 +33,6 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
             dispatch(addUserBookmarkAction(parseInt(id)))
         }
     }
-    useEffect(() => {
-        dispatch(getAllGroupAction())
-        dispatch(getUserBookmarkAction())
-    }, [bookmarkedGroup])
 
     const renderItem = ({ item }) => {
         const { id, name, topic, description, Members, requirements, Tags } = item
@@ -104,6 +100,7 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
     return (
         <View style={{ height: '100%' }}>
             <FlatList
+                nestedScrollEnabled={true}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}

@@ -59,48 +59,53 @@ const OwnGroup = ({ ownGroup, userId }) => {
     const deleteTag = (indexToRemove) => {
         setTags(tags.filter((_, index) => index !== indexToRemove));
     }
-    useEffect(() => { }, [ownGroup, ownGroup.sprints])
 
     return (
         <View style={styles.container}>
-            <View>
+            <View >
                 <View style={styles.header}>
                     <View style={styles.inHeader}>
                         <Text style={styles.textName}>{ownGroup.name}</Text>
                         <Text style={styles.textMember}>{ownGroup.members.length} MEMBERS</Text>
                     </View>
-                    {ownGroup.projectApproved == "ACCEPTED" ?
-                        <Ionicons
-                            style={{ marginRight: normalize(50) }}
-                            name="checkmark-done-circle-outline"
-                            size={normalize(50)} />
-                        : null}
-                    <View style={styles.inHeader}>
-                        {ownGroup.projectApproved == "ACCEPTED" || ownGroup.projectApproved == "ON_REVIEW" ? null :
-                            <View style={{ flexDirection: 'row' }}>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        showDialog()
-                                        setStep(1)
-                                    }
-                                    }
-                                    style={styles.btn1}>
-                                    <Text style={styles.textBtn}>EDIT</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.btn1}
-                                    onPress={() => {
-                                        dispatch(leaveGroupAction())
-                                        navigation.navigate("Home")
-                                    }}
-                                >
-                                    {ownGroup.ownerId == userId ?
-                                        <Text style={styles.textBtn}>DELETE</Text> :
-                                        <Text style={styles.textBtn}>LEAVE</Text>}
-                                </TouchableOpacity>
-                            </View>
-                        }
+                    <View>
+                        {ownGroup.projectApproved == "ACCEPTED" ?
+                            <Ionicons
+                                name="checkmark-done-circle-outline"
+                                size={normalize(50)} />
+                            : null}
                     </View>
+                </View>
+                <View style={{
+                    justifyContent: 'center',
+                    alignItems: 'flex-end',
+                    marginRight: normalize(50),
+                    margin: normalize(10)
+                }}>
+                    {ownGroup.projectApproved == "ACCEPTED" || ownGroup.projectApproved == "ON_REVIEW" ? null :
+                        <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    showDialog()
+                                    setStep(1)
+                                }
+                                }
+                                style={styles.btn1}>
+                                <Text style={styles.textBtn}>EDIT</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.btn1}
+                                onPress={() => {
+                                    dispatch(leaveGroupAction())
+                                    navigation.navigate("Home")
+                                }}
+                            >
+                                {ownGroup.ownerId == userId ?
+                                    <Text style={styles.textBtn}>DELETE</Text> :
+                                    <Text style={styles.textBtn}>LEAVE</Text>}
+                            </TouchableOpacity>
+                        </View>
+                    }
                 </View>
                 <View style={styles.tagBox}>
                     {ownGroup.tags.map((tag, index) => (
@@ -224,18 +229,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
+        height: '100%'
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap'
+        justifyContent: 'space-evenly',
     },
     inHeader: {
-        flexWrap: 'wrap',
         justifyContent: 'center',
         alignContent: 'center',
-        marginLeft: normalize(50),
-        marginRight: normalize(50)
+        width: normalize(200),
+        maxWidth: normalize(200)
     },
     textName: {
         fontFamily: 'Roboto-Bold',
@@ -262,7 +266,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         alignContent: 'center',
-        marginTop: normalize(80),
         margin: normalize(20),
 
     },

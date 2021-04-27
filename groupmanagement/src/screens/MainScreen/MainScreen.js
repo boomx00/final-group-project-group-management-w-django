@@ -26,10 +26,6 @@ import colors from '../../../assets/colors/colors';
 
 const MainScreen = () => {
     const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(getUserAction())
-        dispatch(getOwnGroupAction())
-    }, [])
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Tab.Navigator

@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
+import React, { useState, useEffect, useCallback } from 'react'
+
+//  Stylings
+import { ScrollView, RefreshControl, StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
 import colors from '../../../assets/colors/colors'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Dialog, Portal } from 'react-native-paper';
@@ -10,13 +12,21 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 //  Redux
 import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { logoutAction, editProfileAction } from '../../redux/slices/authSlices'
+import { logoutAction, editProfileAction, getUserAction } from '../../redux/slices/authSlices'
+import { getOwnGroupAction } from '../../redux/slices/groupSlices'
 import normalize from 'react-native-normalize';
+
+const wait = (timeout) => {
+  return new Promise(resolve => setTimeout(resolve, timeout));
+}
 
 const ProfileScreen = ({ user, ownGroup }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
-  const [groupName, setGroupName] = useState("")
+
+  useFocusEffect(useCallback(() => {
+    dispatch(getUserAction())
+  }, []))
 
   const [visible, setVisible] = useState(false);
   const showDialog = () => setVisible(true);
@@ -26,19 +36,24 @@ const ProfileScreen = ({ user, ownGroup }) => {
   const [major, setMajor] = useState(user.major)
   const [biograph, setBiograph] = useState(user.biograph)
 
-  useEffect(() => {
-    if (ownGroup != null) {
-      setGroupName(ownGroup.name)
-    }
-  }, [])
+  //  Refresh Control
+  const [refreshing, setRefreshing] = useState(false);
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    dispatch(getUserAction())
+    dispatch(getOwnGroupAction())
+    wait(500).then(() => setRefreshing(false));
+  }, []);
 
-  useFocusEffect(
-    React.useCallback(() => {
-
-    }, [])
-  );
   return (
-    <View style={styles.container}>
+    <ScrollView
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+        />
+      }
+      contentContainerStyle={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.navigate("Bookmark")}
           style={{ right: normalize(70) }}>
@@ -49,21 +64,23 @@ const ProfileScreen = ({ user, ownGroup }) => {
           <Ionicons name="arrow-forward-circle-outline" size={normalize(35)} color={colors.textDark} />
         </TouchableOpacity>
       </View>
+
       <View style={styles.card}>
         <View style={styles.pictName}>
-          <View style={{ margin: normalize(5) }}>
+          <View style={{ margin: normalize(5), width: normalize(100) }}>
             <Ionicons name="person-circle-outline" size={normalize(100)} />
           </View>
-          <View style={{ margin: normalize(5) }}>
+          <View style={{ margin: normalize(5), width: normalize(180) }}>
             <Text style={styles.textName}>{user.firstName} {user.lastName}</Text>
             <Text style={styles.textId}>{user.studentId}</Text>
           </View>
           <TouchableOpacity
             onPress={() => { showDialog() }}
-            style={{ marginLeft: normalize(20) }}>
+            style={{ marginLeft: normalize(20), width: normalize(75) }}>
             <Ionicons name="create-outline" size={normalize(30)} />
           </TouchableOpacity>
         </View>
+
         <View style={styles.profileDetails}>
           <View style={styles.eachInfo}>
             <Ionicons name="newspaper-outline" size={normalize(25)} color={colors.textDark} />
@@ -90,7 +107,7 @@ const ProfileScreen = ({ user, ownGroup }) => {
           <View style={styles.eachInfo}>
             <Ionicons name="people-outline" size={normalize(25)} color={colors.textDark} />
             <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.textInfo}>{groupName}</Text>
+              <Text style={styles.textInfo}>{ownGroup.name}</Text>
             </View>
           </View>
 
@@ -179,7 +196,7 @@ const ProfileScreen = ({ user, ownGroup }) => {
           </Dialog.Content>
         </Dialog>
       </Portal>
-    </View>
+    </ScrollView>
   )
 }
 const styles = StyleSheet.create({
@@ -200,10 +217,13 @@ const styles = StyleSheet.create({
     fontSize: normalize(20)
   },
   card: {
+    width: normalize(325)
   },
   pictName: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: normalize(350),
+    maxWidth: normalize(500),
   },
   profileDetails: {
     width: normalize(300),

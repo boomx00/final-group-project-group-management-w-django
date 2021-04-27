@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, SafeAreaView, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useEffect, useState, useCallback } from 'react'
+
 
 //  Styling
 import normalize from 'react-native-normalize'
-import colors from '../../../assets/colors/colors'
-import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native'
 //Redux
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 
 //  Components
 import GroupProposalProgress from '../../components/GroupProposalProgress/GroupProposalProgress'
@@ -15,11 +13,57 @@ import ReqList from '../../components/Request/reqList'
 import DontHaveGroup from '../../components/DontHaveGroup/DontHaveGroup'
 import StudentReqList from '../../components/DontHaveGroup/StudentReqList';
 
+// Redux
+import {
+    getOwnGroupAction,
+    getOwnJoinRequestAction,
+    getJoinGroupReqAction
+} from '../../redux/slices/groupSlices'
+import { getUserAction } from '../../redux/slices/authSlices'
+
+const wait = (timeout) => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+}
+
 const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
+    const dispatch = useDispatch()
     const [focusOn, setFocusOn] = useState("GROUP PROPOSAL")
 
+    useEffect(() => {
+        console.log("trigger")
+        dispatch(getUserAction())
+        dispatch(getOwnGroupAction())
+        dispatch(getOwnJoinRequestAction())
+        wait(500).then(() => {
+            if (ownGroup.ownerId == user.id) {
+                dispatch(getJoinGroupReqAction())
+            }
+        })
+    }, [])
+
+    //Refresh Control
+    const [refreshing, setRefreshing] = useState(false);
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        dispatch(getUserAction())
+        dispatch(getOwnGroupAction())
+        dispatch(getOwnJoinRequestAction())
+        if (ownGroup.ownerId == user.id) {
+            dispatch(getJoinGroupReqAction())
+        }
+        wait(500).then(() => setRefreshing(false));
+    }, []);
+
     return (
-        <View style={styles.container}>
+        <ScrollView
+            nestedScrollEnabled={true}
+            refreshControl={
+                <RefreshControl
+                    refreshing={refreshing}
+                    onRefresh={onRefresh}
+                />
+            }
+            contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <View style={focusOn == "GROUP PROPOSAL" ? styles.subHeader : null}>
                     <TouchableOpacity onPress={() => {
@@ -59,7 +103,7 @@ const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
                         :
                         <ReqList owner={false} />
             }
-        </View>
+        </ScrollView>
     )
 }
 

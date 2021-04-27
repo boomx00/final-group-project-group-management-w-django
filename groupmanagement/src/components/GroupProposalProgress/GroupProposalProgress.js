@@ -8,12 +8,11 @@ import { connect } from 'react-redux'
 const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
     return (
         <View style={{
+            flex: 1,
             backgroundColor: colors.white,
             borderRadius: normalize(10),
             elevation: normalize(10),
-            height: normalize(550),
-            margin: normalize(20
-            )
+            margin: normalize(20)
         }}>
             <View>
                 <Text style={{

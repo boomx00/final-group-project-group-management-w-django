@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native'
 import normalize from 'react-native-normalize'
-import { connect } from 'react-redux'
 import colors from '../../../assets/colors/colors'
 
 import Req from './req'
+
+//Redux
+import { connect, useDispatch } from 'react-redux'
+import {
+    getOwnGroupAction,
+    getOwnJoinRequestAction,
+    getJoinGroupReqAction
+} from '../../redux/slices/groupSlices'
 
 const renderItemR = ({ item }) => {
 
@@ -20,14 +27,21 @@ const renderItemR = ({ item }) => {
 }
 //passing
 const ReqList = ({ joinList, owner }) => {
+    const dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(getJoinGroupReqAction())
+    }, [])
     return (
         <>
             {owner ?
                 <View style={styles.reqList}>
-                    {joinList.length == 0 ? <Text>No Request</Text> : <FlatList data={joinList}
-                        keyExtractor={item => item.id}
-                        renderItem={renderItemR}
-                    />}
+                    {joinList.length == 0 ? <Text>No Request</Text> :
+                        <FlatList
+                            nestedScrollEnabled={true}
+                            data={joinList}
+                            keyExtractor={item => item.id}
+                            renderItem={renderItemR}
+                        />}
                 </View>
                 :
                 <View style={{

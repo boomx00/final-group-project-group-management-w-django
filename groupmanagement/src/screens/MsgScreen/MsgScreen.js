@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react'
 
 //  Stylings
-import { StyleSheet, SafeAreaView, Text, View } from 'react-native'
+import { StyleSheet, ScrollView, Text, View } from 'react-native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import colors from '../../../assets/colors/colors';
 import normalize from 'react-native-normalize'
@@ -11,8 +11,6 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 //Redux
 import { connect, useDispatch } from 'react-redux'
-import { getUser, getUserAction } from '../../redux/slices/authSlices'
-import { getOwnJoinRequestAction, getJoinGroupReqAction } from '../../redux/slices/groupSlices'
 
 // Components
 import TeacherMsgScreen from './TeacherMsgScreen'
@@ -20,13 +18,6 @@ import StudentMsgScreen from './StudentMsgScreen'
 
 const MsgScreen = ({ user, groupProposalList }) => {
     const dispatch = useDispatch();
-    useFocusEffect(
-        useCallback(() => {
-            dispatch(getUserAction())
-            dispatch(getOwnJoinRequestAction())
-            dispatch(getJoinGroupReqAction())
-        }, [])
-    );
     const navigation = useNavigation()
 
     return (

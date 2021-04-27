@@ -2,7 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as RootNavigation from '../../middleware/RootNavigation'
-import { getOwnGroupAction } from './groupSlices'
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -68,7 +67,6 @@ export const getUserAction = () => {
             const user = await axios.get("/auth/getUser")
             if (user.data != null) {
                 dispatch(getUser(user.data.userData))
-                dispatch(getOwnGroupAction())
             }
         } catch (err) {
             alert(err.response.data.MESSAGE)

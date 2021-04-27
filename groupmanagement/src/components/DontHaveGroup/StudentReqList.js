@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native'
 import normalize from 'react-native-normalize';
 import colors from '../../../assets/colors/colors';
 
@@ -7,7 +7,6 @@ import { connect, useDispatch } from 'react-redux'
 import { confirmJoinAction, cancelJoinAction } from '../../redux/slices/groupSlices'
 
 const StudentReqList = ({ ownJoinReq, groupList }) => {
-    useEffect(() => { }, [ownJoinReq])
     const dispatch = useDispatch()
     const renderItem = ({ item }) => {
         const group = groupList.find(x => x.id == item.groupId)
@@ -41,10 +40,6 @@ const StudentReqList = ({ ownJoinReq, groupList }) => {
                                     style={styles.joinBox}>
                                     <Text style={styles.textRegular}>JOIN</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => dispatch(cancelJoinAction(item.id))}
-                                    style={styles.joinBox}>
-                                    <Text style={styles.textRegular}>CANCEL</Text>
-                                </TouchableOpacity>
                             </View>
                         : null
                     }
@@ -54,13 +49,14 @@ const StudentReqList = ({ ownJoinReq, groupList }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <FlatList
+                nestedScrollEnabled={true}
                 data={ownJoinReq}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
-        </View>
+        </SafeAreaView>
     )
 }
 
@@ -74,7 +70,7 @@ const styles = StyleSheet.create({
         margin: normalize(20),
         borderRadius: normalize(20),
         elevation: normalize(20),
-        height: normalize(120),
+        height: normalize(140),
         flexDirection: 'column',
     },
     statusBox: {
@@ -87,8 +83,7 @@ const styles = StyleSheet.create({
         borderRadius: normalize(10),
         borderWidth: 0.5,
         padding: normalize(10),
-        width: normalize(100),
-        marginRight: normalize(20)
+        width: normalize(300),
     },
     textBold: {
         fontFamily: 'Roboto-Bold',
@@ -96,7 +91,7 @@ const styles = StyleSheet.create({
     },
     textRegular: {
         fontFamily: 'Roboto-Regular',
-        fontSize: normalize(15),
+        fontSize: normalize(18),
         textAlign: 'center'
     },
     textLight: {

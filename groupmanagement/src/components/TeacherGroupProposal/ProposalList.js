@@ -94,6 +94,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
             alignItems: 'center'
         }}>
             <FlatList
+                nestedScrollEnabled={true}
                 data={groupProposalList}
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
@@ -104,7 +105,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}>
-                        <ScrollView>
+                        <ScrollView nestedScrollEnabled={true}>
                             <Text
                                 style={{
                                     fontFamily: 'Roboto-Bold',

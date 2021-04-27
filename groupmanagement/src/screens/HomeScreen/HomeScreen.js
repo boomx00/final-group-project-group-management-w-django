@@ -12,22 +12,20 @@ import GroupList from '../../components/Group/GroupList'
 //  Redux
 import { connect, useDispatch } from 'react-redux'
 import { getAllGroupAction } from '../../redux/slices/groupSlices'
-import { getUserAction } from '../../redux/slices/authSlices'
 
 //  Navigation
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
 const HomeScreen = ({ groupList }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(getUserAction())
-        dispatch(getAllGroupAction())
-    }, [])
-
+    useFocusEffect(
+        useCallback(() => {
+            dispatch(getAllGroupAction())
+        }, [])
+    );
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
             <View style={styles.header}>
