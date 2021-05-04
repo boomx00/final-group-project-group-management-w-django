@@ -32,7 +32,7 @@ const Details = ({ route, user, bookmarkedGroup }) => {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backIcon} onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back-outline" size={normalize(30)} color={colors.textDark} />
@@ -41,7 +41,7 @@ const Details = ({ route, user, bookmarkedGroup }) => {
             </View>
 
             <View style={styles.card}>
-                <ScrollView contentContainerStyle={{ justifyContent: 'flex-end' }}>
+                <View style={{ justifyContent: 'flex-end' }}>
                     <View style={styles.insideCard}>
                         <Text style={{
                             fontFamily: 'Roboto-Bold',
@@ -68,7 +68,7 @@ const Details = ({ route, user, bookmarkedGroup }) => {
                             {requirements}
                         </Text>
                     </View>
-                </ScrollView>
+                </View>
                 <View style={styles.bottomView}>
                     <View style={styles.bottomViewBox}>
                         <TouchableOpacity
@@ -101,7 +101,7 @@ const Details = ({ route, user, bookmarkedGroup }) => {
                     </View>
                 </View>
             </View>
-        </View >
+        </ScrollView >
     )
 }
 

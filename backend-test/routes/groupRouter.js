@@ -538,7 +538,6 @@ app.post("/decline-join-group", tokenVerifier, async (req, res) => {
 app.patch("/leave-group", tokenVerifier, async (req, res) => {
     try {
         const user = await User.findOne({ where: { id: res.locals.id }, attributes: ['id', 'groupId'], include: [{ model: Group, as: 'Group', attributes: ['id', 'ownerId'] }] })
-        console.log(user)
         if (user.Group.ownerId == user.id) {
             const destroyedGroup = await Group.destroy({ where: { id: user.Group.id } })
             res.status(200).send({

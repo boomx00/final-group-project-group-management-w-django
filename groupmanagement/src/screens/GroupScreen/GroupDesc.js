@@ -10,15 +10,15 @@ import { sendGroupProposalAction } from '../../redux/slices/groupSlices'
 const GroupDesc = ({ ownGroup }) => {
     const dispatch = useDispatch()
     return (
-        <View style={styles.infoBox}>
+        <ScrollView contentContainerStyle={styles.infoBox}>
             <View>
                 <View style={styles.projectDescBox}>
                     <Text style={styles.textDetail}>Project Description:</Text>
-                    <ScrollView contentContainerStyle={{ height: normalize(120) }}>
+                    <View contentContainerStyle={{ height: normalize(120) }}>
                         <Text style={styles.textParagraph}>
                             {ownGroup.description}
                         </Text>
-                    </ScrollView>
+                    </View>
                 </View>
             </View>
             <View>
@@ -45,14 +45,13 @@ const GroupDesc = ({ ownGroup }) => {
                 </ScrollView>
 
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     infoBox: {
-        flex: 1,
-        margin: normalize(30),
+        margin: normalize(30)
     },
     textDetail: {
         fontFamily: 'Roboto-Bold',
