@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect,useState } from 'react'
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native'
 import normalize from 'react-native-normalize'
 import colors from '../../../assets/colors/colors'
+import { Dialog, Portal, Button, Provider } from 'react-native-paper';
 
 import Req from './req'
 
@@ -13,24 +14,43 @@ import {
     getJoinGroupReqAction
 } from '../../redux/slices/groupSlices'
 
-const renderItemR = ({ item }) => {
 
-    return <Req
-        key={item.id}
-        id={item.id}
-        firstName={item.applicant.profile.firstName}
-        lastName={item.applicant.profile.lastName}
-        studentId={item.applicant.studentId}
-        approved={item.approved}
-        confirm={item.confirm}
-    />
-}
 //passing
-const ReqList = ({ joinList, owner }) => {
+const ReqList = ({ joinList, owner, user,ownGroup,full }) => {
+    const [visible, setVisible] = useState(false);
+    const showDialog = () => setVisible(true);
+    const hideDialog = () => setVisible(false);
     const dispatch = useDispatch()
     useEffect(() => {
-        dispatch(getJoinGroupReqAction())
+        dispatch(getJoinGroupReqAction(user.groupId))
     }, [])
+    const [clickedUser, setClickedUser] = useState({
+        person:{
+            firstName:"",
+            username:"",
+            bio:"",
+            major:""
+        }
+    });
+    console.log(ownGroup.members.length)
+    const renderItemR = ({ item }) => {
+        
+        return <Req
+            key={item.id}
+            id={item.groupname.id}
+            firstName={item.firstName}
+            lastName={item.lastName}
+            studentId={item.userid}
+            approved={item.status}
+            confirm = {item.confirmed}
+
+            clickedUser={() => {
+                
+                setClickedUser(item)
+                showDialog()
+            }}
+        />
+    }
     return (
         <>
             {owner ?
@@ -44,6 +64,34 @@ const ReqList = ({ joinList, owner }) => {
                         />}
                 </View>
                 :
+            full
+            ?
+    <View style={{
+                    marginTop: normalize(50),
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    alignContent: 'center',
+                }}>
+                    <Image source={require('../../../assets/images/Humans1.png')} />
+                    <Text
+                        style={{
+                            fontFamily: 'Roboto-Bold',
+                            fontSize: normalize(30),
+                            textAlign: 'center',
+                            color: colors.textMedium
+                        }}
+                    >YOUR GROUP IS FULL</Text>
+                    <Text
+                        style={{
+                            fontFamily: 'Roboto-Regular',
+                            fontSize: normalize(18),
+                            textAlign: 'center',
+                            color: colors.textMedium
+                        }}
+                    >REMOVE MEMBERS IF YOU WOULD LIKE TO FIND NEW ONES</Text>
+                </View>
+
+            :
                 <View style={{
                     marginTop: normalize(50),
                     justifyContent: 'center',
@@ -69,6 +117,24 @@ const ReqList = ({ joinList, owner }) => {
                     >PLEASE CONTACT YOUR GROUP OWNER TO ACCEPT THE JOIN REQUEST</Text>
                 </View>
             }
+            <Portal>
+                <Dialog visible={visible} onDismiss={hideDialog}>
+                    <Dialog.Title>User Details</Dialog.Title>
+                    <Dialog.Content>
+                        <Text style={styles.textHead}>Name:</Text>
+                        <Text style={styles.textReg}>{clickedUser.firstName} {clickedUser.lastName}</Text>
+                        <Text style={styles.textHead}>Student ID:</Text>
+                        <Text style={styles.textReg}>{clickedUser.userid}</Text>
+                        <Text style={styles.textHead}>Major:</Text>
+                        <Text style={styles.textReg}>{clickedUser.person.major}</Text>
+                        <Text style={styles.textHead}>Description:</Text>
+                        <Text style={styles.textReg}>{clickedUser.person.bio}</Text>
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={hideDialog}>Done</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
         </>
     )
 }
@@ -80,7 +146,9 @@ const styles = StyleSheet.create({
     },
 })
 const mapStateToProps = (state) => ({
-    joinList: state.group.joinGroupRequest
+    joinList: state.group.joinGroupRequest,
+    user: state.auth.user,
+    ownGroup:state.group.ownGroup
 })
 
 export default connect(mapStateToProps, null)(ReqList)

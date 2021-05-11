@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 // Stylings
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from 'react-native'
@@ -7,7 +8,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import normalize from 'react-native-normalize';
 
 //  Navigation
-import { useNavigation } from '@react-navigation/native';
 
 // Redux
 import { connect, useDispatch } from 'react-redux'
@@ -16,8 +16,11 @@ import { getUserBookmarkAction, addUserBookmarkAction, deleteUserBookmarkAction,
 const Details = ({ route, user, bookmarkedGroup }) => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
-
-    const { id, name, topic, description, requirements, tags } = route.params
+    const [applied, setApplied] = useState(user.applied)
+    useFocusEffect(useCallback(() => {
+        setApplied(user.applied)
+      }, []))
+    const { id,userid,applications, name, topic, description, requirements,status, tags,recruitment } = route.params
 
     const likePress = (liked) => {
         if (liked) {
@@ -27,8 +30,18 @@ const Details = ({ route, user, bookmarkedGroup }) => {
         }
     }
 
+    console.log(applied)
     const joinGroup = () => {
-        dispatch(joinGroupAction(id))
+        
+        const data = {
+            applied: user.applied,
+            fName:user.firstName,
+            groupid: id,
+            userid: userid
+        }
+        dispatch(joinGroupAction(data))
+        navigation.navigate('Home')
+
     }
 
     return (
@@ -57,7 +70,7 @@ const Details = ({ route, user, bookmarkedGroup }) => {
 
                         <View style={styles.tagBox}>
                             {tags.map((tag, index) => (
-                                <Text key={index} style={styles.tag}>{tag.name}</Text>
+                                <Text key={index} style={styles.tag}>{tag}</Text>
                             ))}
 
                         </View>
@@ -71,6 +84,61 @@ const Details = ({ route, user, bookmarkedGroup }) => {
                 </View>
                 <View style={styles.bottomView}>
                     <View style={styles.bottomViewBox}>
+                        {
+                        recruitment=="closed"?
+                        <TouchableOpacity
+                            disabled={true}
+                            style={{
+                                backgroundColor: '#008BFF',
+                                borderRadius: normalize(10),
+                                padding: normalize(10),
+                                width: normalize(200),
+                                elevation: normalize(10)
+                            }}>
+                            <Text style={{
+                                fontFamily: 'Roboto-Bold',
+                                fontSize: normalize(20),
+                                textAlign: 'center',
+                                color: colors.white
+                            }}>Recruitment Closed</Text>
+                        </TouchableOpacity>
+                        :
+                        user.groupId?
+                        <TouchableOpacity
+                        disabled={true}
+                        style={{
+                            backgroundColor: '#008BFF',
+                            borderRadius: normalize(10),
+                            padding: normalize(10),
+                            width: normalize(200),
+                            elevation: normalize(10)
+                        }}>
+                        <Text style={{
+                            fontFamily: 'Roboto-Bold',
+                            fontSize: normalize(20),
+                            textAlign: 'center',
+                            color: colors.white
+                        }}>You're in a Group</Text>
+                    </TouchableOpacity>:
+                        applied?
+                        applied.includes(id)?
+                        <TouchableOpacity
+                        disabled={true}
+                        style={{
+                            backgroundColor: '#008BFF',
+                            borderRadius: normalize(10),
+                            padding: normalize(10),
+                            width: normalize(200),
+                            elevation: normalize(10)
+                        }}>
+                        <Text style={{
+                            fontFamily: 'Roboto-Bold',
+                            fontSize: normalize(20),
+                            textAlign: 'center',
+                            color: colors.white
+                        }}>You've already applied</Text>
+                    </TouchableOpacity>
+                        :
                         <TouchableOpacity
                             onPress={() => joinGroup()}
                             style={{
@@ -87,6 +155,24 @@ const Details = ({ route, user, bookmarkedGroup }) => {
                                 color: colors.white
                             }}>Request Join</Text>
                         </TouchableOpacity>
+                        :
+                        <TouchableOpacity
+                            onPress={() => joinGroup()}
+                            style={{
+                                backgroundColor: '#008BFF',
+                                borderRadius: normalize(10),
+                                padding: normalize(10),
+                                width: normalize(200),
+                                elevation: normalize(10)
+                            }}>
+                            <Text style={{
+                                fontFamily: 'Roboto-Bold',
+                                fontSize: normalize(20),
+                                textAlign: 'center',
+                                color: colors.white
+                            }}>Request Join</Text>
+                        </TouchableOpacity>
+}
                         <TouchableOpacity onPress={() => {
                             bookmarkedGroup.includes(id) ? likePress(true, id) : likePress(false, id)
                         }}>

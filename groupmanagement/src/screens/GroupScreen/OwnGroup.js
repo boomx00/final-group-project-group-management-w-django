@@ -13,7 +13,10 @@ import {
     getOwnGroupAction,
     leaveGroupAction,
     editGroupAction,
-    sendGroupProposalAction
+    sendGroupProposalAction,
+    removeUsers,
+    deleteGroup
+
 } from '../../redux/slices/groupSlices'
 
 // Navigation
@@ -30,9 +33,15 @@ const OwnGroup = ({ ownGroup, userId }) => {
     const [onSprintClicked, setSprintClicked] = useState(false);
     const [clickedSprintData, setClickedSprint] = useState();
 
+
+    const[editable, setEditable]=useState(       
+        ( (ownGroup.progress == "accepted")|| (ownGroup.proposal == "accepted"))?false:true
+        );
+
+
     const [visible, setVisible] = useState(false);
     const showDialog = () => {
-        const tagArray = ownGroup.tags.map(tag => { return tag.name })
+        const tagArray = ownGroup.tags.map(tag => { return tag })
         setTags(tagArray)
         setName(ownGroup.name)
         setTopic(ownGroup.topic)
@@ -47,6 +56,27 @@ const OwnGroup = ({ ownGroup, userId }) => {
     const [description, setDescription] = useState(ownGroup.description)
     const [tags, setTags] = useState(ownGroup.tags)
 
+    console.log(ownGroup.proposal)
+
+    const leaveGroupAction=()=>{
+        const data ={
+            userid:userId,
+            groupid: ownGroup.id,
+            action: 'leave'
+        }
+        dispatch(removeUsers(data))
+
+    }
+    const deleteGroupAction=()=>{
+        const data ={
+            userid:userId,
+            groupid: ownGroup.id,
+            action: 'leave'
+        }
+
+        dispatch(deleteGroup(data))
+
+    }
     const addTag = (e) => {
         if (tags.length <= 4) {
             setTags([...tags, e.nativeEvent.text])
@@ -63,9 +93,12 @@ const OwnGroup = ({ ownGroup, userId }) => {
     return (
         <View style={styles.container}>
             <View >
+            <ScrollView contentContainerStyle={styles.infoBox}>
                 <View style={styles.header}>
                     <View style={styles.inHeader}>
-                        <Text style={styles.textName}>{ownGroup.name}</Text>
+                    <Text style={styles.textTitle}>{ownGroup.topic}</Text>
+
+                        <Text style={styles.textName}>By: {ownGroup.name}</Text>
                         <Text style={styles.textMember}>{ownGroup.members.length} MEMBERS</Text>
                     </View>
                     <View>
@@ -82,8 +115,10 @@ const OwnGroup = ({ ownGroup, userId }) => {
                     marginRight: normalize(50),
                     margin: normalize(10)
                 }}>
-                    {ownGroup.projectApproved == "ACCEPTED" || ownGroup.projectApproved == "ON_REVIEW" ? null :
+                    { !editable ? null :
                         <View style={{ flexDirection: 'row' }}>
+                            {
+                            ownGroup.ownerId == userId?
                             <TouchableOpacity
                                 onPress={() => {
                                     showDialog()
@@ -92,12 +127,19 @@ const OwnGroup = ({ ownGroup, userId }) => {
                                 }
                                 style={styles.btn1}>
                                 <Text style={styles.textBtn}>EDIT</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>:null
+}
+
                             <TouchableOpacity
                                 style={styles.btn1}
                                 onPress={() => {
-                                    dispatch(leaveGroupAction())
-                                    navigation.navigate("Home")
+                                    ownGroup.ownerId == userId ?
+                                    deleteGroupAction()
+                                    
+                                    :
+                                    leaveGroupAction()
+
+                                    // navigation.navigate("Home")
                                 }}
                             >
                                 {ownGroup.ownerId == userId ?
@@ -111,39 +153,16 @@ const OwnGroup = ({ ownGroup, userId }) => {
                     {ownGroup.tags.map((tag, index) => (
                         <View style={styles.tag}
                             key={index}>
-                            <Text >{tag.name}</Text>
+                            <Text >{tag}</Text>
                         </View>
                     ))}
                 </View>
+                </ScrollView>
             </View>
-            {onSprintClicked ?
-                <Sprint clickedSprintData={clickedSprintData} goBack={() => {
-                    setClickedSprint()
-                    setSprintClicked(false)
-                }} />
-                :
+            {
                 <GroupDesc ownGroup={ownGroup} />
             }
-            <View style={styles.sprintsBtn}>
-                {ownGroup.sprints.map((sprint, index) => (
-                    <TouchableOpacity
-                        style={{
-                            alignItems: 'center'
-                        }}
-                        key={index}
-                        onPress={() => {
-                            setSprintClicked(true)
-                            setClickedSprint(sprint)
-                        }}>
-                        <Ionicons name={sprint.progress == "NOT_STARTED" ?
-                            "lock-closed-outline" :
-                            sprint.progress == "ON_PROGRESS" ? "play-outline" : "checkmark-done-outline"} size={30} color={colors.textDark} />
-                        <Text style={{
-                            textAlign: 'center'
-                        }}>Sprint {index + 1}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+            
             <Portal>
                 <Dialog visible={visible} onDismiss={hideDialog} style={styles.modalContainer}>
                     <Dialog.Title style={styles.modalTitle}>EDIT GROUP</Dialog.Title>
@@ -226,6 +245,9 @@ const OwnGroup = ({ ownGroup, userId }) => {
 }
 
 const styles = StyleSheet.create({
+    infoBox: {
+        margin: normalize(0)
+    },
     container: {
         flex: 1,
         flexDirection: 'column',
@@ -241,9 +263,13 @@ const styles = StyleSheet.create({
         width: normalize(200),
         maxWidth: normalize(200)
     },
-    textName: {
+    textTitle: {
         fontFamily: 'Roboto-Bold',
         fontSize: normalize(25)
+    },
+    textName: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: normalize(20)
     },
     textMember: {
         fontFamily: 'Roboto-Regular',
@@ -261,6 +287,12 @@ const styles = StyleSheet.create({
         color: colors.white,
         textAlign: 'center'
     },
+    textBtns: {
+        fontFamily: 'Roboto-Regular',
+        fontSize: normalize(25),
+        color: colors.white,
+        textAlign: 'center'
+    },
     sprintsBtn: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -274,7 +306,8 @@ const styles = StyleSheet.create({
     },
     tagBox: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-evenly',
+        marginBottom: normalize(10),
     },
     tag: {
         backgroundColor: '#C4C4C4',

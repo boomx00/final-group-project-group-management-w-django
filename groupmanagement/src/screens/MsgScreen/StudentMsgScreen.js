@@ -6,6 +6,7 @@ import normalize from 'react-native-normalize'
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native'
 //Redux
 import { connect, useDispatch } from 'react-redux'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 //  Components
 import GroupProposalProgress from '../../components/GroupProposalProgress/GroupProposalProgress'
@@ -29,27 +30,24 @@ const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
     const dispatch = useDispatch()
     const [focusOn, setFocusOn] = useState("GROUP PROPOSAL")
 
-    useEffect(() => {
-        console.log("trigger")
-        dispatch(getUserAction())
-        dispatch(getOwnGroupAction())
-        dispatch(getOwnJoinRequestAction())
-        wait(500).then(() => {
+    useFocusEffect(useCallback(() => {
+            dispatch(getOwnGroupAction(user.groupId))
+            dispatch(getOwnJoinRequestAction(user.id))
             if (ownGroup.ownerId == user.id) {
-                dispatch(getJoinGroupReqAction())
+                dispatch(getJoinGroupReqAction(ownGroup.id))
             }
-        })
-    }, [])
+
+    }, []))
 
     //Refresh Control
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getUserAction())
-        dispatch(getOwnGroupAction())
-        dispatch(getOwnJoinRequestAction())
+        // dispatch(getUserAction())
+        dispatch(getOwnGroupAction(user.groupId))
+        dispatch(getOwnJoinRequestAction(user.id))
         if (ownGroup.ownerId == user.id) {
-            dispatch(getJoinGroupReqAction())
+            dispatch(getJoinGroupReqAction(ownGroup.id))
         }
         wait(500).then(() => setRefreshing(false));
     }, []);
@@ -88,18 +86,23 @@ const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
                 </View>
             </View>
             {focusOn == "GROUP PROPOSAL" ?
-                user.groupId == null ?
-                    <DontHaveGroup />
+                user.groupId ?
+                <GroupProposalProgress />
+
                     :
-                    <GroupProposalProgress />
+                    <DontHaveGroup />
+
                 :
-                user.groupId == null ?
+                !user.groupId ?
                     ownJoinRequest.length != null ?
                         <StudentReqList ownJoinReq={ownJoinRequest} />
                         : <DontHaveGroup />
                     :
-                    ownGroup.ownerId == user.id ?
+                    (ownGroup.ownerId == user.id) && (ownGroup.members.length < 7) ?
                         <ReqList owner={true} />
+                        :
+                        (ownGroup.ownerId == user.id) && (ownGroup.members.length == 7)?
+                        <ReqList full={true} />
                         :
                         <ReqList owner={false} />
             }

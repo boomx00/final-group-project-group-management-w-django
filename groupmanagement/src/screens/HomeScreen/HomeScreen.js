@@ -11,7 +11,7 @@ import GroupList from '../../components/Group/GroupList'
 
 //  Redux
 import { connect, useDispatch } from 'react-redux'
-import { getAllGroupAction } from '../../redux/slices/groupSlices'
+import { getAllGroupAction,getGroupProposalAction } from '../../redux/slices/groupSlices'
 
 //  Navigation
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -24,6 +24,7 @@ const HomeScreen = ({ groupList }) => {
     useFocusEffect(
         useCallback(() => {
             dispatch(getAllGroupAction())
+            dispatch(getGroupProposalAction())
         }, [])
     );
     return (

@@ -12,7 +12,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 //  Redux
 import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { logoutAction, editProfileAction, getUserAction } from '../../redux/slices/authSlices'
+import { logoutAction, editProfileAction, getUserAction, editProfile } from '../../redux/slices/authSlices'
 import { getOwnGroupAction } from '../../redux/slices/groupSlices'
 import normalize from 'react-native-normalize';
 
@@ -24,8 +24,8 @@ const ProfileScreen = ({ user, ownGroup }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch()
 
-  useFocusEffect(useCallback(() => {
-    dispatch(getUserAction())
+  useEffect(useCallback(() => {
+    // dispatch(getUserAction())
   }, []))
 
   const [visible, setVisible] = useState(false);
@@ -45,6 +45,15 @@ const ProfileScreen = ({ user, ownGroup }) => {
     wait(500).then(() => setRefreshing(false));
   }, []);
 
+  const editProfile = () =>{
+    const data = {
+      major: major,
+      bio: biograph
+    }
+    setVisible(false)
+
+    dispatch(editProfileAction(data))
+  }
   return (
     <ScrollView
       refreshControl={
@@ -173,7 +182,8 @@ const ProfileScreen = ({ user, ownGroup }) => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  onPress={() => dispatch(editProfileAction({ biograph, major }))}
+                  onPress={() => editProfile()
+                  }
                   style={{
                     backgroundColor: '#0000CC',
                     borderRadius: normalize(10),

@@ -11,12 +11,21 @@ import ProposalList from '../../components/TeacherGroupProposal/ProposalList'
 //  Redux
 import { connect, useDispatch } from 'react-redux'
 import { getGroupProposalAction } from '../../redux/slices/groupSlices'
+import { Searchbar } from 'react-native-paper';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const TeacherMsgScreen = ({ proposalList }) => {
+const TeacherMsgScreen = ({ proposalList, groupList }) => {
+const [filteredData, setFilteredData] = useState();
+
+    const filterData = (filter) => {
+        const filtered = proposalList.filter(group => {
+            return group.groupid.name.toLowerCase().includes(filter.toLowerCase()) || group.groupid.topic.toLowerCase().includes(filter.toLowerCase())
+        })
+        setFilteredData(filtered)
+    }
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(getGroupProposalAction())
@@ -44,7 +53,11 @@ const TeacherMsgScreen = ({ proposalList }) => {
                     fontSize: normalize(20)
                 }}>GROUP PROPOSALS</Text>
             </View>
-            <ProposalList groupProposalList={proposalList} />
+            <Searchbar
+                placeholder="Search by name, topics or tags"
+                onChangeText={(text) => filterData(text)}
+            />
+            <ProposalList groupProposalList={filteredData?filteredData:proposalList} />
         </ScrollView>
     )
 }
@@ -61,7 +74,9 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => ({
-    proposalList: state.group.groupProposalList
+    proposalList: state.group.groupProposalList,
+    groupList: state.group.list
+
 })
 
 export default connect(mapStateToProps, null)(TeacherMsgScreen)

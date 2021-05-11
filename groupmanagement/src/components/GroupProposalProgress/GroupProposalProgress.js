@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { View, Text, Image } from 'react-native'
 import colors from '../../../assets/colors/colors'
 import normalize from 'react-native-normalize'
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { connect } from 'react-redux'
 
-const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
+const GroupProposalProgress = ({ groupProposal, ownGroup,allGroupProposalList }) => {
+    useFocusEffect(useCallback(() => {
+     
+
+      }, []))
+      const group = allGroupProposalList.find(x => x.groupid.id == ownGroup.id)
+      console.log(group)
     return (
         <View style={{
             flex: 1,
@@ -57,7 +64,7 @@ const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
                                 flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor: '#008BFF',
+                                backgroundColor: !group ? "#008BFF" : group.progress == "tbd" || group.progress == "resent" ? "#008BFF" : group.progress == "accepted" ? "green" : "red",
                                 borderRadius: normalize(5),
                                 padding: normalize(5)
                             }}>
@@ -70,7 +77,7 @@ const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
                                     fontFamily: 'Roboto-Bold',
                                     fontSize: normalize(17),
                                     color: colors.white
-                                }}> {groupProposal.progress == "ON_REVIEW" ? "ON REVIEW BY THE TEACHER" : groupProposal.progress == "ACCEPTED" ? "GROUP PROPOSAL ACCEPTED" : "GROUP PROPOSAL DECLINED"}</Text>
+                                }}> {!group ? "NOT SENT" : group.progress == "tbd" || group.progress == "resent" ? "ON REVIEW BY THE TEACHER" : group.progress == "accepted" ? "GROUP PROPOSAL ACCEPTED" : "GROUP PROPOSAL DECLINED"}</Text>
                             </View>
                             <View style={{
                                 justifyContent: 'space-between'
@@ -99,7 +106,7 @@ const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
                                     fontFamily: 'Roboto-Regular',
                                     fontSize: normalize(17),
                                 }}>
-                                    {groupProposal.feedback}
+                                    {!group?"":group.feedback}
                                 </Text>
                             </View>
                         </View>
@@ -110,7 +117,8 @@ const GroupProposalProgress = ({ groupProposal, ownGroup }) => {
 }
 const mapStateToProps = (state) => ({
     ownGroup: state.group.ownGroup,
-    groupProposal: state.group.groupProposal
+    groupProposal: state.group.groupProposal,
+    allGroupProposalList: state.group.groupProposalList
 })
 
 export default connect(mapStateToProps, null)(GroupProposalProgress)

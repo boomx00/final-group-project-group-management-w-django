@@ -11,38 +11,44 @@ import { connect, useDispatch } from 'react-redux'
 import { acceptJoinGroupAction, declineJoinGroupAction } from '../../redux/slices/groupSlices'
 import { color } from 'react-native-reanimated'
 
-const Req = ({ id, firstName, lastName, approved, confirm, studentId }) => {
+const Req = ({ id, firstName, lastName, approved, confirm, studentId,clickedUser  }) => {
     const dispatch = useDispatch()
-
+    const data = {
+        userid:  studentId,
+        groupid: id
+    }
+  
     return (
-        <View style={styles.container}>
+        <TouchableOpacity
+        onPress={() => { clickedUser() }}
+        style={styles.container}>
             <View style={styles.card}>
                 <View>
                     <Text style={styles.textName}>{firstName} {lastName}</Text>
                     <Text style={styles.studIdText}>{studentId}</Text>
                     <Text style={styles.textMsg}>I would like to join your group</Text>
                 </View>
-                {approved == null ?
+               {approved == "tbd" ?
                     <View>
-                        <TouchableOpacity onPress={() => dispatch(acceptJoinGroupAction(id))}
+                        <TouchableOpacity onPress={() => dispatch(acceptJoinGroupAction(data))}
                             style={styles.acceptBtn}>
                             <Text style={styles.textAccept}>Accept</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => dispatch(declineJoinGroupAction(id))}
+                        <TouchableOpacity onPress={() => dispatch(declineJoinGroupAction(data))}
                             style={styles.declineBtn}>
                             <Text style={styles.textDecline}>Decline</Text>
                         </TouchableOpacity>
                     </View>
                     :
-                    <View style={confirm == null ?
-                        styles.statusBox : confirm == true ?
+                    <View style={confirm == "tbd" ?
+                        styles.statusBox : confirm == "accepted" ?
                             styles.statusBoxAcc : styles.statusBoxDec}>
-                        <Text style={styles.textStatus}>{approved == true ? "Accepted" : "Declined"}</Text>
+                        <Text style={styles.textStatus}>{approved == "accepted" ? "Accepted" : "Declined"}</Text>
                     </View>
                 }
 
             </View>
-        </View>
+        </TouchableOpacity>
     )
 }
 

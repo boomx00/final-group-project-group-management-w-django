@@ -6,10 +6,16 @@ import colors from '../../../assets/colors/colors';
 import { connect, useDispatch } from 'react-redux'
 import { confirmJoinAction, cancelJoinAction } from '../../redux/slices/groupSlices'
 
-const StudentReqList = ({ ownJoinReq, groupList }) => {
+const StudentReqList = ({ ownJoinReq, groupList,user }) => {
     const dispatch = useDispatch()
     const renderItem = ({ item }) => {
-        const group = groupList.find(x => x.id == item.groupId)
+        const group = groupList.find(x => x.id == item.groupname_id)
+        console.log(item)
+        const confirmjoin = () =>{
+            // console.log(item)
+            dispatch(confirmJoinAction(item.userid,item.groupname_id,user.firstName, user.applied))
+            // navigation.navigate('Home')
+        }
         return (
             <View style={styles.card} key={item.id}>
                 <View style={{
@@ -22,21 +28,21 @@ const StudentReqList = ({ ownJoinReq, groupList }) => {
                         margin: normalize(20)
                     }}>
                         <Text style={styles.textBold}>JOIN GROUP:</Text>
-                        <Text style={styles.textRegular}>{group.name}</Text>
+                        <Text style={styles.textRegular}>{group.topic}</Text>
                     </View>
                     <View style={styles.statusBox}>
 
-                        <Text style={styles.textRegular}>{item.approved == null ? "PENDING"
-                            : item.approved == true
+                        <Text style={styles.textRegular}>{item.status == "tbd" ? "PENDING"
+                            : item.status == "accepted"
                                 ? "ACCEPTED"
                                 : "DECLINED"}</Text>
                     </View>
                 </View>
                 <View style={{ justifyContent: 'center' }}>
-                    {item.approved == true ?
-                        item.confirm == true || item.confirm == false ? null :
+                    {item.status == "accepted" ?
+                        item.confirmed == "accepted" || item.confirm == "declined" ? null :
                             <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                                <TouchableOpacity onPress={() => dispatch(confirmJoinAction(item.id))}
+                                <TouchableOpacity onPress={() => confirmjoin()}
                                     style={styles.joinBox}>
                                     <Text style={styles.textRegular}>JOIN</Text>
                                 </TouchableOpacity>
@@ -101,7 +107,8 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => ({
-    groupList: state.group.list
+    groupList: state.group.list,
+    user : state.auth.user
 })
 
 export default connect(mapStateToProps, null)(StudentReqList)

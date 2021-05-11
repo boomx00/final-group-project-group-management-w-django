@@ -28,20 +28,26 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
 
     const likePress = (liked, id) => {
         if (liked) {
-            dispatch(deleteUserBookmarkAction(parseInt(id)))
+            dispatch(deleteUserBookmarkAction(id,user.id))
         } else {
-            dispatch(addUserBookmarkAction(parseInt(id)))
+            dispatch(addUserBookmarkAction(id,user.id))
         }
     }
-
     const renderItem = ({ item }) => {
-        const { id, name, topic, description, Members, requirements, Tags } = item
-
+        const { id,applications ,name, topic, description, member, requirements,tags,proposal, recruitment} = item
+        var status = false;
+        if(user.is_in != ""){
+            status=true;
+        }
         return <TouchableOpacity
             key={item.id}
             style={styles.groupCard}
             onPress={() => {
-                navigation.navigate("GroupDetail", { id: id, name: name, topic: topic, description: description, members: Members, requirements: requirements, tags: Tags })
+                console.log(item)
+                user.isTeacher?
+                navigation.navigate("TeacherDetail", {id:item.id,userid:user.id,applications:applications,name: name, topic: topic, description: description, member: member, requirements: requirements, status:status, tags:tags, proposal: proposal})
+                :
+                navigation.navigate("GroupDetail", {id:item.id,userid:user.id,applications:applications,name: name, topic: topic, description: description, member: member, requirements: requirements, status:status, tags:tags,recruitment:recruitment})
             }}>
             <View style={{ margin: normalize(15), flexDirection: 'column', justifyContent: 'space-around' }}>
                 <Text style={{ fontFamily: 'Roboto-Bold', fontSize: normalize(20) }}>
@@ -49,7 +55,7 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
                 <View style={{
                     flexDirection: 'row',
                 }}>
-                    {Tags.map((tag, index) => (
+                    {tags.map((tag, index) => (
                         <View key={index} style={{
                             backgroundColor: '#C4C4C4',
                             borderRadius: normalize(7),
@@ -61,7 +67,7 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
                                 style={{
                                     fontFamily: 'Roboto-Regular',
                                     padding: normalize(5),
-                                }}>{tag.name}</Text>
+                                }}>{tag}</Text>
                         </View>
                     ))}
                 </View>
@@ -73,8 +79,8 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
                                 fontFamily: 'Roboto-Regular',
                                 fontSize: normalize(18),
                             }}
-                        >{name.toUpperCase()}</Text>
-                        <Text style={{ fontFamily: 'Roboto-Regular', fontSize: normalize(18) }}>MEMBERS: {Members.length}/7</Text>
+                        >{recruitment=="closed"?"Recruitment Closed":"Open Recruitment"}</Text>
+                        <Text style={{ fontFamily: 'Roboto-Regular', fontSize: normalize(18) }}>MEMBERS: {member.length}/7</Text>
                     </View>
                     <View style={{ flexDirection: 'row', alignSelf: 'flex-end' }}>
                         <TouchableOpacity onPress={() => {

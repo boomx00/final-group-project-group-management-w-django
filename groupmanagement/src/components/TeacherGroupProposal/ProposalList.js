@@ -16,19 +16,50 @@ import { connect, useDispatch } from 'react-redux'
 const ProposalList = ({ groupProposalList, groupList }) => {
     const dispatch = useDispatch()
     const navigation = useNavigation()
-    const [feedback, setFeedback] = useState("")
     const [proposalClicked, setProposalClicked] = useState(false);
-    const [clickedProposal, setClickedProposal] = useState({
-        Members: []
-    });
+    const [editClicked, setEditClicked] = useState(false);
 
+    const [clickedProposal, setClickedProposal] = useState({
+        member: [],
+        item:{
+            feedback:"",
+            progress:""
+        }
+    });
+    const [feedback, setFeedback] = useState(clickedProposal.item.feedback)
+
+
+    const acceptProposal = () => {
+        const data = {
+            groupid:clickedProposal.id,
+            feedback: feedback
+        }
+        dispatch(acceptGroupProposalAction(data))
+    }
+    const declineProposal = () => {
+        const data = {
+            groupid:clickedProposal.id,
+            feedback: feedback
+        }
+        dispatch(declineGroupProposalAction(data))
+    }
+    const editProposal=(data)=>{
+        if (data.progress=="accept"){
+            dispatch(acceptGroupProposalAction(data))
+        }else{
+            dispatch(declineGroupProposalAction(data))
+        }
+    }
     const renderItem = ({ item }) => {
-        const group = groupList.find(x => x.id == item.groupId)
+        const group = groupList.find(x => x.id == item.groupid.id)
+        console.log(item)
         return (
             <TouchableOpacity onPress={() => {
                 setProposalClicked(true)
-                console.log(group)
-                setClickedProposal(group)
+                setFeedback(clickedProposal.item.feedback)
+                const data = {...group,item}
+                console.log(data)
+                setClickedProposal(data)
             }}
                 style={{
                     width: normalize(350),
@@ -59,14 +90,14 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                     </View>
                     <View>
                         <View>
-                            {item.progress == "ACCEPTED" ?
+                            {item.progress == "accepted" ?
                                 <Text style={{
                                     backgroundColor: '#5CCDFE',
                                     padding: normalize(7),
                                     elevation: normalize(5),
                                     borderRadius: normalize(5)
                                 }}>ACCEPTED</Text>
-                                : item.progress == "ON_REVIEW"
+                                : item.progress == "tbd" || item.progress == "resent"
                                     ? <Text style={{
                                         backgroundColor: colors.darkYellow,
                                         padding: normalize(7),
@@ -136,7 +167,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                                     textAlign: 'center'
                                 }}
                             >
-                                MEMBER: {clickedProposal.Members.length}/7
+                                MEMBER: {clickedProposal.member.length}/7
                         </Text>
 
                             <Text
@@ -170,16 +201,30 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                             <TextInput
                                 placeholder="Write your feedback here..."
                                 multiline={true}
-                                value={clickedProposal.feedback}
+                                value={proposalClicked && (clickedProposal.item.progress=="accepted" ||clickedProposal.item.progress=="declined") ? clickedProposal.item.feedback : feedback}
                                 onChangeText={(text) => setFeedback(text)}
                                 style={{
                                     height: normalize(100)
                                 }}
                             />
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            {clickedProposal.item.progress=="accepted" || clickedProposal.item.progress=="declined" ? 
+                                <View style={{ flexDirection: 'row', justifyContent: 'center',backgroundColor: 'red' }}>
+                                <TouchableOpacity onPress={() => {
+                                    setEditClicked(true)
+                                    }}
+                                    style={{borderRadius: normalize(10),
+                                        borderWidth: 0.5,
+                                        padding: normalize(10),
+                                        width: normalize(300),}}>
+                                    <Text style={{fontFamily: 'Roboto-Regular',
+                                                fontSize: normalize(18),
+                                                textAlign: 'center'}}>Edit</Text>
+                                </TouchableOpacity>
+
+                            </View>:<View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        dispatch(declineGroupProposalAction(clickedProposal.id))
+                                        declineProposal()
                                         setProposalClicked(false)
                                     }}
                                     style={{
@@ -187,7 +232,9 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                                         borderRadius: normalize(10),
                                         elevation: normalize(10),
                                         padding: normalize(15)
-                                    }}>
+                                    }}
+                                    
+                                    >
                                     <Text style={{
                                         fontFamily: 'Roboto-Bold',
                                         fontSize: normalize(18)
@@ -195,7 +242,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     onPress={() => {
-                                        dispatch(acceptGroupProposalAction(clickedProposal.id))
+                                        acceptProposal()
                                         setProposalClicked(false)
                                     }}
                                     style={{
@@ -211,8 +258,91 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                                     }}>Accept</Text>
                                 </TouchableOpacity>
                             </View>
+                            }
+                            
                         </ScrollView>
                     </Dialog.Content>
+                </Dialog>
+            </Portal>
+            <Portal>
+                <Dialog visible={editClicked} onDismiss={() => setEditClicked(false)}>
+                <Dialog.Content stlye={{
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                <ScrollView nestedScrollEnabled={true}>
+                <Text
+                                style={{
+                                    fontFamily: 'Roboto-Bold',
+                                    fontSize: normalize(20),
+                                    borderBottomWidth: 0.5,
+                                    marginTop: normalize(20)
+                                }}
+                            >
+                                Feedback:
+                        </Text>
+                            <TextInput
+                                placeholder="Write your feedback here..."
+                                multiline={true}
+                                value={clickedProposal.item.feedback}
+                                onChangeText={(text) => setClickedProposal(prevState => ({
+                                    ...prevState,           // copy all other field/objects
+                                    item: {              // recreate the object that contains the field to update
+                                      ...prevState.item, // copy all the fields of the object
+                                      feedback: text    // overwrite the value of the field to update
+                                    }
+                                  }))}
+                                style={{
+                                    height: normalize(100)
+                                }}
+                            />
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            <TouchableOpacity
+                                    onPress={() => {
+                                        const datas = {groupid:clickedProposal.id, 
+                                            feedback: clickedProposal.item.feedback,
+                                            progress: "declined"
+                                        }
+                                        editProposal(datas)
+                                        setEditClicked(false)
+                                    }}
+                                    style={{
+                                        backgroundColor: colors.white,
+                                        borderRadius: normalize(10),
+                                        elevation: normalize(10),
+                                        padding: normalize(10)
+                                    }}
+                                    
+                                    >
+                                    <Text style={{
+                                        fontFamily: 'Roboto-Bold',
+                                        fontSize: normalize(18)
+                                    }}>Decline</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        const datas = {groupid:clickedProposal.id, 
+                                            feedback: clickedProposal.item.feedback,
+                                            progress: "accept"
+                                        }
+                                        editProposal(datas)
+                                        setEditClicked(false)
+                                    }}
+                                    style={{
+                                        backgroundColor: '#008BFF',
+                                        borderRadius: normalize(10),
+                                        elevation: normalize(10),
+                                        padding: normalize(10)
+                                    }}>
+                                    <Text style={{
+                                        fontFamily: 'Roboto-Bold',
+                                        fontSize: normalize(18),
+                                        color: colors.white
+                                    }}>Accept</Text>
+                                </TouchableOpacity>
+                                </View>
+                </ScrollView>
+                </Dialog.Content>
                 </Dialog>
             </Portal>
         </View>

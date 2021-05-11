@@ -23,6 +23,7 @@ const BookmarkScreen = ({ bookmarkedGroup, groupList }) => {
 
     useFocusEffect(
         React.useCallback(() => {
+            dispatch(getUserBookmarkAction())
             const filter = groupList.filter(group => {
                 if (bookmarkedGroup.includes(group.id)) {
                     return group

@@ -15,7 +15,7 @@ import { Button, Paragraph, Dialog, Portal } from 'react-native-paper';
 //  Navigation
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-const CreateGroupScreen = () => {
+const CreateGroupScreen = (user) => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
     const refContainer = useRef();
@@ -32,6 +32,8 @@ const CreateGroupScreen = () => {
     const [description, setDescription] = useState("")
     const [tags, setTags] = useState([])
     const [requirements, setRequirements] = useState("");
+    const id = user.user.id
+    const firstName = user.user.firstName
     useFocusEffect(
         React.useCallback(() => {
             setOnAddTags(false)
@@ -55,12 +57,20 @@ const CreateGroupScreen = () => {
     const deleteTag = (indexToRemove) => {
         setTags(tags.filter((_, index) => index !== indexToRemove));
     }
+
+    console.log(user)
     const createGroup = () => {
+        if(user.groupId){
+            alert("You are already in a group")
+            navigation.navigate("Home")
+        }else{
         if (name == "" || topic == "") {
             alert("Please enter Group Name and Project Title!")
         } else {
-            dispatch(createGroupAction(name, topic, description, tags, requirements, navigation))
+
+            dispatch(createGroupAction(name, topic, description, tags, requirements, navigation,id,firstName))
         }
+    }
     }
     return (
         <View style={styles.container}>
@@ -252,7 +262,7 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (state) => ({
-
+    user: state.auth.user
 })
 
 export default connect(mapStateToProps, null)(CreateGroupScreen)

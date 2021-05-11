@@ -20,18 +20,21 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const GroupScreen = ({ ownGroup, userId }) => {
+const GroupScreen = ({ ownGroup, userId,user }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    useFocusEffect(useCallback(() => {
-        dispatch(getOwnGroupAction())
-    }, []))
-
+    useEffect(() => {
+        if(user.groupId){
+        dispatch(getOwnGroupAction(user.groupId))
+        }
+    },[])
+  
+   
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getOwnGroupAction())
+        dispatch(getOwnGroupAction(user.groupId))
         wait(500).then(() => setRefreshing(false));
     }, []);
 
@@ -45,7 +48,7 @@ const GroupScreen = ({ ownGroup, userId }) => {
             <View style={styles.header}>
                 <Text style={styles.textHeader}>MY GROUP</Text>
             </View >
-            {ownGroup.id != "" ?
+            {ownGroup.id ?
                 <OwnGroup ownGroup={ownGroup} userId={userId} />
                 :
                 <NoGroup />
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
     ownGroup: state.group.ownGroup,
-    userId: state.auth.user.id
+    userId: state.auth.user.id,
+    user:state.auth.user
 })
 export default connect(mapStateToProps, null)(GroupScreen)

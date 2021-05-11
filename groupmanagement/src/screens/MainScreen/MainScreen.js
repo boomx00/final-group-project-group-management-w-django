@@ -13,6 +13,7 @@ import GroupScreen from '../GroupScreen/GroupScreen';
 import ProfileScreen from '../ProfileScreen/ProfileScreen';
 import CreateGroupScreen from '../CreateGroupScreen/CreateGroupScreen';
 import Details from '../HomeScreen/Details';
+import TeacherDetails from '../HomeScreen/TeacherDetails';
 import MsgScreen from '../MsgScreen/MsgScreen';
 import BookmarkScreen from '../BookmarksScreen/BookmarkScreen'
 import ChangePasswordScreen from '../ChangePasswordScreen/ChangePasswordScreen'
@@ -33,6 +34,7 @@ const MainScreen = () => {
                     tabBarButton: [
                         "CreateGroup",
                         "GroupDetail",
+                        "TeacherDetail",
                         "Messages",
                         "Bookmark",
                         "ChangePassword",
@@ -73,6 +75,7 @@ const MainScreen = () => {
                 <Tab.Screen name="Profile" component={ProfileScreen} />
                 <Tab.Screen name="CreateGroup" component={CreateGroupScreen} />
                 <Tab.Screen name="GroupDetail" component={Details} />
+                <Tab.Screen name="TeacherDetail" component={TeacherDetails} />
                 <Tab.Screen name="Messages" component={MsgScreen} />
                 <Tab.Screen name="Bookmark" component={BookmarkScreen} />
                 <Tab.Screen name="ChangePassword" component={ChangePasswordScreen} />
