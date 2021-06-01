@@ -12,25 +12,34 @@ import normalize from 'react-native-normalize';
 // Redux
 import { connect, useDispatch } from 'react-redux'
 import { getUserBookmarkAction, addUserBookmarkAction, deleteUserBookmarkAction, joinGroupAction } from '../../redux/slices/groupSlices'
+import { getUserAction,setApplied } from '../../redux/slices/authSlices'
 
 const Details = ({ route, user, bookmarkedGroup }) => {
+    const { id,userid,applications, name, topic, description, requirements,status, tags,recruitment,applied } = route.params
+    const [appliedd, setAppliedd] = useState(applied);
+    useFocusEffect(
+        React.useCallback(() => {
+            setAppliedd(applied)
+        }, [])
+      );
     const navigation = useNavigation()
     const dispatch = useDispatch()
-    const [applied, setApplied] = useState(user.applied)
-    useFocusEffect(useCallback(() => {
-        setApplied(user.applied)
-      }, []))
-    const { id,userid,applications, name, topic, description, requirements,status, tags,recruitment } = route.params
+
+    // useFocusEffect(useCallback(() => {
+    //     console.log("yes")
+    //     setApplied(user.applied)
+    //   }, []))
 
     const likePress = (liked) => {
+        console.log(liked)
         if (liked) {
-            dispatch(deleteUserBookmarkAction(parseInt(id)))
+            dispatch(deleteUserBookmarkAction(id,user.id))
         } else {
-            dispatch(addUserBookmarkAction(parseInt(id)))
+            dispatch(addUserBookmarkAction(id,user.id))
         }
     }
 
-    console.log(applied)
+
     const joinGroup = () => {
         
         const data = {
@@ -40,7 +49,9 @@ const Details = ({ route, user, bookmarkedGroup }) => {
             userid: userid
         }
         dispatch(joinGroupAction(data))
-        navigation.navigate('Home')
+        var array= [...applied, id]
+        setAppliedd(array)
+    
 
     }
 
@@ -85,61 +96,8 @@ const Details = ({ route, user, bookmarkedGroup }) => {
                 <View style={styles.bottomView}>
                     <View style={styles.bottomViewBox}>
                         {
-                        recruitment=="closed"?
                         <TouchableOpacity
-                            disabled={true}
-                            style={{
-                                backgroundColor: '#008BFF',
-                                borderRadius: normalize(10),
-                                padding: normalize(10),
-                                width: normalize(200),
-                                elevation: normalize(10)
-                            }}>
-                            <Text style={{
-                                fontFamily: 'Roboto-Bold',
-                                fontSize: normalize(20),
-                                textAlign: 'center',
-                                color: colors.white
-                            }}>Recruitment Closed</Text>
-                        </TouchableOpacity>
-                        :
-                        user.groupId?
-                        <TouchableOpacity
-                        disabled={true}
-                        style={{
-                            backgroundColor: '#008BFF',
-                            borderRadius: normalize(10),
-                            padding: normalize(10),
-                            width: normalize(200),
-                            elevation: normalize(10)
-                        }}>
-                        <Text style={{
-                            fontFamily: 'Roboto-Bold',
-                            fontSize: normalize(20),
-                            textAlign: 'center',
-                            color: colors.white
-                        }}>You're in a Group</Text>
-                    </TouchableOpacity>:
-                        applied?
-                        applied.includes(id)?
-                        <TouchableOpacity
-                        disabled={true}
-                        style={{
-                            backgroundColor: '#008BFF',
-                            borderRadius: normalize(10),
-                            padding: normalize(10),
-                            width: normalize(200),
-                            elevation: normalize(10)
-                        }}>
-                        <Text style={{
-                            fontFamily: 'Roboto-Bold',
-                            fontSize: normalize(20),
-                            textAlign: 'center',
-                            color: colors.white
-                        }}>You've already applied</Text>
-                    </TouchableOpacity>
-                        :
-                        <TouchableOpacity
+                        disabled={appliedd.includes(id) || user.groupId!="" ?true:false}
                             onPress={() => joinGroup()}
                             style={{
                                 backgroundColor: '#008BFF',
@@ -153,24 +111,7 @@ const Details = ({ route, user, bookmarkedGroup }) => {
                                 fontSize: normalize(20),
                                 textAlign: 'center',
                                 color: colors.white
-                            }}>Request Join</Text>
-                        </TouchableOpacity>
-                        :
-                        <TouchableOpacity
-                            onPress={() => joinGroup()}
-                            style={{
-                                backgroundColor: '#008BFF',
-                                borderRadius: normalize(10),
-                                padding: normalize(10),
-                                width: normalize(200),
-                                elevation: normalize(10)
-                            }}>
-                            <Text style={{
-                                fontFamily: 'Roboto-Bold',
-                                fontSize: normalize(20),
-                                textAlign: 'center',
-                                color: colors.white
-                            }}>Request Join</Text>
+                            }}>{appliedd.includes(id) ? "Already Requested":"Request to Join"}</Text>
                         </TouchableOpacity>
 }
                         <TouchableOpacity onPress={() => {

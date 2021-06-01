@@ -7,7 +7,7 @@ import axios from 'axios'
 //  Redux
 import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { loginAction, getUserAction } from '../../redux/slices/authSlices'
+import { loginAction, getUserAction,checkToken } from '../../redux/slices/authSlices'
 
 //  React Navigation
 import { useNavigation } from '@react-navigation/native';
@@ -23,13 +23,13 @@ const LoginScreen = () => {
     const [password, setPassword] = useState()
 
     useEffect(async () => {
-        const token = await AsyncStorage.getItem('token')
-        if (token != null) {
-            dispatch(getUserAction())
-        }
+        dispatch(checkToken())
+
+      
     }, [])
 
     const Login = () => {
+
         dispatch(loginAction(username, password))
     }
 

@@ -13,7 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { acceptGroupProposalAction, declineGroupProposalAction } from '../../redux/slices/groupSlices'
 import { connect, useDispatch } from 'react-redux'
 
-const ProposalList = ({ groupProposalList, groupList }) => {
+const ProposalList = ({ groupProposalList, groupList,socket  }) => {
     const dispatch = useDispatch()
     const navigation = useNavigation()
     const [proposalClicked, setProposalClicked] = useState(false);
@@ -32,33 +32,32 @@ const ProposalList = ({ groupProposalList, groupList }) => {
     const acceptProposal = () => {
         const data = {
             groupid:clickedProposal.id,
-            feedback: feedback
+            feedback: feedback,
+            members: clickedProposal.member
         }
-        dispatch(acceptGroupProposalAction(data))
+        dispatch(acceptGroupProposalAction(data,socket))
     }
     const declineProposal = () => {
         const data = {
             groupid:clickedProposal.id,
             feedback: feedback
         }
-        dispatch(declineGroupProposalAction(data))
+        dispatch(declineGroupProposalAction(data,socket))
     }
     const editProposal=(data)=>{
         if (data.progress=="accept"){
-            dispatch(acceptGroupProposalAction(data))
+            dispatch(acceptGroupProposalAction(data,socket))
         }else{
-            dispatch(declineGroupProposalAction(data))
+            dispatch(declineGroupProposalAction(data,socket))
         }
     }
     const renderItem = ({ item }) => {
         const group = groupList.find(x => x.id == item.groupid.id)
-        console.log(item)
         return (
             <TouchableOpacity onPress={() => {
                 setProposalClicked(true)
                 setFeedback(clickedProposal.item.feedback)
                 const data = {...group,item}
-                console.log(data)
                 setClickedProposal(data)
             }}
                 style={{
@@ -323,6 +322,7 @@ const ProposalList = ({ groupProposalList, groupList }) => {
                                     onPress={() => {
                                         const datas = {groupid:clickedProposal.id, 
                                             feedback: clickedProposal.item.feedback,
+                                            members: clickedProposal.member,
                                             progress: "accept"
                                         }
                                         editProposal(datas)

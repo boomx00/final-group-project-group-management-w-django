@@ -1,0 +1,22 @@
+{
+  "name": "socket-backend",
+  "version": "1.0.0",
+  "description": "Socket backend for CPT202 group management application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "author": "Kevin Gavino",
+  "license": "ISC",
+  "dependencies": {
+    "eiows": "^3.6.0",
+    "mongoose": "^5.12.9",
+    "nodemon": "^2.0.7",
+    "socket.io": "^4.1.2"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.5"
+  }
+}

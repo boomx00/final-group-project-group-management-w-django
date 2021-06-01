@@ -68,7 +68,7 @@ const GroupDesc = ({ ownGroup, user }) => {
                         </TouchableOpacity>
                 }
             </View>
-            <View style={{height: normalize(55*ownGroup.members.length)}}>
+            <View style={{height: normalize(45*ownGroup.members.length)}}>
                 <Text style={styles.textDetail}>Members:</Text>
 
 
@@ -80,8 +80,9 @@ const GroupDesc = ({ ownGroup, user }) => {
                             key={index} >{index + 1}.{member.firstName} {member.lastName}</Text>
 
                             {
-                            user.role!='gm'?null:
-                            ownGroup.ownerId == member.id ? null:<TouchableOpacity onPress={() => {
+                            user.role=="member"?null:
+                            ((user.role=='gm') && (ownGroup.ownerId == member.id))?null:
+                             ownGroup.proposal=="sent" || ownGroup.proposal == "resent" || ownGroup.proposal == "accepted" ? null:<TouchableOpacity onPress={() => {
                                         setRemoveUser(true)
                                         setClickedUser(member.firstName)
                                         setClickedUserId(member.id)
@@ -98,7 +99,8 @@ const GroupDesc = ({ ownGroup, user }) => {
                                     >
                         <Text style={{ }}
                           >REMOVE</Text>
-                          </TouchableOpacity> }
+                          </TouchableOpacity> 
+                          }
                           
                         </View>
                     )

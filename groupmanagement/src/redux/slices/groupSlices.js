@@ -91,6 +91,7 @@ export const groupSlice = createSlice({
             state.ownGroup.recruitment = action.payload
         },
         setBookmark: (state, action) => {
+            // console.log(action.payload)
             if (action.payload == null) {
                 state.bookmarkedGroup = []
             } else {
@@ -154,18 +155,17 @@ export const groupSlice = createSlice({
             state.groupProposalList = action.payload
         },
         acceptProposal: (state, action) => {
-            
-
             state.groupProposalList.map(proposal => {
-                if (proposal.groupid == action.payload.id) {
+                if (proposal.groupid.id == action.payload.id) {
                     proposal.progress = "accepted"
                     proposal.feedback = action.payload.feedback
                 }
             })
+
         },
         declineProposal: (state, action) => {
             state.groupProposalList.map(proposal => {
-                if (proposal.groupid == action.payload.id) {
+                if (proposal.groupid.id == action.payload.id) {
                     proposal.progress = "declined"
                     proposal.feedback = action.payload.feedback
                 }
@@ -226,7 +226,8 @@ export default groupSlice.reducer
 export const getAllGroupAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://boomx00.pythonanywhere.com/api/group/getall/")
+            
+            const res = await axios.get("group/getall/")
             // console.log(res.data)
             dispatch(onGetGroup({ groups: res.data }))
         } catch (err) {
@@ -248,7 +249,7 @@ export const createGroupAction = (name, topic, description, tags, requirements, 
                 topic: topic,
                 tags:tags
             }
-            const createGroup = await axios.post(`http://boomx00.pythonanywhere.com/api/group/create/`, data, {
+            const createGroup = await axios.post(`group/create/`, data, {
                 headers:{
                   'Authorization': 'JWT ' + token,
               }
@@ -262,7 +263,7 @@ export const createGroupAction = (name, topic, description, tags, requirements, 
                 "is_in": createGroup.data.id,
                 "applied": []
             }
-            const setgroup = await axios.put('http://boomx00.pythonanywhere.com/api/user/specificuser/'+id, setgroupdata)
+            const setgroup = await axios.put('user/specificuser/'+id, setgroupdata)
             dispatch(getOwnGroupAction(createGroup.data.id))
             dispatch(setOwner(createGroup.data.id))
             alert('Successfully create the group!')
@@ -279,13 +280,14 @@ export const getOwnGroupAction = (id) => {
         try {
             // console.log("asdasdsa")
             if(id){
-                const setGroup = await axios.get('http://boomx00.pythonanywhere.com/api/group/getgroup/'+id)
+                const setGroup = await axios.get('group/getgroup/'+id)
                 if (setGroup.data) {
                     dispatch(onGetOwnGroup(setGroup.data))
                 } else{
                     dispatch(onGetOwnGroup(null))
                 }
-            
+            }else{
+                dispatch(onGetOwnGroup(null))
             }
            
         } catch (err) {
@@ -303,7 +305,7 @@ export const editGroupAction = (newGroupDetails) => {
                 topic: newGroupDetails.topic,
                 tags: newGroupDetails.tags
             }
-            const res = await axios.put("http://boomx00.pythonanywhere.com/api/group/manage/"+newGroupDetails.id, newdata)
+            const res = await axios.put("group/manage/"+newGroupDetails.id, newdata)
             if (res.status == 200) {
                 dispatch(getOwnGroupAction(newGroupDetails.id))
             }
@@ -318,7 +320,7 @@ export const editGroupAction = (newGroupDetails) => {
 export const getOwnJoinRequestAction = (userid) => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://boomx00.pythonanywhere.com/api/group/getownrequest/"+userid)
+            const res = await axios.get("group/getownrequest/"+userid)
             dispatch(setOwnRequest(res.data))
         } catch (err) {
             alert(err.response.data.MESSAGE)
@@ -329,8 +331,8 @@ export const getOwnJoinRequestAction = (userid) => {
 export const getJoinGroupReqAction = (groupid) => {
     return async dispatch => {
         try {
-            const requests = await axios.get("http://boomx00.pythonanywhere.com/api/group/getcondition/?groupname="+groupid)
-        //    console.log(requests.data)
+            const requests = await axios.get("group/getcondition/?groupname="+groupid)
+           console.log(requests.data)
             dispatch(setJoinGroupReq(requests.data))
         } catch (err) {
             console.log(err)
@@ -343,7 +345,7 @@ export const joinGroupAction = (data) => {
     return async (dispatch, getState) => {
         try {
             if (getState().auth.groupId == null) {
-                console.log(data)
+                // console.log(data)
                 let token = await AsyncStorage.getItem('token');  
                 
                 const applied = {
@@ -357,8 +359,8 @@ export const joinGroupAction = (data) => {
                     userid: data.userid,
                     groupname_id: data.groupid
                 }
-            const getapply = await axios.get(`http://boomx00.pythonanywhere.com/api/group/application/`+data.groupid)
-            const user = await axios.get("http://boomx00.pythonanywhere.com/api/user/getuser/",{
+            const getapply = await axios.get(`group/application/`+data.groupid)
+            const user = await axios.get("user/getuser/",{
                 headers:{
                         'Authorization': 'JWT ' + token,
                 }
@@ -372,13 +374,13 @@ export const joinGroupAction = (data) => {
                 var applicants = user.data.applied
                 applicants.push(data.groupid)
                 applied.applied = applicants
-                const submit = await axios.put(`http://boomx00.pythonanywhere.com/api/user/setapplied/`+data.userid, applied)
+                const submit = await axios.put(`user/setapplied/`+data.userid, applied)
             }else{
                 console.log('aaaaaas')
 
                 applied.applied= [data.groupid]
                 // console.log(applied)
-                const submit = await axios.put(`http://boomx00.pythonanywhere.com/api/user/setapplied/`+data.userid, applied)
+                const submit = await axios.put(`user/setapplied/`+data.userid, applied)
             }
       
             if(getapply.data.applications){
@@ -386,17 +388,17 @@ export const joinGroupAction = (data) => {
                 applicants.push(datas.applications[0])
                 datas.applications = applicants
                 console.log(data.groupid)
-                const submit = await axios.put(`http://boomx00.pythonanywhere.com/api/group/application/`+data.groupid, datas)
-                const request = await axios.post('http://boomx00.pythonanywhere.com/api/group/createrequest/', reqdata)
+                const submit = await axios.put(`group/application/`+data.groupid, datas)
+                const request = await axios.post('group/createrequest/', reqdata)
             }else{
-                const submit = await axios.put(`http://boomx00.pythonanywhere.com/api/group/application/`+data.groupid, datas)
-                const request = await axios.post('http://boomx00.pythonanywhere.com/api/group/createrequest/', reqdata)
+                const submit = await axios.put(`group/application/`+data.groupid, datas)
+                const request = await axios.post('group/createrequest/', reqdata)
     
             }
             dispatch(setApplied(applied.applied))
 
             dispatch(getOwnJoinRequestAction(data.userid))
-            console.log(applied.applied)
+            // console.log(applied.applied)
             }
             // console.log(applied)
 
@@ -410,39 +412,44 @@ export const joinGroupAction = (data) => {
 
 
 
-export const acceptJoinGroupAction = (data) => {
-    return async dispatch => {
+export const acceptJoinGroupAction = (data,socket) => {
+    return async (dispatch, getState) => {
         try {
-            // console.log(data)
+            const { auth, group } = getState();
             const datas = {
                 userid: data.userid,
                 groupname_id: data.groupid,
                 status: "accepted",
                 confirmed: "tbd"
             }
-            const res = await axios.patch("http://boomx00.pythonanywhere.com/api/group/updatestatus/", datas)
+            // console.log(socket)
+            const res = await axios.patch("group/updatestatus/", datas)
             // dispatch(setAcceptJoinGroupReq(id))
             dispatch(setAcceptJoinGroupReq(data.userid))
-
-            // alert('Successfully accept student to join the group!')
+            socket.current.emit("notification:accept-join-group", { sndrId: auth.user.id, recvId: data.userid, type: "ACCEPT_JOIN_GROUP", msg: `You are accepted to join group ${group.ownGroup.name}` })
+            // console.log(data)
+            alert('Successfully accept student to join the group!')
         } catch (err) {
-            alert(err.response.data.MESSAGE)
+            console.log(err)
         }
     }
 }
 
-export const declineJoinGroupAction = (data) => {
-    return async dispatch => {
+export const declineJoinGroupAction = (data, socket) => {
+    return async (dispatch, getState) => {
         try {
+            const { auth, group } = getState();
             const datas = {
                 userid: data.userid,
                 groupname_id: data.groupid,
                 status: "declined",
                 confirmed: "declined"
             }
-            console.log(datas)
-            const res = await axios.patch("http://boomx00.pythonanywhere.com/api/group/updatestatus/", datas)
-            // dispatch(setDeclineJoinGroupReq(id))
+            const res = await axios.patch("group/updatestatus/", datas)
+
+            socket.current.emit("notification:decline-join-group", { sndrId: auth.user.id, recvId: data.userid, type: "DECLINE_JOIN_GROUP", msg: `You are declined to join group ${group.ownGroup.name}` })
+
+            dispatch(setDeclineJoinGroupReq(id))
             dispatch(setDeclineJoinGroupReq(data.userid))
 
             alert('Successfully decline join group!')
@@ -455,7 +462,7 @@ export const declineJoinGroupAction = (data) => {
 export const removeUsers = (data) => {
     return async dispatch=>{
         try{
-            const res = await axios.get("http://boomx00.pythonanywhere.com/api/group/member/"+data.groupid)
+            const res = await axios.get("group/member/"+data.groupid)
             // const res = await axios.get("http://boomx00.pythonanywhere.com/api/group/member/"+data.groupid)
 
             if(res.data){
@@ -472,7 +479,7 @@ export const removeUsers = (data) => {
             }
             console.log(sentData)
 
-            const remove = await axios.put("http://boomx00.pythonanywhere.com/api/group/removeuser/"+data.groupid,sentData)
+            const remove = await axios.put("group/removeuser/"+data.groupid,sentData)
             dispatch(setMember(userdata))
             if(data.action){
             dispatch(setRemove())
@@ -491,16 +498,18 @@ export const removeUsers = (data) => {
 }
 export const confirmJoinAction = (id,groupid,firstName,applied) => {
     return async dispatch => {
-        try {
-            const getmembers = await axios.get("http://boomx00.pythonanywhere.com/api/group/member/"+groupid)
+      
+            const getmembers = await axios.get("group/member/"+groupid)
             var memberArray = getmembers.data.member
+            if(memberArray.length!=7){
             const newmember = {
                 firstName: firstName,
                 id: id
             }
             memberArray.push(newmember)
             const members = {
-                member: memberArray
+                member: memberArray,
+                len: memberArray.length
             }
 
             const data = {
@@ -523,18 +532,18 @@ export const confirmJoinAction = (id,groupid,firstName,applied) => {
 
             console.log(applied.length)
             if (applied.length>1){
-                const confirms = await axios.put("http://boomx00.pythonanywhere.com/api/group/setconfirm/", confirm)                    
-
+                const confirms = await axios.put("group/setconfirm/", confirm)                    
+                console.log(confirms.data)
                 }  
-            const setmembers = await axios.put('http://boomx00.pythonanywhere.com/api/group/member/'+groupid,members)
-            const res = await axios.put("http://boomx00.pythonanywhere.com/api/user/specificuser/"+id, data)
-            const manageconfirm = await axios.put("http://boomx00.pythonanywhere.com/api/group/manageconfirm/", manageconfirmdata)
+            const setmembers = await axios.put('group/member/'+groupid,members)
+            const res = await axios.put("user/specificuser/"+id, data)
+            const manageconfirm = await axios.put("group/manageconfirm/", manageconfirmdata)
             dispatch(setIn(confirm))
-
+            }else{
+                alert('The Group is Already Full!')
+            }
            
-        } catch (err) {
-            // alert(err.repsonse.data.MESSAGE)
-        }
+       
     }
 }
 
@@ -575,7 +584,7 @@ export const openRecruitmentAction = (data) => {
                 id: data,
                 recruitment: "open"
             }
-            const openRec = await axios.put('http://boomx00.pythonanywhere.com/api/group/managerecruitment/'+data, datas)
+            const openRec = await axios.put('group/managerecruitment/'+data, datas)
             dispatch(setRecruitment(datas.recruitment))
 
 
@@ -593,10 +602,10 @@ export const sendGroupProposalAction = (data) => {
             }
 
             
-            const updateProposal = await axios.put('http://boomx00.pythonanywhere.com/api/group/setproposal/'+data.groupid_id,{
+            const updateProposal = await axios.put('group/setproposal/'+data.groupid_id,{
                 proposal: "sent"
             })
-            const createProposal = await axios.post('http://boomx00.pythonanywhere.com/api/group/createproposal/', proposalData)
+            const createProposal = await axios.post('group/createproposal/', proposalData)
 
             
             alert("You've successfully send the group proposal to the teacher.")
@@ -614,10 +623,10 @@ export const updateGroupProposalAction = (data) => {
                 feedback:"",
                 progress:"resent"
             }
-            const updateProposal = await axios.put('http://boomx00.pythonanywhere.com/api/group/setproposal/'+data.groupid_id,{
+            const updateProposal = await axios.put('group/setproposal/'+data.groupid_id,{
                 proposal: "resent"
             })
-            const resendProposal = await axios.put('http://boomx00.pythonanywhere.com/api/group/resendproposal/'+data.groupid_id,proposalData)
+            const resendProposal = await axios.put('group/resendproposal/'+data.groupid_id,proposalData)
 
             alert("You've successfully send the group proposal to the teacher.")
             dispatch(getOwnGroupAction(data.groupid_id))
@@ -632,7 +641,7 @@ export const updateGroupProposalAction = (data) => {
 export const getGroupProposalAction = () => {
     return async dispatch => {
         try {
-            const res = await axios.get("http://boomx00.pythonanywhere.com/api/group/getproposal/")
+            const res = await axios.get("group/getproposal/")
             if (res.data) {
                 dispatch(getGroupProposals(res.data))
             }
@@ -642,16 +651,19 @@ export const getGroupProposalAction = () => {
     }
 }
 
-export const acceptGroupProposalAction = (data) => {
-    return async dispatch => {
+export const acceptGroupProposalAction = (data,socket) => {
+    return async (dispatch, getState) => {
         try {
+            const { auth } = getState();
+
             const datas = {
                 progress: "accepted",
                 feedback:data.feedback
             }
-            console.log(datas)
-            const res = await axios.put("http://boomx00.pythonanywhere.com/api/group/updateproposal/"+data.groupid, datas)
-        
+            const res = await axios.put("group/updateproposal/"+data.groupid, datas)
+            // console.log(data.members)
+            socket.current.emit("notification:accept-group-proposal", { sndrId: auth.user.id, recvId: data.members, type: "ACCEPT_GROUP_PROPOSAL", msg: "Group proposal accepted, please check the feedback!" })
+
             // if (res.data.STATUS == "APPROVAL_GROUP_PROPOSAL_SUCCESS") {
                 dispatch(acceptProposal({ id: data.groupid, feedback: data.feedback }))
             //     alert(res.data.MESSAGE)
@@ -662,14 +674,16 @@ export const acceptGroupProposalAction = (data) => {
     }
 }
 
-export const declineGroupProposalAction = (data) => {
-    return async dispatch => {
+export const declineGroupProposalAction = (data,socket) => {
+    return async (dispatch, getState) => {
         try {
             const datas = {
                 progress: "declined",
                 feedback:data.feedback
             }
-            const res = await axios.put("http://boomx00.pythonanywhere.com/api/group/updateproposal/"+data.groupid, datas)
+            socket.current.emit("notification:decline-group-proposal", { sndrId: auth.user.id, recvId: members, type: "DECLINE_GROUP_PROPOSAL", msg: "Group proposal declined, please check the feedback!" })
+
+            const res = await axios.put("group/updateproposal/"+data.groupid, datas)
                 dispatch(declineProposal({ id: data.groupid, feedback: data.feedback }))
         } catch (err) {
             alert("declineGroupProposalAction error")
@@ -710,7 +724,7 @@ export const addUserBookmarkAction = (groupId,userId) => {
             const data = {
                 likes: newBookmark
             }
-            const setLiked = await axios.put("http://boomx00.pythonanywhere.com/api/user/setliked/",data,{
+            const setLiked = await axios.put("user/setliked/",data,{
                 headers:{
                     'Authorization': 'JWT ' + token,
                 }
@@ -726,7 +740,7 @@ export const deleteGroup = (data) =>{
     return async dispatch=>{
         try {
             // console.log(data.groupid)
-            const deleteGroup = await axios.delete("http://boomx00.pythonanywhere.com/api/group/deletegroup/"+data.groupid)
+            const deleteGroup = await axios.delete("group/deletegroup/"+data.groupid)
 
             dispatch(leaveGroup())
             dispatch(setRemove())
@@ -754,7 +768,7 @@ export const deleteUserBookmarkAction = (groupId,userId) => {
             }
             let token = await AsyncStorage.getItem('token');  
 
-            const setLiked = await axios.put("http://boomx00.pythonanywhere.com/api/user/setliked/",data,{
+            const setLiked = await axios.put("user/setliked/",data,{
                 headers:{
                     'Authorization': 'JWT ' + token,
                 }

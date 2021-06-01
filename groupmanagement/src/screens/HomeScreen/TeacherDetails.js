@@ -18,7 +18,7 @@ const TeacherDetails = ({ route, user, bookmarkedGroup,groupList }) => {
     const navigation = useNavigation()
     const dispatch = useDispatch()
     const [proposalClicked, setProposalClicked] = useState(false);
-
+    const [feedback, setFeedback] = useState("");
     const { id,userid,applications, name, topic, description, requirements,status, tags,member,proposal } = route.params
 
     const group = groupList.find(x => x.groupid.id == id)
@@ -60,14 +60,17 @@ const TeacherDetails = ({ route, user, bookmarkedGroup,groupList }) => {
                         </Text>
                         <Text style={styles.textDesc}>Members: </Text>
                         <Text>
-                        <ScrollView contentContainerStyle={{ height: normalize(180) }}>
+                        <ScrollView contentContainerStyle={{ height: normalize(250) }}>
                     {member.map((member, index) =>
                     (
                         <Text style={styles.textParagraph}
                             key={index} >{index + 1}.{member.firstName}</Text>
                     )
                     )}
-                        <View style={{
+                       
+                    
+                </ScrollView>
+                <View style={{
                                 marginTop: normalize(60),
                                 flexDirection: 'row',
                                 justifyContent: 'center',
@@ -81,7 +84,7 @@ const TeacherDetails = ({ route, user, bookmarkedGroup,groupList }) => {
                                 disabled={!proposal?true:false}
                                 onPress={() => {
                                             // console.log(id)
-
+                                            setFeedback(group.feedback)
                                             setProposalClicked(true)
 
                         }}>
@@ -99,8 +102,6 @@ const TeacherDetails = ({ route, user, bookmarkedGroup,groupList }) => {
                                 </Text>
                                 </TouchableOpacity>
                             </View>
-                    
-                </ScrollView>
                         </Text>
                     </View>
                 </View>
@@ -161,7 +162,7 @@ const TeacherDetails = ({ route, user, bookmarkedGroup,groupList }) => {
                                     fontSize: normalize(20),
                                 }}
                             >
-                                {group.feedback?group.feedback:""}
+                                {feedback}
                             </Text>
                             
                         </ScrollView>

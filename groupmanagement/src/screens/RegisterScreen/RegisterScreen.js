@@ -19,7 +19,7 @@ const RegisterScreen = () => {
     const [password, setPassword] = useState()
 
     const onRegister = () => {
-        dispatch(userRegisterAction(studentID, email, password, navigation))
+        dispatch(userRegisterAction(studentID,email,password,navigation))
     }
 
 
@@ -44,7 +44,8 @@ const RegisterScreen = () => {
                     onChangeText={text => setPassword(text)}
                 />
                 <TouchableOpacity
-                    style={email && password != null ? styles.loginButton : styles.loginButtonBlocked}
+                style={styles.loginButton}
+                    // style={email && password != null ? styles.loginButton : styles.loginButtonBlocked}
                     onPress={() => onRegister()}
                 >
                     <Text style={styles.txt}>Register</Text>

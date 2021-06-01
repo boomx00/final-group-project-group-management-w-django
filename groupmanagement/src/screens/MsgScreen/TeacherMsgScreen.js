@@ -17,7 +17,7 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const TeacherMsgScreen = ({ proposalList, groupList }) => {
+const TeacherMsgScreen = ({ proposalList, groupList,socket  }) => {
 const [filteredData, setFilteredData] = useState();
 
     const filterData = (filter) => {
@@ -27,6 +27,7 @@ const [filteredData, setFilteredData] = useState();
         setFilteredData(filtered)
     }
     const dispatch = useDispatch()
+    
     useEffect(() => {
         dispatch(getGroupProposalAction())
     }, [])
@@ -57,7 +58,7 @@ const [filteredData, setFilteredData] = useState();
                 placeholder="Search by name, topics or tags"
                 onChangeText={(text) => filterData(text)}
             />
-            <ProposalList groupProposalList={filteredData?filteredData:proposalList} />
+            <ProposalList groupProposalList={filteredData?filteredData:proposalList} socket={socket} />
         </ScrollView>
     )
 }

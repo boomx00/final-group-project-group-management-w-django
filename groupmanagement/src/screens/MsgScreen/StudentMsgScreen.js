@@ -26,16 +26,20 @@ const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
 }
 
-const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
+const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest,socket  }) => {
     const dispatch = useDispatch()
     const [focusOn, setFocusOn] = useState("GROUP PROPOSAL")
 
     useFocusEffect(useCallback(() => {
             dispatch(getOwnGroupAction(user.groupId))
             dispatch(getOwnJoinRequestAction(user.id))
+            if(user.groupId){
+                dispatch(getOwnGroupAction(user.groupId))
+            }
             if (ownGroup.ownerId == user.id) {
                 dispatch(getJoinGroupReqAction(ownGroup.id))
             }
+       
 
     }, []))
 
@@ -43,12 +47,15 @@ const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        // dispatch(getUserAction())
         dispatch(getOwnGroupAction(user.groupId))
         dispatch(getOwnJoinRequestAction(user.id))
+        if(user.groupId){
+            dispatch(getOwnGroupAction(user.groupId))
+        }
         if (ownGroup.ownerId == user.id) {
             dispatch(getJoinGroupReqAction(ownGroup.id))
         }
+   
         wait(500).then(() => setRefreshing(false));
     }, []);
 
@@ -93,18 +100,46 @@ const StudentMsgScreen = ({ user, ownGroup, ownJoinRequest }) => {
                     <DontHaveGroup />
 
                 :
-                !user.groupId ?
-                    ownJoinRequest.length != null ?
-                        <StudentReqList ownJoinReq={ownJoinRequest} />
-                        : <DontHaveGroup />
+
+                user.role?
+                    (user.role=="gm") && (ownGroup.ownerId==user.id)?
+                    (ownGroup.members.length < 7)?
+                                <ReqList owner={true} full={false} socket={socket} />:
+                                <ReqList full={true} socket={socket}/>
+
                     :
-                    (ownGroup.ownerId == user.id) && (ownGroup.members.length < 7) ?
-                        <ReqList owner={true} />
-                        :
-                        (ownGroup.ownerId == user.id) && (ownGroup.members.length == 7)?
-                        <ReqList full={true} />
-                        :
-                        <ReqList owner={false} />
+                    <ReqList owner={false} />
+
+                :
+                <StudentReqList ownJoinReq={ownJoinRequest} socket={socket} />
+
+
+
+                // user.groupId?
+                //     (user.role=="gm") && (ownGroup.ownerId == user.id) ?
+                //         (ownGroup.members.length < 7)?
+                //             <ReqList owner={true} full={false} />:
+                //             <ReqList owner={true} full={true}/>
+                    
+                // :
+                //             <ReqList owner={false}/>
+                // :
+                // <StudentReqList ownJoinReq={ownJoinRequest} />
+
+
+                
+                // !user.groupId ?
+                //     ownJoinRequest.length != null ?
+                //         <StudentReqList ownJoinReq={ownJoinRequest} />
+                //         : <DontHaveGroup />
+                //     :
+                //     (ownGroup.ownerId == user.id) && (ownGroup.members.length < 7) ?
+                //         <ReqList owner={true} />
+                //         :
+                //         (ownGroup.ownerId == user.id) && (ownGroup.members.length == 7)?
+                //         <ReqList full={true} />
+                //         :
+                //         <ReqList owner={false} />
             }
         </ScrollView>
     )

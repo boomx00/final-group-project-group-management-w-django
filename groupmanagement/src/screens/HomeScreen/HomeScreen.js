@@ -12,17 +12,20 @@ import GroupList from '../../components/Group/GroupList'
 //  Redux
 import { connect, useDispatch } from 'react-redux'
 import { getAllGroupAction,getGroupProposalAction } from '../../redux/slices/groupSlices'
+import { getUserAction } from '../../redux/slices/authSlices'
 
 //  Navigation
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 
 
-const HomeScreen = ({ groupList }) => {
+const HomeScreen = ({ groupList,user }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     useFocusEffect(
         useCallback(() => {
+            console.log("aa")
+            dispatch(getUserAction())
             dispatch(getAllGroupAction())
             dispatch(getGroupProposalAction())
         }, [])
@@ -71,7 +74,8 @@ const styles = StyleSheet.create({
 
 })
 const mapStateToProps = (state) => ({
-    groupList: state.group.list
+    groupList: state.group.list,
+    user: state.auth.user
 })
 
 export default connect(mapStateToProps, null)(HomeScreen)

@@ -21,7 +21,7 @@ import * as RootNavigation from './middleware/RootNavigation'
 import axios from 'axios'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-axios.defaults.baseURL = "http://10.10.10.124:3002/api/v1/"
+axios.defaults.baseURL = "http://192.168.100.246:8000/api/"
 
 axios.interceptors.request.use(async (request) => {
   const token = await AsyncStorage.getItem('token')

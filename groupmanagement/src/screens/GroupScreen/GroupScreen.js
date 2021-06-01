@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 // Redux
 import { connect, useDispatch } from 'react-redux'
 import { getOwnGroupAction } from '../../redux/slices/groupSlices'
+import { getUserAction } from '../../redux/slices/authSlices'
 
 // Navigation
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -24,17 +25,21 @@ const GroupScreen = ({ ownGroup, userId,user }) => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if(user.groupId){
-        dispatch(getOwnGroupAction(user.groupId))
-        }
-    },[])
+    useFocusEffect(useCallback(() => {
+     dispatch(getUserAction())
+    
+    }, []))
+    // useEffect(() => {
+    //     if(user.groupId){
+    //     dispatch(getOwnGroupAction(user.groupId))
+    //     }
+    // },[])
   
    
     const [refreshing, setRefreshing] = useState(false);
     const onRefresh = useCallback(() => {
         setRefreshing(true);
-        dispatch(getOwnGroupAction(user.groupId))
+        dispatch(getUserAction())
         wait(500).then(() => setRefreshing(false));
     }, []);
 

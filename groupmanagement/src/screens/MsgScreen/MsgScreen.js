@@ -16,10 +16,9 @@ import { connect, useDispatch } from 'react-redux'
 import TeacherMsgScreen from './TeacherMsgScreen'
 import StudentMsgScreen from './StudentMsgScreen'
 
-const MsgScreen = ({ user, groupProposalList }) => {
+const MsgScreen = ({ user, groupProposalList,socket  }) => {
     const dispatch = useDispatch();
     const navigation = useNavigation()
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -32,9 +31,9 @@ const MsgScreen = ({ user, groupProposalList }) => {
                 </View>
             </View>
             {user.isTeacher ?
-                <TeacherMsgScreen />
+                <TeacherMsgScreen socket={socket}/>
                 :
-                <StudentMsgScreen />}
+                <StudentMsgScreen socket={socket}/>}
         </View>
     )
 }

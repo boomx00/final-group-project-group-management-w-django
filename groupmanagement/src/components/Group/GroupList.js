@@ -7,9 +7,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 // Redux
 import { connect, useDispatch } from 'react-redux'
 import { getAllGroupAction, getUserBookmarkAction, addUserBookmarkAction, deleteUserBookmarkAction } from '../../redux/slices/groupSlices'
+import { getUserAction } from '../../redux/slices/authSlices'
+
 
 // Navigation
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 const wait = (timeout) => {
     return new Promise(resolve => setTimeout(resolve, timeout));
@@ -19,6 +21,15 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
     const navigation = useNavigation()
     const dispatch = useDispatch();
     const [refreshing, setRefreshing] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            dispatch(getUserAction())
+            // dispatch(getAllGroupAction())
+            // dispatch(getGroupProposalAction())
+        }, [])
+    );
+
 
     const onRefresh = useCallback(() => {
         dispatch(getAllGroupAction())
@@ -47,7 +58,7 @@ const GroupList = ({ groupData, user, bookmarkedGroup }) => {
                 user.isTeacher?
                 navigation.navigate("TeacherDetail", {id:item.id,userid:user.id,applications:applications,name: name, topic: topic, description: description, member: member, requirements: requirements, status:status, tags:tags, proposal: proposal})
                 :
-                navigation.navigate("GroupDetail", {id:item.id,userid:user.id,applications:applications,name: name, topic: topic, description: description, member: member, requirements: requirements, status:status, tags:tags,recruitment:recruitment})
+                navigation.navigate("GroupDetail", {id:item.id,userid:user.id,applications:applications,name: name, topic: topic, description: description, member: member, requirements: requirements, status:status, tags:tags,recruitment:recruitment,applied:user.applied})
             }}>
             <View style={{ margin: normalize(15), flexDirection: 'column', justifyContent: 'space-around' }}>
                 <Text style={{ fontFamily: 'Roboto-Bold', fontSize: normalize(20) }}>

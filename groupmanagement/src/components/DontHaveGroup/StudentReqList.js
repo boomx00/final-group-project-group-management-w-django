@@ -6,14 +6,15 @@ import colors from '../../../assets/colors/colors';
 import { connect, useDispatch } from 'react-redux'
 import { confirmJoinAction, cancelJoinAction } from '../../redux/slices/groupSlices'
 
-const StudentReqList = ({ ownJoinReq, groupList,user }) => {
+const StudentReqList = ({ ownJoinReq, groupList,user,socket  }) => {
+    console.log(user)
+
     const dispatch = useDispatch()
     const renderItem = ({ item }) => {
         const group = groupList.find(x => x.id == item.groupname_id)
-        console.log(item)
         const confirmjoin = () =>{
             // console.log(item)
-            dispatch(confirmJoinAction(item.userid,item.groupname_id,user.firstName, user.applied))
+            dispatch(confirmJoinAction(item.userid,item.groupname_id,user.firstName, user.applied, socket))
             // navigation.navigate('Home')
         }
         return (

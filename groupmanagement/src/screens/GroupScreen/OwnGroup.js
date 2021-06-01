@@ -35,7 +35,7 @@ const OwnGroup = ({ ownGroup, userId }) => {
 
 
     const[editable, setEditable]=useState(       
-        ( (ownGroup.progress == "accepted")|| (ownGroup.proposal == "accepted"))?false:true
+        ( ownGroup.proposal=="sent" || ownGroup.proposal == "resent" || ownGroup.proposal == "accepted")?false:true
         );
 
 
@@ -56,7 +56,7 @@ const OwnGroup = ({ ownGroup, userId }) => {
     const [description, setDescription] = useState(ownGroup.description)
     const [tags, setTags] = useState(ownGroup.tags)
 
-    console.log(ownGroup.proposal)
+    console.log(ownGroup.proposal+"ss")
 
     const leaveGroupAction=()=>{
         const data ={
@@ -115,7 +115,7 @@ const OwnGroup = ({ ownGroup, userId }) => {
                     marginRight: normalize(50),
                     margin: normalize(10)
                 }}>
-                    { !editable ? null :
+                    { ( ownGroup.proposal=="sent" || ownGroup.proposal == "resent" || ownGroup.proposal == "accepted") ? null :
                         <View style={{ flexDirection: 'row' }}>
                             {
                             ownGroup.ownerId == userId?

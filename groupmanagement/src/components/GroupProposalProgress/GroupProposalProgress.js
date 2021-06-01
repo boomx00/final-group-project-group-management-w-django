@@ -5,14 +5,15 @@ import normalize from 'react-native-normalize'
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import { connect } from 'react-redux'
+import {
+    getOwnGroupAction
+} from '../../redux/slices/groupSlices'
 
 const GroupProposalProgress = ({ groupProposal, ownGroup,allGroupProposalList }) => {
     useFocusEffect(useCallback(() => {
-     
-
+        console.log(groupProposal)
       }, []))
       const group = allGroupProposalList.find(x => x.groupid.id == ownGroup.id)
-      console.log(group)
     return (
         <View style={{
             flex: 1,
@@ -64,7 +65,7 @@ const GroupProposalProgress = ({ groupProposal, ownGroup,allGroupProposalList })
                                 flexDirection: 'row',
                                 justifyContent: 'center',
                                 alignItems: 'center',
-                                backgroundColor: !group ? "#008BFF" : group.progress == "tbd" || group.progress == "resent" ? "#008BFF" : group.progress == "accepted" ? "green" : "red",
+                                backgroundColor: !groupProposal ? "#008BFF" : groupProposal.progress == "tbd" || groupProposal.progress == "resent" ? "#008BFF" : groupProposal.progress == "accepted" ? "green" : "red",
                                 borderRadius: normalize(5),
                                 padding: normalize(5)
                             }}>
@@ -77,7 +78,7 @@ const GroupProposalProgress = ({ groupProposal, ownGroup,allGroupProposalList })
                                     fontFamily: 'Roboto-Bold',
                                     fontSize: normalize(17),
                                     color: colors.white
-                                }}> {!group ? "NOT SENT" : group.progress == "tbd" || group.progress == "resent" ? "ON REVIEW BY THE TEACHER" : group.progress == "accepted" ? "GROUP PROPOSAL ACCEPTED" : "GROUP PROPOSAL DECLINED"}</Text>
+                                }}> {!groupProposal.progress ? "NOT SENT" : groupProposal.progress == "tbd" || groupProposal.progress == "resent" ? "ON REVIEW BY THE TEACHER" : groupProposal.progress == "accepted" ? "GROUP PROPOSAL ACCEPTED" : "GROUP PROPOSAL DECLINED"}</Text>
                             </View>
                             <View style={{
                                 justifyContent: 'space-between'

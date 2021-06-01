@@ -11,7 +11,7 @@ import { connect, useDispatch } from 'react-redux'
 import { acceptJoinGroupAction, declineJoinGroupAction } from '../../redux/slices/groupSlices'
 import { color } from 'react-native-reanimated'
 
-const Req = ({ id, firstName, lastName, approved, confirm, studentId,clickedUser  }) => {
+const Req = ({ id, firstName, lastName, approved, confirm, studentId,clickedUser,socket   }) => {
     const dispatch = useDispatch()
     const data = {
         userid:  studentId,
@@ -30,11 +30,14 @@ const Req = ({ id, firstName, lastName, approved, confirm, studentId,clickedUser
                 </View>
                {approved == "tbd" ?
                     <View>
-                        <TouchableOpacity onPress={() => dispatch(acceptJoinGroupAction(data))}
+                        <TouchableOpacity onPress={() => 
+                        // console.log(data)
+                        dispatch(acceptJoinGroupAction(data,socket))
+                        }
                             style={styles.acceptBtn}>
                             <Text style={styles.textAccept}>Accept</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => dispatch(declineJoinGroupAction(data))}
+                        <TouchableOpacity onPress={() => dispatch(declineJoinGroupAction(data,socket))}
                             style={styles.declineBtn}>
                             <Text style={styles.textDecline}>Decline</Text>
                         </TouchableOpacity>

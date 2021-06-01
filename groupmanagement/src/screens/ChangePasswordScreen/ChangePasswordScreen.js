@@ -10,16 +10,16 @@ import colors from '../../../assets/colors/colors';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 //  Redux
-import { useDispatch } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import { changePasswordAction } from '../../redux/slices/authSlices'
 
-const ChangePasswordScreen = () => {
+const ChangePasswordScreen = (user) => {
     const dispatch = useDispatch()
     const navigation = useNavigation()
+    const [userId, setUserId] = useState(user.user.id)
     const [oldPassword, setOldPassword] = useState()
     const [password, setPassword] = useState()
     const [confirm, setConfirm] = useState()
-
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -45,7 +45,7 @@ const ChangePasswordScreen = () => {
                 <TouchableOpacity
                     onPress={() => {
                         if (confirm == password) {
-                            dispatch(changePasswordAction({ oldPassword, password }, navigation))
+                            dispatch(changePasswordAction({ oldPassword, password,userId }, navigation))
                         } else {
                             alert('Please re enter the password and the confirm password!')
                         }
@@ -129,4 +129,8 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ChangePasswordScreen
+const mapStateToProps = (state) => ({
+    user: state.auth.user
+})
+
+export default connect(mapStateToProps, null)(ChangePasswordScreen)

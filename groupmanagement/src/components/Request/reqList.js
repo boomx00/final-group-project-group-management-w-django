@@ -16,7 +16,7 @@ import {
 
 
 //passing
-const ReqList = ({ joinList, owner, user,ownGroup,full }) => {
+const ReqList = ({ joinList, owner, user,ownGroup,full,socket }) => {
     const [visible, setVisible] = useState(false);
     const showDialog = () => setVisible(true);
     const hideDialog = () => setVisible(false);
@@ -25,14 +25,14 @@ const ReqList = ({ joinList, owner, user,ownGroup,full }) => {
         dispatch(getJoinGroupReqAction(user.groupId))
     }, [])
     const [clickedUser, setClickedUser] = useState({
-        person:{
+        userids:{
             firstName:"",
             username:"",
             bio:"",
             major:""
         }
     });
-    console.log(ownGroup.members.length)
+    // console.log(ownGroup.members.length)
     const renderItemR = ({ item }) => {
         
         return <Req
@@ -43,10 +43,10 @@ const ReqList = ({ joinList, owner, user,ownGroup,full }) => {
             studentId={item.userid}
             approved={item.status}
             confirm = {item.confirmed}
-
+            socket={socket}
             clickedUser={() => {
-                
                 setClickedUser(item)
+                // console.log(clickedUser.userids.major)
                 showDialog()
             }}
         />
@@ -126,9 +126,9 @@ const ReqList = ({ joinList, owner, user,ownGroup,full }) => {
                         <Text style={styles.textHead}>Student ID:</Text>
                         <Text style={styles.textReg}>{clickedUser.userid}</Text>
                         <Text style={styles.textHead}>Major:</Text>
-                        <Text style={styles.textReg}>{clickedUser.person.major}</Text>
+                        <Text style={styles.textReg}>{clickedUser.userids.major}</Text>
                         <Text style={styles.textHead}>Description:</Text>
-                        <Text style={styles.textReg}>{clickedUser.person.bio}</Text>
+                        <Text style={styles.textReg}>{clickedUser.userids.bio}</Text>
                     </Dialog.Content>
                     <Dialog.Actions>
                         <Button onPress={hideDialog}>Done</Button>

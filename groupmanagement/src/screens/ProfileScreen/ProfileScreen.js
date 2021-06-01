@@ -12,7 +12,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 //  Redux
 import { connect } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { logoutAction, editProfileAction, getUserAction, editProfile } from '../../redux/slices/authSlices'
+import { logoutAction, editProfileAction, getUserAction, editProfile,randomizeUser } from '../../redux/slices/authSlices'
 import { getOwnGroupAction } from '../../redux/slices/groupSlices'
 import normalize from 'react-native-normalize';
 
@@ -69,7 +69,7 @@ const ProfileScreen = ({ user, ownGroup }) => {
           <Ionicons name="heart-outline" size={normalize(35)} color={colors.textDark} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>MY PROFILE</Text>
-        <TouchableOpacity style={{ left: normalize(70) }} onPress={() => dispatch(logoutAction())}>
+        <TouchableOpacity style={{ left: normalize(70) }} onPress={() => dispatch(logoutAction(navigation))}>
           <Ionicons name="arrow-forward-circle-outline" size={normalize(35)} color={colors.textDark} />
         </TouchableOpacity>
       </View>
@@ -130,6 +130,13 @@ const ProfileScreen = ({ user, ownGroup }) => {
               <Text style={styles.textInfo}>CHANGE PASSWORD</Text>
             </View>
           </TouchableOpacity>
+          {user.isTeacher?<TouchableOpacity
+            style={styles.acceptBtn}
+            onPress={()=>dispatch(randomizeUser())}
+            >
+            <Text style={styles.textAccept}>RANDOMIZE USERS</Text>
+          </TouchableOpacity>:null}
+          
         </View>
       </View>
       <Portal>
@@ -272,7 +279,21 @@ const styles = StyleSheet.create({
     fontSize: normalize(16),
     borderWidth: 0.5,
     borderRadius: normalize(10),
-  }
+  },
+  acceptBtn: {
+    backgroundColor: '#008BFF',
+    borderRadius: normalize(10),
+    elevation: normalize(10),
+    paddingTop:normalize(10),
+    paddingBottom:normalize(10),
+    margin: normalize(50),
+  },
+textAccept:{
+  textAlign: 'center',
+  color:'white',
+  fontWeight:'bold'
+
+}
 
 })
 const mapStateToProps = (state) => ({
