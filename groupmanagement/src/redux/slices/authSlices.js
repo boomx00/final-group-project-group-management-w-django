@@ -167,15 +167,15 @@ export const userRegisterAction = (studentID,email,password,navigation) => {
               }
             //   errors.forEach((error)=>{console.log('aa')})
 
-            // for (var i = 4; i < 58; i++) {
+            // for (var i = 1; i < 58; i++) {
             //     const data = {
             //         email: i+"@gmail.com",
             //         username: i,
             //         password: "admin123",
             //         first_name: i
             //     }
-
-       
+            //     const res = await axios.post("user/create/",data)
+            // }
         
 
     }

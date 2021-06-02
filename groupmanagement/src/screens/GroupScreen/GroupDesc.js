@@ -107,18 +107,20 @@ const GroupDesc = ({ ownGroup, user }) => {
                     )}
                     </View>
                     <View style={{paddingBottom:normalize(0)}}>
+                        
                 {ownGroup.ownerId!=user.id?null:
                 ownGroup.recruitment=="closed"?
                 <TouchableOpacity
                 style={styles.btn1}
-                onPress={() => openRecruitment()}
+                // onPress={() => openRecruitment()}
                 >
                         <Text style={styles.textBtn}>OPEN RECRUITMENT</Text>
 
-                </TouchableOpacity>:
+                </TouchableOpacity>
+                :
                 <TouchableOpacity
                 style={styles.btn1}
-                onPress={() => (ownGroup.members.length >= 5)?closeRecruitment():alert("member not enough")}
+                // onPress={() => (ownGroup.members.length >= 5)?closeRecruitment():alert("member not enough")}
                 >
                         <Text style={styles.textBtn}>CLOSE RECRUITMENT</Text>
 

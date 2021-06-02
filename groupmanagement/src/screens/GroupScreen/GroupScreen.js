@@ -10,7 +10,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 //  Styling
 import normalize from 'react-native-normalize';
-import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { RefreshControl, ScrollView, StyleSheet, Text, View,LogBox } from 'react-native'
 import colors from '../../../assets/colors/colors'
 
 // Components
@@ -27,7 +27,8 @@ const GroupScreen = ({ ownGroup, userId,user }) => {
 
     useFocusEffect(useCallback(() => {
      dispatch(getUserAction())
-    
+     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+
     }, []))
     // useEffect(() => {
     //     if(user.groupId){

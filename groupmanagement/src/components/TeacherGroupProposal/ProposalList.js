@@ -40,14 +40,19 @@ const ProposalList = ({ groupProposalList, groupList,socket  }) => {
     const declineProposal = () => {
         const data = {
             groupid:clickedProposal.id,
-            feedback: feedback
+            feedback: feedback,
+            members: clickedProposal.member
+
         }
         dispatch(declineGroupProposalAction(data,socket))
     }
     const editProposal=(data)=>{
         if (data.progress=="accept"){
-            dispatch(acceptGroupProposalAction(data,socket))
+            alert("edit to accept")
+            // dispatch(acceptGroupProposalAction(data,socket))
         }else{
+            // alert("edit to decline")
+
             dispatch(declineGroupProposalAction(data,socket))
         }
     }
@@ -207,7 +212,7 @@ const ProposalList = ({ groupProposalList, groupList,socket  }) => {
                                 }}
                             />
                             {clickedProposal.item.progress=="accepted" || clickedProposal.item.progress=="declined" ? 
-                                <View style={{ flexDirection: 'row', justifyContent: 'center',backgroundColor: 'red' }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'center',backgroundColor: '#009d27' }}>
                                 <TouchableOpacity onPress={() => {
                                     setEditClicked(true)
                                     }}
@@ -300,13 +305,15 @@ const ProposalList = ({ groupProposalList, groupList,socket  }) => {
                                     onPress={() => {
                                         const datas = {groupid:clickedProposal.id, 
                                             feedback: clickedProposal.item.feedback,
-                                            progress: "declined"
+                                            progress: "declined",
+                                            members: clickedProposal.member
+
                                         }
                                         editProposal(datas)
                                         setEditClicked(false)
                                     }}
                                     style={{
-                                        backgroundColor: colors.white,
+                                        backgroundColor: colors.red,
                                         borderRadius: normalize(10),
                                         elevation: normalize(10),
                                         padding: normalize(10)
@@ -323,7 +330,9 @@ const ProposalList = ({ groupProposalList, groupList,socket  }) => {
                                         const datas = {groupid:clickedProposal.id, 
                                             feedback: clickedProposal.item.feedback,
                                             members: clickedProposal.member,
-                                            progress: "accept"
+                                            progress: "accept",
+                                            members: clickedProposal.member
+
                                         }
                                         editProposal(datas)
                                         setEditClicked(false)

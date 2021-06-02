@@ -247,7 +247,8 @@ export const createGroupAction = (name, topic, description, tags, requirements, 
                 member:[{'id':id,'firstName':firstName}],
                 requirements: requirements,
                 topic: topic,
-                tags:tags
+                tags:tags,
+                len:1
             }
             const createGroup = await axios.post(`group/create/`, data, {
                 headers:{
@@ -357,7 +358,8 @@ export const joinGroupAction = (data) => {
                 const reqdata = {
                     firstName:data.fName,
                     userid: data.userid,
-                    groupname_id: data.groupid
+                    groupname_id: data.groupid,
+                    userids: data.userid
                 }
             const getapply = await axios.get(`group/application/`+data.groupid)
             const user = await axios.get("user/getuser/",{
@@ -365,18 +367,14 @@ export const joinGroupAction = (data) => {
                         'Authorization': 'JWT ' + token,
                 }
             })
-         
-        
-
-            
             if(user.data.applied){
+                console.log('sasd')
 
                 var applicants = user.data.applied
                 applicants.push(data.groupid)
                 applied.applied = applicants
                 const submit = await axios.put(`user/setapplied/`+data.userid, applied)
             }else{
-                console.log('aaaaaas')
 
                 applied.applied= [data.groupid]
                 // console.log(applied)
@@ -384,13 +382,15 @@ export const joinGroupAction = (data) => {
             }
       
             if(getapply.data.applications){
+
                 var applicants = getapply.data.applications
                 applicants.push(datas.applications[0])
                 datas.applications = applicants
-                console.log(data.groupid)
+                console.log(reqdata)
                 const submit = await axios.put(`group/application/`+data.groupid, datas)
                 const request = await axios.post('group/createrequest/', reqdata)
             }else{
+
                 const submit = await axios.put(`group/application/`+data.groupid, datas)
                 const request = await axios.post('group/createrequest/', reqdata)
     
@@ -677,12 +677,14 @@ export const acceptGroupProposalAction = (data,socket) => {
 export const declineGroupProposalAction = (data,socket) => {
     return async (dispatch, getState) => {
         try {
+            const { auth } = getState();
+
             const datas = {
                 progress: "declined",
                 feedback:data.feedback
             }
-            socket.current.emit("notification:decline-group-proposal", { sndrId: auth.user.id, recvId: members, type: "DECLINE_GROUP_PROPOSAL", msg: "Group proposal declined, please check the feedback!" })
-
+            socket.current.emit("notification:decline-group-proposal", { sndrId: auth.user.id, recvId: data.members, type: "DECLINE_GROUP_PROPOSAL", msg: "Group proposal declined, please check the feedback!" })
+            // console.log(datas)
             const res = await axios.put("group/updateproposal/"+data.groupid, datas)
                 dispatch(declineProposal({ id: data.groupid, feedback: data.feedback }))
         } catch (err) {

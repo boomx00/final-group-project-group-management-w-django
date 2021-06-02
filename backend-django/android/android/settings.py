@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'android.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
+        'NAME': 'newtest',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

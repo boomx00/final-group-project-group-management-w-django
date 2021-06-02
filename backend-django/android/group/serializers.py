@@ -151,10 +151,10 @@ class createRequestSerializer(serializers.ModelSerializer):
     userid = serializers.CharField(required = True)
     groupname_id = serializers.IntegerField(required = True)
     firstName = serializers.CharField(required = True)
-
+    
     class Meta:
         model = Requests
-        fields = ('userid','groupname_id','firstName')
+        fields = ('userid','groupname_id','firstName','userids')
 
     def create(self,validated_data):
         return Requests.objects.create(**validated_data)
